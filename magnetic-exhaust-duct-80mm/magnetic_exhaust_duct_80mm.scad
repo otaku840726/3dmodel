@@ -53,7 +53,9 @@ ridge_w = 4.0;              // 防脫環過渡寬度 (mm)
 
 // 氣動優化過渡錐段 (Lofted Funnel Transition)
 transition_h = 18.0;        // 過渡錐高 (mm)
-cone_base_od = 85.0;        // 錐體底部外徑 (mm)
+cone_base_x = 78.0;         // 錐體底部 X 邊長 (mm，圓角矩形完美包覆內部風道對角，徹底杜絕破孔)
+cone_base_y = 78.0;         // 錐體底部 Y 邊長 (mm)
+cone_base_r = 16.0;         // 錐體底部圓角半徑 (mm，平順過渡至圓管)
 
 // ==================== 5. 6 齒彈性避讓磁鐵盲孔 (對標底座 CAD 結構) ====================
 magnet_inner_d = 5.06;       // 齒面夾緊內徑 (mm，5.0mm 磁鐵緊固夾持)
@@ -141,7 +143,7 @@ module duct_adapter_body() {
             translate([0, 0, flange_thickness])
                 hull() {
                     linear_extrude(height = 0.01)
-                        circle(d = cone_base_od);
+                        rounded_rect_2d(cone_base_x, cone_base_y, cone_base_r);
                     translate([0, 0, transition_h])
                         linear_extrude(height = 0.01)
                             circle(d = duct_od);
