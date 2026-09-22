@@ -114,23 +114,34 @@ module bear_eyes_convex() {
     }
 }
 
-module smile_cut_segment(p0, p1, r=0.42) {
+module smile_embossed_segment(p0, p1, r0=0.38, r1=0.38) {
     hull() {
-        translate([6.0, p0[0], p0[1]]) rotate([0, 90, 0]) cylinder(h=4.0, r=r, center=true, $fn=16);
-        translate([6.0, p1[0], p1[1]]) rotate([0, 90, 0]) cylinder(h=4.0, r=r, center=true, $fn=16);
+        translate(p0) sphere(r=r0, $fn=16);
+        translate(p1) sphere(r=r1, $fn=16);
     }
 }
 
-module bear_smile_groove() {
-    // 經典小熊微笑：鼻下人中線 + 兩側向上揚起的萌系微笑線
-    // Vertical philtrum from nose to smile split
-    smile_cut_segment([0, 35.6], [0, 34.0], r=0.38);
+module bear_smile_embossed() {
+    // 經典萌熊微凸微笑線 (非凹槽，立體平滑浮雕線條)
+    // 垂直人中線 (Philtrum)
+    smile_embossed_segment([5.45, 0, 35.6], [5.38, 0, 34.0], 0.38, 0.38);
     
-    // Curved smile line with upturned happy corners
+    // 平滑二次貝茲微凸揚嘴角微笑線 (Bezier Smile Branches)
+    steps = 8;
     for (side=[-1, 1]) {
-        smile_cut_segment([0, 34.0], [side * 1.3, 33.9], r=0.40);
-        smile_cut_segment([side * 1.3, 33.9], [side * 2.5, 34.4], r=0.40);
-        smile_cut_segment([side * 2.5, 34.4], [side * 3.4, 35.1], r=0.38);
+        p0 = [5.38, 0, 34.0];
+        p1 = [5.55, side * 1.6, 33.7];
+        p2 = [6.45, side * 3.4, 35.1];
+        for (i=[0:steps-1]) {
+            t0 = i / steps;
+            t1 = (i + 1) / steps;
+            smile_embossed_segment(
+                bez2(p0, p1, p2, t0),
+                bez2(p0, p1, p2, t1),
+                0.38 - 0.02 * t0,
+                0.38 - 0.02 * t1
+            );
+        }
     }
 }
 
@@ -176,43 +187,42 @@ module front_paw(side=1) {
 }
 
 module chibi_bear() {
-    difference() {
-        union() {
-            // Flat load-bearing contact first
-            flat_seat_contact();
+    union() {
+        // Flat load-bearing contact first
+        flat_seat_contact();
 
-            // Chubby lower body & rump countermass
-            translate([18, 0, 12]) bio_ellipsoid([29, 24, 25], 2.8);
-            rear_countermass();
+        // Chubby lower body & rump countermass
+        translate([18, 0, 12]) bio_ellipsoid([29, 24, 25], 2.8);
+        rear_countermass();
 
-            // Cuddly bear tummy protrusion
-            translate([11.8, 0, 19.5]) bio_ellipsoid([12, 15, 15], 2.4);
+        // Cuddly bear tummy protrusion
+        translate([11.8, 0, 19.5]) bio_ellipsoid([12, 15, 15], 2.4);
 
-            // Torso
-            translate([17, 0, 23.5]) bio_ellipsoid([23, 20, 25], 2.6);
+        // Torso
+        translate([17, 0, 23.5]) bio_ellipsoid([23, 20, 25], 2.6);
 
-            // Head (remains below 50mm max height)
-            translate([17, 0, 37.0]) bio_ellipsoid([head_d, head_w, head_h], 2.5);
-            bear_ear(-1);
-            bear_ear(1);
+        // Head (remains below 50mm max height)
+        translate([17, 0, 37.0]) bio_ellipsoid([head_d, head_w, head_h], 2.5);
+        bear_ear(-1);
+        bear_ear(1);
 
-            // Bear muzzle & nose
-            bear_muzzle();
+        // Bear muzzle & nose
+        bear_muzzle();
 
-            // Non-recessed rounded button eyes
-            bear_eyes_convex();
+        // Non-recessed rounded button eyes
+        bear_eyes_convex();
 
-            // Limbs & paws
-            hanging_leg(-1);
-            hanging_leg(1);
-            front_paw(-1);
-            front_paw(1);
+        // Non-recessed embossed classic bear smile
+        bear_smile_embossed();
 
-            // Chubby tail
-            bear_tail();
-        }
-        // Classic bear smile
-        bear_smile_groove();
+        // Limbs & paws
+        hanging_leg(-1);
+        hanging_leg(1);
+        front_paw(-1);
+        front_paw(1);
+
+        // Chubby tail
+        bear_tail();
     }
 }
 
