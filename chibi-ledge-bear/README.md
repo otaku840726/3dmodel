@@ -1,75 +1,69 @@
-# 桌緣趴姿萌熊公仔 (Biomimetic Chibi Ledge Bear Figurine)
+# 桌緣趴姿幾何萌熊公仔 (Faceted Biomimetic Chibi Ledge Bear)
 
-依循仿生學幾何與黃金比例設計的萌系桌緣公仔系列——**小熊版本 (Chibi Bear)**。結合圓潤小熊耳、立體口鼻部、圓滾小熊肚與毛茸球形尾巴，並透過低重心後臀幾何配重，實現無需黏膠、無磁鐵即可自平衡穩坐於任何桌子或展示架邊緣，雙腿自然懸垂於桌緣外。
+承襲原版貓咪 SCAD 之經典**低多邊形菱角幾何美學（Low-Poly Faceted Biomimetic Mesh）**與黃金分割比例，打造兼具抽象雕塑感與可愛萌系神韻的桌緣公仔——**領結蜂蜜罐小熊 (Option D: Faceted Bear with Bowtie & Honey Pot)**。
 
----
-
-## 📸 視覺預覽 (Visual Previews)
-
-| 桌緣擺放示意 (Ledge View) | 模型立體視角 (Isometric Figurine) |
-| :---: | :---: |
-| ![Ledge View](renders/perspective_ledge.png) | ![Isometric View](renders/isometric_bear.png) |
-
-| 正面五官與垂爪 (Front View) | 側面力學重心平衡視角 (Side Profile & COM) |
-| :---: | :---: |
-| ![Front View](renders/front_view.png) | ![Side Profile](renders/side_profile.png) |
+本模型已通過 CGAL 實體流形幾何驗證（**Simple: yes, Volumes: 2，單一完全閉合水密實體，零懸空零破面**），後臀低重心結構確保在無膠無磁鐵下自平衡穩坐桌緣。
 
 ---
 
-## 📐 核心設計理念與小熊特徵 (Design Basis & Bear Features)
+## 📸 多視角渲染檢視 (Multi-Angle Previews)
 
-本模型承襲桌緣公仔系列之精密仿生力學，並專門針對熊科特徵進行有機建模：
+| 45° 俯瞰視角 (Isometric Perspective) | 正面神態 (Front Straight-On) |
+| :---: | :---: |
+| ![Perspective](renders/final_perspective.png) | ![Front](renders/final_front.png) |
 
-1. **萌熊特徵造型 (Bear Anatomy)**：
-   - **圓形微凹雙耳 (Rounded Bear Ears)**：擺脫貓咪的三角尖耳，採用微帶內凹耳廓的圓潤球弧耳，並以自然角度微外展傾斜。
-   - **立體口鼻部與鼻鈕 (Protruding Muzzle & Nose Button)**：具備專屬小熊口鼻隆起部（Muzzle），頂部點綴立體鼻鈕。
-   - **立體圓潤鈕扣眼 (Non-recessed Button Eyes)**：採用微凸圓潤紐扣眼（非凹陷孔洞），表面光滑立體，列印與上色更加精緻生動。
-   - **經典立體微凸微笑線 (Non-recessed Embossed Smile)**：由鼻鈕延伸向下的人中線，銜接兩側優雅上揚的二次貝茲微凸立體微笑線（非凹槽），神情親切甜美，列印線條圓潤分明。
-   - **圓滾肚腩 (Chubby Bear Belly)**：稍微向前隆起的圓潤小肚肚，前肢小熊爪微向內彎搭在肚腩與膝蓋旁，更添憨厚可愛感。
-   - **圓球短尾 (Round Bobtail)**：不同於貓咪的長捲尾，小熊採用圓滾滾毛球短尾巴，並自然融入後臀配重塊。
-2. **黃金比例 ($\phi \approx 1.618$)**：
-   - 頭部寬高、身軀縱深與頭身比例嚴格以黃金分割公式計算，視覺比例和諧溫馨。
-3. **超橢球有機體 (Lamé Superellipsoids)**：
-   - 頭部、軀幹與後臀皆以超橢球曲面演算法建構，表面平滑無突兀稜角。
-4. **二次貝茲曲線四肢 (Quadratic Bézier Limbs)**：
-   - 雙腿從桌內（$X > 0$）平滑跨越桌緣基準線（$X = 0$）垂懸至桌外（$X < 0$），下端為飽滿的熊掌造型，完全懸空避讓桌子側面垂直牆面。
-5. **重心自平衡機制 (Self-Balancing Physics)**：
-   - **受力底座**：底部設置 $26 \times 24\text{ mm}$ 寬闊平整接觸面，完全貼實於 $Z=0$ 桌面。
-   - **低重心後配重**：低重心後臀（`rear_countermass`）與後置圓尾巴將公仔整體質心拉至桌緣內側約 $X \approx 8.5\text{ mm}$、$Z \approx 18.0\text{ mm}$，提供超過 5mm 的抗前傾力矩安全裕度。
+| 側面剖面檢視 (Side Profile) | 特寫五官與領結蜜罐 (Closeup Face & Accessories) |
+| :---: | :---: |
+| ![Side](renders/final_side.png) | ![Closeup](renders/final_closeup.png) |
+
+| 頂視俯瞰 (Top-Down) | 背部雕塑與球尾 (Rear & Bobtail) |
+| :---: | :---: |
+| ![Top](renders/final_top.png) | ![Rear](renders/final_rear.png) |
+
+| 仰視底座與腿部垂懸 (Bottom Tabletop Stability) |
+| :---: |
+| ![Bottom](renders/final_bottom.png) |
+
+---
+
+## 💎 核心設計特色 (Design & Structural Highlights)
+
+1. **原汁原味菱角幾何美學 (Exact Natural Faceted Mesh)**：
+   - 採用未經人為高階細分（$fn）的純粹三角/菱形幾何網面，光影折射分明，呈現如同當代折紙雕塑與鑽石切面的俐落現代質感。
+2. **100% 實心無縫一體化焊接 (100% Watertight Solid Manifold)**：
+   - **深根嵌入五官**：凸眼與立體鼻鈕自顱骨內部直接延伸 Hull 出面，杜絕菱角幾何曲率下的懸空脫節問題。
+   - **無凹陷親切微笑**：實心微凸人中與微笑線自然融入吻部棱面，無任何陰影凹洞。
+   - **折紙領結 (Origami Bowtie)**：雙側幾何翼展與中心紐扣深入胸膛 2.4 mm 熔接。
+   - **腹中小蜜罐 (Faceted Honey Pot)**：罐體深植於腹部與大腿之間（重疊深度逾 4mm），雙前掌由肩胛順勢抱入罐側。
+   - **堅固無弱點膝蓋 (Solid Continuous Knees)**：大腿至小腿一體成型平滑過渡，消除脆弱凹槽，腳底刻劃幾何肉球爪印。
+3. **自平衡仿生力學 (Self-Balancing Stability)**：
+   - 重心 $X \approx +8.0\text{ mm} > 0$（桌緣線位於 $X = 0$），提供充足抗傾倒力矩安全裕度。
 
 ---
 
 ## 📏 規格尺寸 (Specifications)
 
-| 項目 | 數值 | 備註 |
+| 項目 | 數值 | 說明 |
 | :--- | :--- | :--- |
-| **桌面以上高度** | 約 48.5 mm | 嚴格控制在 50 mm 安全高度內，小巧不遮擋視線 |
-| **懸垂深度** | 約 -15.2 mm | 垂於桌緣外側之腿部長度 |
-| **桌面佔用深度** | 約 36 mm | 坐於桌內部分之最大長度（含後尾） |
-| **最大橫向寬度** | 約 26.5 mm | 雙耳及臀部橫向最大寬度 |
-| **底座接觸面積** | 約 $26 \times 24$ mm | 平整貼合於桌面 |
+| **桌面以上高度** | 約 49 mm | 不遮擋螢幕或桌面視線 |
+| **桌面懸垂深度** | 約 -15.0 mm | 雙腿自然垂於桌緣外側 |
+| **桌面佔用深度** | 約 35 mm | 底座平整接觸桌面 |
+| **橫向最大寬度** | 約 26.5 mm | 雙耳及臀部對稱開展 |
+| **幾何狀態** | 100% 封閉水密實體 | CGAL Nef Polyhedron 驗證無破面 |
 
 ---
 
-## 🖨️ 3D 列印與切片建議 (Slicing & Printing Guide)
+## 🖨️ 3D 列印建議 (Printing Recommendations)
 
-### 建議列印方向
-- **標準底面朝下（推薦）**：
-  - 將模型底部平整接觸面置於列印熱板 ($Z=0$)。
-  - **支撐設定**：在切片軟體中啟用「樹狀支撐 (Tree Supports)」，僅需少量支撐於懸空的腿部腳掌（$Z < 0$ 區域）。
-  - **優點**：小熊頭部、雙耳、面部五官、肚腩與雙手臂紋理最細膩，拆除支撐後完全不影響外觀面。
-
-### 建議切片參數
-- **層高 (Layer Height)**：`0.12mm` ~ `0.16mm`（高品質曲面表現）
-- **外牆圈數 (Wall Loops)**：`3` 圈以上
-- **填充率 (Infill)**：`20% ~ 30%`（建議使用 Gyroid 陀螺儀填充）
-  - *穩定度加強技巧*：可於切片軟體中在後臀部分新增高度區段或方塊 Modifier，將後臀填充率單獨設為 `40% ~ 50%`，可進一步增強自平衡配重效果。
-- **適用材質**：PLA / PLA+ / PETG / 光固化樹脂 (Resin)
+- **擺放方位**：底面平貼列印平台（$Z = 0$）。
+- **支撐**：建議開啟「樹狀支撐 (Tree Supports)」，僅對懸垂於桌面外的雙腿下緣給予少量支撐即可。
+- **層高**：`0.16mm` ~ `0.20mm`（菱角幾何面在微層紋下更顯切面質感）。
+- **填充**：`20% ~ 25%`（建議後臀區域局部增加至 `40%` 加重平衡）。
 
 ---
 
 ## 📂 檔案清單 (File Structure)
 
-- `chibi_ledge_bear.scad`：OpenSCAD 原始程式碼（包含預覽桌面、桌緣安全線與重心標記開關）
-- `chibi_ledge_bear.stl`：高品質輸出之 STL 三角網格檔案（已自動去除桌板預覽，可直接匯入切片軟體）
-- `renders/`：多角度高解析度渲染圖目錄
+- `chibi_ledge_bear.scad`：最新版完整 OpenSCAD 原始碼
+- `chibi_ledge_bear.stl`：100% 單一閉合水密實體 STL 網格
+- `renders/`：包含 7 個全方位視角的超清渲染圖目錄
