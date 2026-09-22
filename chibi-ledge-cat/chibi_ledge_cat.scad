@@ -183,9 +183,6 @@ module chibi_cat() {
             curled_tail();
         }
         face_relief();
-
-        // Small underside relief outside valid contact zone prevents edge rocking.
-        translate([-10,0,0.4]) cube([18,40,1.0],center=true);
     }
 }
 

@@ -193,9 +193,6 @@ module chibi_bear() {
             bear_tail();
         }
         bear_face_relief();
-
-        // Small underside relief outside contact zone prevents edge rocking
-        translate([-10, 0, 0.4]) cube([18, 40, 1.0], center=true);
     }
 }
 
