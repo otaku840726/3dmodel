@@ -105,17 +105,33 @@ module bear_muzzle() {
             sphere(r=1.3);
 }
 
-module bear_face_relief() {
-    // Recessed chibi eyes placed warmly above the muzzle
-    for (side=[-1,1])
-        translate([10.0, side*5.0, 39.2])
-            rotate([0, 90, 0])
-                cylinder(h=6.0, r=1.15, center=true);
+module bear_eyes_convex() {
+    // Non-recessed rounded button dome eyes (立體微凸圓潤紐扣眼)
+    for (side=[-1, 1]) {
+        translate([9.2, side * 5.0, 39.2])
+            scale([0.65, 1.0, 1.0])
+                sphere(r=1.25, $fn=32);
+    }
+}
+
+module smile_cut_segment(p0, p1, r=0.42) {
+    hull() {
+        translate([6.0, p0[0], p0[1]]) rotate([0, 90, 0]) cylinder(h=4.0, r=r, center=true, $fn=16);
+        translate([6.0, p1[0], p1[1]]) rotate([0, 90, 0]) cylinder(h=4.0, r=r, center=true, $fn=16);
+    }
+}
+
+module bear_smile_groove() {
+    // 經典小熊微笑：鼻下人中線 + 兩側向上揚起的萌系微笑線
+    // Vertical philtrum from nose to smile split
+    smile_cut_segment([0, 35.6], [0, 34.0], r=0.38);
     
-    // Subtle vertical mouth indentation beneath nose
-    translate([7.0, 0, 33.8])
-        rotate([0, 90, 0])
-            cylinder(h=4.0, r=0.7, center=true);
+    // Curved smile line with upturned happy corners
+    for (side=[-1, 1]) {
+        smile_cut_segment([0, 34.0], [side * 1.3, 33.9], r=0.40);
+        smile_cut_segment([side * 1.3, 33.9], [side * 2.5, 34.4], r=0.40);
+        smile_cut_segment([side * 2.5, 34.4], [side * 3.4, 35.1], r=0.38);
+    }
 }
 
 module bear_tail() {
@@ -183,6 +199,9 @@ module chibi_bear() {
             // Bear muzzle & nose
             bear_muzzle();
 
+            // Non-recessed rounded button eyes
+            bear_eyes_convex();
+
             // Limbs & paws
             hanging_leg(-1);
             hanging_leg(1);
@@ -192,7 +211,8 @@ module chibi_bear() {
             // Chubby tail
             bear_tail();
         }
-        bear_face_relief();
+        // Classic bear smile
+        bear_smile_groove();
     }
 }
 
