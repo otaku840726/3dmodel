@@ -128,13 +128,12 @@ module cute_bowtie_supportfree() {
 }
 
 module cute_honey_pot_body() {
-    translate([4.8, 0, 16.5]) {
-        // Bulbous pot body anchored into belly & lap
+    translate([4.8, 0, 16.0]) {
+        // Bulbous pot body resting cleanly in lap without deep vertical drop
         hull() {
             scale([1.0, 1.08, 1.05]) sphere(r=4.2, $fn=40);
-            translate([3.5, 0, -4.5]) sphere(r=3.2, $fn=28);
-            translate([5.0, 0, -7.5]) sphere(r=2.5, $fn=20);
-            translate([2.0, 0, -6.5]) sphere(r=2.6, $fn=24);
+            translate([2.5, 0, -3.2]) sphere(r=3.2, $fn=28);
+            translate([4.5, 0, -5.0]) sphere(r=2.5, $fn=20);
         }
         // Flared rim
         hull() {
@@ -145,7 +144,7 @@ module cute_honey_pot_body() {
 }
 
 module cute_honey_pot_drip() {
-    translate([4.8, 0, 16.5]) {
+    translate([4.8, 0, 16.0]) {
         hull() {
             translate([-3.4, 0.8, 2.2]) sphere(r=1.15, $fn=24);
             translate([-3.0, 0.9, 0.5]) sphere(r=1.0, $fn=20);
@@ -155,58 +154,53 @@ module cute_honey_pot_drip() {
 }
 
 // ==============================================================================
-// 3. LIMBS: ARMS & FORWARD SEATED LEGS (Organic, Chubby, 100% Support-Free)
+// 3. LIMBS: ARMS & CHUBBY LEGS (Clean Organic Anatomy, Zero Protrusions)
 // ==============================================================================
 module cute_arms_supportfree() {
     for (side=[-1, 1]) {
         hull() {
             translate([13.5, side * 8.6, 23.5]) sphere(r=3.2, $fn=28);
-            translate([7.0,  side * 7.0, 18.0]) sphere(r=2.9, $fn=28);
-            translate([13.5, side * 6.0, 18.5]) sphere(r=2.8, $fn=24);
-            translate([10.5, side * 5.5, 14.5]) sphere(r=2.5, $fn=24);
+            translate([7.0,  side * 7.0, 17.5]) sphere(r=2.9, $fn=28);
+            translate([13.5, side * 6.0, 18.0]) sphere(r=2.8, $fn=24);
+            translate([10.5, side * 5.5, 14.0]) sphere(r=2.5, $fn=24);
         }
         hull() {
-            translate([7.0,  side * 7.0, 18.0]) sphere(r=2.9, $fn=28);
-            translate([3.2,  side * 3.6, 16.5]) sphere(r=2.5, $fn=28);
-            translate([7.5,  side * 4.8, 13.0]) sphere(r=2.8, $fn=24);
-            translate([4.5,  side * 3.2, 13.0]) sphere(r=2.5, $fn=24);
+            translate([7.0,  side * 7.0, 17.5]) sphere(r=2.9, $fn=28);
+            translate([3.2,  side * 3.6, 16.0]) sphere(r=2.5, $fn=28);
+            translate([7.5,  side * 4.8, 12.5]) sphere(r=2.8, $fn=24);
+            translate([4.5,  side * 3.2, 12.5]) sphere(r=2.5, $fn=24);
         }
-        translate([3.2, side * 3.6, 16.5]) sphere(r=2.5, $fn=28);
+        translate([3.2, side * 3.6, 16.0]) sphere(r=2.5, $fn=28);
     }
 }
 
+// Chubby Legs nestled naturally against body and honey pot without artificial bridge lumps
 module cute_legs_only() {
     for (side=[-1, 1]) {
-        // Chubby thigh and knee
+        // Hip & Thigh (smooth integration directly into pelvis)
         hull() {
-            translate([14.5, side * 10.5, 6.0]) sphere(r=4.8, $fn=36);
-            translate([8.0,  side * 11.2, 5.2]) sphere(r=4.6, $fn=36);
-            translate([2.5,  side * 9.8,  4.6]) sphere(r=4.4, $fn=36);
-            translate([14.5, side * 10.5, 2.5]) sphere(r=4.2, $fn=32);
-            translate([8.0,  side * 11.2, 2.5]) sphere(r=4.0, $fn=32);
-            translate([2.5,  side * 9.8,  2.5]) sphere(r=3.8, $fn=32);
+            translate([14.5, side * 9.8, 6.0]) sphere(r=4.8, $fn=36);
+            translate([7.5,  side * 10.2, 5.0]) sphere(r=4.6, $fn=36);
+            translate([14.5, side * 9.8, 2.5]) sphere(r=4.2, $fn=32);
+            translate([7.5,  side * 10.2, 2.5]) sphere(r=4.0, $fn=32);
         }
-        // Chubby foot reaching toward table edge
+        // Knee & Foot curving gently inwards toward honey pot
         hull() {
-            translate([2.5,  side * 9.8,  4.6]) sphere(r=4.4, $fn=36);
-            translate([-1.8, side * 8.5,  4.4]) sphere(r=4.2, $fn=36);
-            translate([2.5,  side * 9.8,  2.5]) sphere(r=3.8, $fn=32);
-            translate([-1.8, side * 8.5,  2.5]) sphere(r=3.6, $fn=32);
-        }
-        // Inner lap bridge connecting smoothly into torso
-        hull() {
-            translate([7.0, side * 5.8, 4.2]) sphere(r=3.4, $fn=28);
-            translate([2.5, side * 5.2, 3.8]) sphere(r=3.2, $fn=28);
-            translate([7.0, side * 5.8, 2.5]) sphere(r=3.0, $fn=24);
-            translate([2.5, side * 5.2, 2.5]) sphere(r=2.8, $fn=24);
+            translate([7.5,  side * 10.2, 5.0]) sphere(r=4.6, $fn=36);
+            translate([1.5,  side * 8.0,  4.5]) sphere(r=4.4, $fn=36);
+            translate([-1.8, side * 6.8,  4.4]) sphere(r=4.2, $fn=36);
+            
+            translate([7.5,  side * 10.2, 2.5]) sphere(r=4.0, $fn=32);
+            translate([1.5,  side * 8.0,  2.5]) sphere(r=3.8, $fn=32);
+            translate([-1.8, side * 6.8,  2.5]) sphere(r=3.6, $fn=32);
         }
     }
 }
 
 module cute_paw_pads() {
     for (side=[-1, 1]) {
-        translate([-1.8, side * 8.5, 4.4])
-            rotate([0, 26, side * 12]) {
+        translate([-1.8, side * 6.8, 4.4])
+            rotate([0, 26, side * 6]) {
                 // Main bean pad
                 translate([-3.5, 0, -0.3]) scale([0.65, 1.25, 1.0]) sphere(r=1.75, $fn=24);
                 // 3 Round toe beans
@@ -218,19 +212,19 @@ module cute_paw_pads() {
 }
 
 // ==============================================================================
-// 4. TORSO & BASE (Continuous Planar Bed Cut at Z=0)
+// 4. TORSO & BASE (Natural Receding Contour, Continuous Planar Bed Cut at Z=0)
 // ==============================================================================
 module cute_body_trunk() {
-    // Self-supporting hulled base (0 to 12 mm)
+    // Smooth natural base - recedes at the front
     hull() {
-        translate([18, 0, 0.5])
+        translate([19, 0, 0.5])
             linear_extrude(height=1.0, center=true)
-                scale([29/2, 23/2]) circle(r=1, $fn=48);
+                scale([25/2, 21/2]) circle(r=1, $fn=48);
         translate([26, 0, 0.5])
             linear_extrude(height=1.0, center=true)
                 scale([14/2, 17/2]) circle(r=1, $fn=40);
         
-        translate([18, 0, 12]) bio_ellipsoid([29, 24, 25]);
+        translate([18, 0, 12]) bio_ellipsoid([28, 23, 25]);
         translate([26.5, 0, 9.0]) bio_ellipsoid([18.5, 18.0, 15.0]);
     }
     
@@ -267,7 +261,7 @@ module cute_ledge_bear_supportfree() {
                         cute_bear_head_solid();
         }
         
-        // Clean cut at Z=0 ensuring 100% flat build plate contact
+        // Clean cut at Z=0 ensuring 100% planar bed adhesion
         translate([0, 0, -50]) cube([200, 200, 100], center=true);
     }
 }
