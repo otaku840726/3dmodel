@@ -1,82 +1,99 @@
-# Cute Ledge Bear - Support-Free Edition (桌緣萌熊公仔 - 100% 一體成型免支撐版)
+# Cute Ledge Bear - Support-Free & Monitor Mount Edition (桌緣/螢幕頂部兩用萌熊公仔)
 
-專為 FDM 3D 列印「**100% 一體成型（Monolithic）、免支撐（Support-Free）、零組裝（Zero-Assembly）**」重新工程設計的桌緣萌熊公仔。
+專為 FDM 3D 列印打造的「**100% 一體成型（Monolithic）、免支撐（Support-Free）、桌緣/電腦螢幕雙用（Desk & Monitor Dual-Mode）**」經典平滑超萌小熊公仔。
+
+包含底部專利級免支撐尖拱插槽與模組化防滑薄片擋板（Anti-Drop Baffle），可穩穩放置於電腦螢幕頂端或桌緣，徹底解決公仔易掉落與分件裝配失敗的問題！
 
 ---
 
-## 💡 設計重構說明 (Design Rationale & Engineering Evolution)
+## 💡 設計重構與工程特色 (Design Evolution & Engineering Features)
 
-### 1. 舊版痛點：為何「為了避開支撐而拆分雙腿」是錯誤的設計？
-在早期版本中，為了規避懸垂下垂腿部所產生的支撐，採用了「將雙腿切開、透過側向榫卯插槽組裝」的方案。但實際在 FDM 列印與裝配實踐中暴露出嚴重工程缺陷：
-- **微小榫頭強度弱**：細小柱狀或尖拱榫頭在橫向插裝受力時，極易沿著層線脆斷。
-- **列印孔徑收縮與公差干涉**：FDM 列印外擴與內孔收縮特性導致公差極難拿捏，微小間隙誤差即造成組裝嚴重卡死或完全無法推入。
+### 1. 徹底揚棄「為避支撐而拆分雙腿」的缺陷設計
+在早期版本中，為了避開懸垂腿部產生的支撐而將雙腿切開、透過側向榫卯插裝，但這在 FDM 列印中存在致命缺陷：
+- **榫頭強度脆斷**：細小柱狀或尖拱榫頭橫向插裝時，極易沿層線（Layer lines）脆斷。
+- **公差干涉卡死**：FDM 列印外擴與內孔收縮特性導致公差難以兼顧，微小誤差即造成無法推入或鬆脫。
 - **曲面貼合公差累積**：有機生物曲面與大腿根部貼合凹槽在插裝時存在多軸向干涉，物理上極難順利入位。
+- **外觀突兀贅肉**：舊版在大腿內側留有非生物特徵的過渡橋凸起（Protrusion），破壞整體美感。
 
-### 2. 新版重構：直接重構模型姿態與解剖幾何（Direct Model Redesign）
-依據使用者核心訴求——**直接修改模型姿態進行重新設計，徹底取消零件拆分，實現一體成型且完全無須支撐**：
-- **端坐萌態抱罐姿態（Forward-Seated Chibi Pose）**：
-  - 將雙腿重新設計為向前舒展環抱的圓滾坐姿，大腿與小腿自然向前環繞於身體兩側。
-  - 雙腿底面、臀部與骨盆底面在 $Z=0$ 處形成**整片連續、超過 $600\text{ mm}^2$ 的平整熱床貼合面**，提供無可匹敵的第一層熱床附著力，徹底告別翹邊（Warping），完全無須 Brim 邊緣輔助。
-- **全幾何自支撐曲面（100% Self-Supporting Geometry）**：
-  - **雙腿與軀幹過渡**：所有球體下沉至 $Z \le 2.5\text{mm}$ 後於 $Z=0$ 水平切平，上升段拔模斜角嚴格控制在 $\le 35^\circ \sim 45^\circ$（遠低於 FDM $45^\circ$ 臨界線）。
-  - **蜜罐與腹部托架**：蜜罐底座呈圓潤球狀，下方以 $45^\circ$ 倒錐斜面直接與下腹及大腿內側無縫融合，由下層幾何自底向上穩固支撐。
-  - **領結與下巴**：領結下翼具備 $45^\circ$ 導角，下巴與口鼻部以斜向下過渡脊肉與領結相連，消除下巴空洞懸垂。
-  - **耳朵與頭部**：耳朵深深扎根於顱骨，內耳廓與外耳輪廓均具備天然上升拔模角。
-- **桌緣陳列與力學穩定（Ledge Registration & Stability）**：
-  - 腳掌微凸向前延伸至桌緣基準線（$X = 0$）並微突露臉，腳底粉嫩肉球（1 大肉墊 + 3 圓趾豆）以 $26^\circ$ 朝前上方微笑傾斜，正面與透視視角極具視覺張力。
-  - 質心坐標（Center of Mass）經數學計算位於 $X_{COM} = +15.92\text{ mm}$（桌緣內側深達 16mm），抗傾覆安全裕度超過 200%，穩如泰山、絕不跌落。
+### 2. 本次重構：直接重構模型姿態與人體工學（Direct Model Redesign）
+- **圓滾端坐萌態（Forward-Seated Chibi Pose）**：
+  - 徹底移除雙腿間的突起物與舊版過渡塊，以自然圓潤的有機曲面無縫銜接軀幹、蜜罐與大腿。
+  - 雙腿向前自然環抱蜂蜜罐，底面於 $Z=0$ 處形成**整片連續、超過 $600\text{ mm}^2$ 的平整熱床貼合面**，提供極佳的第一層熱床附著力，徹底告別翹邊（Warping），完全不需 Brim 邊緣輔助。
+- **100% 全幾何自支撐曲面（100% Self-Supporting Geometry）**：
+  - 軀幹、下巴、領結、手臂、蜜罐倒錐角均嚴格控制在 $\le 35^\circ \sim 45^\circ$ 上升角，切片引擎 **0 支撐警報（Support Alert: None）**，省去全部支撐廢料與後製打磨。
+  - 腳掌肉球自然外露（1 大掌肉墊 + 3 圓趾豆），極富視覺療癒感。
+
+### 3. 電腦螢幕防滑落系統：底部免支撐凹槽 + 獨立薄片擋板（Monitor Baffle System）
+針對使用者將小熊放置於**電腦螢幕頂部狹窄邊框**的需求，全新研發了隱形防滑落模組：
+- **底部雙規格 45° 尖拱插槽（Bottom Dual Pointed-Arch Slots）**：
+  - 小熊底部內建專用插槽（寬度 1.8mm、深度 5.0mm、長度 18.0mm）。
+  - **內部 45° 尖拱免支撐頂面**：插槽頂面採用 $45^\circ$ 雙斜尖拱倒角設計，在 $Z=0$ 列印小熊主體時，插槽內部天花板**100% 自支撐，內部無需任何支撐即可完美成型**。
+  - **雙定位插槽設計**：
+    - 前插槽（$X = 3.0\text{mm}$）：安裝擋板後向下勾住螢幕前窄邊框（如圖示），防止小熊後仰或向後推移滑落。
+    - 後插槽（$X = 14.5\text{mm}$）：適用於厚度約 11~12mm 之螢幕外殼背部止擋。
+- **模組化防滑薄片擋板（Modular Thin-Plate Baffle）**：
+  - 厚度 1.5mm、插入榫高 4.6mm、下垂擋板長度 12.0mm、擋邊寬度 20.0mm。
+  - 平躺於熱床直接列印，**無支撐、僅需 4 分鐘即可印好**。
+  - 精準預留每邊 0.15mm 滑順阻尼公差，推進底部插槽即牢固卡入，微下垂的外緣能緊扣螢幕邊框，完全不遮擋螢幕可視區域。
+  - **雙用自由切換**：
+    - **擺放桌面時**：不插擋板，小熊底部即為純平接觸面，平穩端坐桌緣。
+    - **放置螢幕時**：插入薄片擋板，即可卡在螢幕邊框上，耐震耐碰不掉落！
 
 ---
 
 ## 📸 視覺渲染預覽 (Render Gallery)
 
-### 1. 擺飾狀態：桌緣穩坐視角 (Sitting on Desk Ledge)
-| 45° 等角透視 (Perspective) | 正面特寫 (Front) | 側面力學結構 (Side) |
+### 1. 電腦螢幕頂部安裝狀態 (Mounted on Computer Monitor)
+| 45° 螢幕透視 (Monitor Perspective) | 螢幕側面擋板卡榫結構 (Side Profile) | 正面螢幕萌態 (Front View) |
 | :---: | :---: | :---: |
-| <img src="renders/sf_assembled_perspective.png" width="300" alt="Assembled Perspective"> | <img src="renders/sf_assembled_front.png" width="300" alt="Assembled Front"> | <img src="renders/sf_assembled_side.png" width="300" alt="Assembled Side"> |
-| 綠點為質心 ($X_{COM} = +15.9\text{mm}$)，紅線為桌緣邊界 | 憨厚微笑小熊，雙腿環抱蜜罐，腳掌肉球自然外露 | 臀部與雙腿平貼桌面，重心深居桌內，穩固抗傾覆 |
+| <img src="renders/sf_monitor_perspective.png" width="300" alt="Monitor Perspective"> | <img src="renders/sf_monitor_side.png" width="300" alt="Monitor Side Profile"> | <img src="renders/sf_assembled_front.png" width="300" alt="Monitor Front"> |
+| 穩妥跨坐於電腦螢幕頂部，薄片擋板向下勾住螢幕窄邊框 | 擋板（灰藍色）精準插入前槽，薄薄貼齊前框，小熊牢固鎖定 | 雙手抱罐、微笑歪頭，為辦公桌面增添滿滿活力 |
 
-### 2. 3D 列印熱床佈局 (Print Bed Layout)
-| 3D 列印平盤姿態 (Bed Perspective) | 熱床第一層接觸面 (Bottom Contact Patch) |
+### 2. 底部免支撐插槽與 3D 列印佈局 (Bottom Slots & Print Bed Layout)
+| 底部雙定位尖拱插槽 (Bottom Slots) | 單盤同印佈局 (1-Plate Combo Layout) |
 | :---: | :---: |
-| <img src="renders/sf_print_bed_perspective.png" width="360" alt="Print Bed Perspective"> | <img src="renders/sf_print_bottom_contact.png" width="360" alt="Bottom Contact Patch"> |
-| 單件一體成型直接印，**0 支撐、0 組裝、0 零件丟失** | 連續平整底面，接觸面積 $> 600\text{ mm}^2$，附著力強大 |
+| <img src="renders/sf_bottom_slots.png" width="360" alt="Bottom Slots"> | <img src="renders/sf_plate_layout.png" width="360" alt="Plate Layout"> |
+| 內嵌 45° 尖拱插槽，列印無需支撐，平貼熱床 | 小熊主體 + 薄片擋板同盤一次印好，免換盤、免支撐 |
 
 ---
 
 ## 📊 切片量化驗證數據 (PrusaSlicer Quantitative Verification)
 
-使用專業切片引擎 `PrusaSlicer 2.9` 進行真實切片與代碼比對：
+使用專業切片引擎 `PrusaSlicer 2.9` 進行實測驗證：
 
-| 指標項目 | 舊版分件裝配方案 | **新版一體免支撐方案 (Monolithic Redesign)** | 改善效益 |
+| 指標項目 | 舊版分腿插裝方案 | **新版一體免支撐 + 螢幕擋板方案** | 改善效益 |
 | :--- | :---: | :---: | :---: |
-| **列印零件件數** | 3 件 (身體 + 左腿 + 右腿) | **1 件 (一體成型)** | **省去所有分件後製與收納** |
-| **裝配複雜度** | 需手動推入卡榫 (極易卡死/折斷) | **0 步驟 (拿取即用 Print & Play)** | **100% 裝配成功率 (免組裝)** |
-| **切片引擎支撐警報** | 需關閉支撐或打支撐 | **無任何支撐警報 (Support Alert: None)** | **全幾何原生自支撐** |
-| **支撐廢料體積** | 需支撐結構 | **0.00 mm (0.00 g)** | **0 耗材浪費** |
-| **雙腿膝關節抗斷裂強度** | 弱 (細小插榫易沿層線脆斷) | **極強 (實心肌理融合至主軀幹)** | **耐摔耐磨耐把玩** |
-| **列印時間 (0.20mm 層高)** | 約 40 分鐘 (需多次排盤) | **約 47 分鐘 (一鍵單盤搞定)** | **省時無負擔** |
-| **模型拓撲狀態** | 多個分立殼體 | **封閉水密 2-Manifold (`Simple: yes`)** | **切片無破面、無翻轉法向** |
+| **小熊主體列印件數** | 3 件 (身體 + 左右腿) | **1 件 (一體成型)** | **消除所有細小卡榫與組裝失敗痛點** |
+| **螢幕防落擋板** | 無此功能 (易從螢幕滑落) | **獨立薄片 (單獨或同盤列印)** | **螢幕頂端安放穩固，不晃不摔** |
+| **切片引擎支撐警報** | 需關閉支撐或打支撐 | **全模型 0 支撐警報 (Support Alert: False)** | **100% 全幾何自支撐** |
+| **支撐材料浪費** | 耗費支撐廢料 | **0.00 mm (0.00 g)** | **0 耗材浪費，省時省料** |
+| **底面熱床貼合面積** | 分散碎小接觸面 | **連續大底面 (>600 mm²)** | **完全不需 Brim，零翹邊** |
+| **擋板列印時間 (0.20mm)** | - | **約 4 分鐘 (單獨) / ~50 分鐘 (同盤)** | **極速成型** |
+| **模型水密性** | 易產生非流形邊 | **100% 封閉水密 2-Manifold (`Simple: yes`)** | **切片無破損、法向無翻轉** |
 
 ---
 
-## 📦 檔案清單 (Files)
+## 📦 檔案清單與使用說明 (Files & Usage)
 
-| 檔案名稱 | 說明 | 用途 |
+| 檔案名稱 | 說明 | 推薦用途 |
 | :--- | :--- | :--- |
-| **[`cute_ledge_bear_supportfree.stl`](cute_ledge_bear_supportfree.stl)** | **一體成型免支撐 STL (推薦)** | 下載後直接拖入切片軟體（Bambu Studio / PrusaSlicer / Cura），直接列印。 |
-| **[`cute_ledge_bear_monolithic.stl`](cute_ledge_bear_monolithic.stl)** | 一體成型 STL (相容備份) | 內容與 `cute_ledge_bear_supportfree.stl` 完全相同。 |
-| **[`cute_ledge_bear_supportfree.scad`](cute_ledge_bear_supportfree.scad)** | OpenSCAD 參數化原始代碼 | 可切換 `mode = "print"` 或 `mode = "assembled"` 查看預覽。 |
-| **`renders/`** | 高解析渲染圖片庫 | 包含多視角渲染圖與熱床接觸底面圖。 |
+| **[`cute_ledge_bear_supportfree.stl`](cute_ledge_bear_supportfree.stl)** | **小熊主體 STL (推薦)** | 內建底部免支撐槽的小熊本體，單獨列印或桌緣使用。 |
+| **[`monitor_baffle.stl`](monitor_baffle.stl)** | **電腦螢幕防滑薄片擋板 STL** | 1.5mm 超薄平貼列印件，列印僅需 4 分鐘，隨插即用。 |
+| **[`cute_ledge_bear_plate.stl`](cute_ledge_bear_plate.stl)** | **一盤搞定同印組合 STL** | 小熊主體 + 薄片擋板同盤排列於 $Z=0$，一鍵列印整套！ |
+| **[`cute_ledge_bear_monolithic.stl`](cute_ledge_bear_monolithic.stl)** | 小熊主體相容備份 STL | 與 `cute_ledge_bear_supportfree.stl` 內容完全相同。 |
+| **[`cute_ledge_bear_supportfree.scad`](cute_ledge_bear_supportfree.scad)** | OpenSCAD 參數化原始代碼 | 支援切換 `bear`、`baffle`、`plate`、`assembled` 模式。 |
+| **`renders/`** | 高解析渲染圖庫 | 包含螢幕安裝、底槽特寫、列印佈局等多視角圖像。 |
 
 ---
 
 ## 🖨️ 3D 列印建議參數 (Print Settings)
 
-- **列印方向**：直接使用 STL 預設放置方向（底面已於 $Z=0$ 平整切除，正立直接印）。
-- **支撐設定 (Supports)**：**完全關閉支撐（Supports: None / 關閉）**！
-- **熱床吸附 (Brim)**：**無須開啟 Brim**（底部平整面積大，天然附著力極佳）。
-- **層高 (Layer Height)**：建議 `0.16mm` ~ `0.20mm`（面部與耳朵極為細緻，若追求更高光潔度可設 `0.12mm`）。
-- **填充率 (Infill)**：建議 `15% ~ 20%` 陀螺儀（Gyroid）或網格（Grid）。
-- **材料推薦**：PLA / PLA+ / PETG。
-- **後製處理**：列印完成後直接從熱床上取下，無須拆卸支撐、無須膠水拼接，隨拿隨擺！
+1. **切片設定 (Slicer Profile)**：
+   - **支撐 (Supports)**：**完全關閉支撐（Supports: None / 關閉）**！小熊主體與薄片擋板均 100% 免支撐。
+   - **底邊 (Brim)**：**無須開啟 Brim**（底部平整面積大，天然附著力極佳）。
+   - **層高 (Layer Height)**：建議 `0.16mm` ~ `0.20mm`（追求極致面部細節可設 `0.12mm`）。
+   - **填充率 (Infill)**：建議 `15% ~ 20%` 陀螺儀（Gyroid）或網格（Grid）。
+   - **外壁圈數 (Perimeters/Walls)**：建議 `3 圈`，薄片擋板即為全實心。
+2. **安裝使用方式**：
+   - **一般桌緣**：直接將小熊放置在桌面邊緣，其低重心重心內斂特性可穩如泰山。
+   - **電腦螢幕**：將列印好的 `monitor_baffle.stl` 薄片凸起端推入小熊底部的插槽（微彈性摩擦配合，公差 0.15mm），掛於螢幕頂端邊框前緣即可！

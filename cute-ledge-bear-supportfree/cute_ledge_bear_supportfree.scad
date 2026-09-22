@@ -1,22 +1,30 @@
 /*
-Cute Ledge Bear - Support-Free Monolithic Edition (桌緣萌熊公仔 - 100% 一體成型免支撐版)
-Style: Adorable Chibi Teddy Bear Sitting on Desk Ledge
-100% Monolithic Solid, 100% Support-Free FDM 3D Printing (No Splitting, Zero Assembly)
+Cute Ledge Bear - Support-Free Edition with Monitor Anti-Drop Baffle
+(桌緣萌熊公仔 - 100% 一體成型免支撐 + 螢幕防滑薄片擋板槽版)
+Style: Adorable Chibi Teddy Bear Sitting on Desk or Computer Monitor
+100% Support-Free FDM 3D Printing (Zero Assembly required for desk use, modular push-in baffle for monitor use)
 Units: mm
 */
 
 $fn = 48;
 
 // Mode selection:
-// "print" / "monolithic" - Watertight solid on Z=0 bed for direct 3D printing (STL export)
-// "assembled"            - Full color preview sitting on desk ledge with tabletop & COM marker
-mode = "print";
+// "bear" / "print" / "monolithic" - Bear with bottom mounting slots on Z=0 bed (Main STL)
+// "baffle"                       - Thin plate baffle model lying flat on Z=0 bed (Baffle STL)
+// "plate"                        - 1-Plate combo (Bear + Baffle side-by-side on Z=0 bed)
+// "assembled"                    - Full color preview mounted on top of a computer screen
+mode = "bear";
 
 // ---------- Proportions & Physics Constants ----------
 phi          = (1 + sqrt(5)) / 2;
 head_h       = 24;
 head_w       = head_h / phi * 1.34;
 head_d       = head_h / phi * 1.20;
+
+// ---------- Bottom Mounting Slot Dimensions ----------
+slot_w       = 1.8;   // Slot width in X (mm)
+slot_l       = 18.0;  // Slot length in Y (mm)
+slot_d       = 5.0;   // Slot depth into base in Z (mm)
 
 // ---------- Vector Helpers ----------
 function vadd(a,b) = [a[0]+b[0], a[1]+b[1], a[2]+b[2]];
@@ -54,7 +62,6 @@ module cute_bear_muzzle() {
         translate([8.8, 0, 34.6])
             scale([1.0, 1.32, 0.96]) sphere(r=3.6, $fn=40);
         translate([11.0, 0, 31.8]) sphere(r=3.0, $fn=24);
-        // Self-supporting transition keel into bowtie collar
         translate([9.5, 0, 29.5]) sphere(r=2.0, $fn=20);
     }
 }
@@ -212,7 +219,7 @@ module cute_paw_pads() {
 }
 
 // ==============================================================================
-// 4. TORSO & BASE (Natural Receding Contour, Continuous Planar Bed Cut at Z=0)
+// 4. TORSO & BASE (Continuous Planar Bed Cut at Z=0)
 // ==============================================================================
 module cute_body_trunk() {
     // Smooth natural base - recedes at the front
@@ -240,8 +247,23 @@ module cute_body_trunk() {
     translate([16.5, 0, 29.5]) bio_ellipsoid([18.0, 16.5, 11.0]);
 }
 
+// 45° Pointed Arch Slot Cutter (100% self-supporting ceiling inside base)
+module bottom_slot_cutter(pos_x=3.0) {
+    translate([pos_x, 0, 0])
+        rotate([90, 0, 90])
+            linear_extrude(height=slot_w, center=true)
+                polygon([
+                    [-slot_l/2, -1.0],
+                    [ slot_l/2, -1.0],
+                    [ slot_l/2, slot_d - 0.6],
+                    [ slot_l/2 - 0.6, slot_d],
+                    [-slot_l/2 + 0.6, slot_d],
+                    [-slot_l/2, slot_d - 0.6]
+                ]);
+}
+
 // ==============================================================================
-// 5. UNIFIED SOLID MODEL (For 3D Printing)
+// 5. BEAR SOLID WITH BOTTOM SLOTS
 // ==============================================================================
 module cute_ledge_bear_supportfree() {
     difference() {
@@ -263,20 +285,56 @@ module cute_ledge_bear_supportfree() {
         
         // Clean cut at Z=0 ensuring 100% planar bed adhesion
         translate([0, 0, -50]) cube([200, 200, 100], center=true);
+        
+        // Dual Monitor Mounting Slots (Self-supporting 45° pointed roof)
+        bottom_slot_cutter(3.0);   // Front slot (hooks front bezel of monitor)
+        bottom_slot_cutter(14.5);  // Rear slot (hooks back frame of ~11-12mm monitor)
     }
 }
 
 // ==============================================================================
-// 6. OUTPUT SELECTOR
+// 6. MODULAR MONITOR BAFFLE (螢幕防滑薄片擋板)
+// Prints 100% flat on Z=0 bed (thickness = 1.5mm, 0 supports)
 // ==============================================================================
-if (mode == "print" || mode == "monolithic") {
-    // 100% Watertight 2-Manifold Solid for Direct 3D Printing
+module monitor_baffle(tol=0.15) {
+    baffle_th   = slot_w - tol*2;     // 1.50mm
+    tab_w       = slot_l - 0.4;       // 17.60mm (fits into 18mm slot)
+    tab_h       = slot_d - 0.4;       // 4.60mm (into slot)
+    drop_h      = 12.0;               // 12.0mm (drops down in front of screen bezel)
+    shoulder_w  = 20.0;               // 20.0mm (positive stop flush with bear bottom)
+    
+    linear_extrude(height=baffle_th) {
+        // Lower hanging baffle (hangs down in front/back of monitor)
+        hull() {
+            translate([-shoulder_w/2 + 2.5, -drop_h + 2.5]) circle(r=2.5, $fn=32);
+            translate([ shoulder_w/2 - 2.5, -drop_h + 2.5]) circle(r=2.5, $fn=32);
+            translate([-shoulder_w/2, 0]) square([shoulder_w, 0.1]);
+        }
+        // Insertion tab (with chamfered lead-in for smooth insertion)
+        hull() {
+            translate([-tab_w/2, 0]) square([tab_w, 0.1]);
+            translate([-tab_w/2 + 0.8, tab_h]) square([tab_w - 1.6, 0.1]);
+        }
+    }
+}
+
+// ==============================================================================
+// 7. OUTPUT SELECTOR
+// ==============================================================================
+if (mode == "bear" || mode == "print" || mode == "monolithic") {
+    // 100% Watertight Solid Bear with Bottom Mounting Slots
     cute_ledge_bear_supportfree();
+} else if (mode == "baffle") {
+    // Thin Plate Baffle lying flat on bed
+    monitor_baffle();
+} else if (mode == "plate") {
+    // 1-Plate combo (Bear + Baffle side-by-side on Z=0 bed)
+    cute_ledge_bear_supportfree();
+    translate([15, 26, 0]) monitor_baffle();
 } else {
-    // "assembled": High-fidelity preview sitting on desk ledge
+    // "assembled": High-fidelity preview on computer monitor top edge
     difference() {
         union() {
-            // Main fur
             color([0.86, 0.60, 0.40]) {
                 cute_body_trunk();
                 cute_legs_only();
@@ -289,7 +347,6 @@ if (mode == "print" || mode == "monolithic") {
                             cute_bear_ear(1);
                         }
             }
-            // Muzzle & inner ears
             color([0.96, 0.88, 0.78]) {
                 translate([17, 0, 37.0])
                     rotate([6.0, 3.0, -3.5])
@@ -299,7 +356,6 @@ if (mode == "print" || mode == "monolithic") {
                             cute_bear_inner_ear(1);
                         }
             }
-            // Eyes, nose, smile
             color([0.18, 0.14, 0.12]) {
                 translate([17, 0, 37.0])
                     rotate([6.0, 3.0, -3.5])
@@ -308,23 +364,37 @@ if (mode == "print" || mode == "monolithic") {
                             cute_bear_smile();
                         }
             }
-            // Bowtie
             color([0.88, 0.28, 0.28]) cute_bowtie_supportfree();
-            // Honey pot
             color([0.85, 0.52, 0.22]) cute_honey_pot_body();
             color([1.00, 0.82, 0.20]) cute_honey_pot_drip();
-            // Paw pads
             color([0.94, 0.72, 0.68]) cute_paw_pads();
         }
         translate([0, 0, -50]) cube([200, 200, 100], center=true);
+        bottom_slot_cutter(3.0);
+        bottom_slot_cutter(14.5);
     }
+    
+    // Baffle installed into front slot (X=3.0), hanging down in front of monitor
+    color([0.30, 0.35, 0.40])
+        translate([3.0, 0, 0])
+            rotate([90, 0, 90])
+                translate([0, 0, -1.5/2])
+                    monitor_baffle();
 
-    // Desk tabletop
-    color([0.72, 0.76, 0.80, 0.35])
-        translate([35, 0, -1.25]) cube([70, 80, 2.5], center=true);
-    // Desk front edge line (X=0)
-    color("red") translate([0, 0, 0.15]) cube([0.6, 76, 0.6], center=true);
-    // Center of Mass (COM) marker (green sphere)
+    // Computer Monitor Top Bezel (Thickness = 11.5mm, Top surface at Z=0)
+    color([0.15, 0.15, 0.18, 0.85])
+        translate([3.0 + 11.5/2, 0, -15])
+            cube([11.5, 90, 30], center=true);
+
+    // Screen display panel (front glass)
+    color([0.10, 0.55, 0.90, 0.40])
+        translate([3.0 - 0.2, 0, -20])
+            cube([0.4, 86, 22], center=true);
+
+    // Front edge indicator
+    color("red") translate([3.0, 0, 0.15]) cube([0.5, 90, 0.5], center=true);
+    
+    // Center of Mass (COM) marker
     color("lime") translate([15.9, 0, 17.3]) sphere(r=1.8);
     color("lime") translate([15.9, 0, 0]) cylinder(h=17.3, r=0.35);
 }
