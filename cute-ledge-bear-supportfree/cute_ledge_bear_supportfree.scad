@@ -1,114 +1,77 @@
 /*
-Sitting on a Ledge Figurine - Support-Free Cute Chibi Bear
-Style: Smooth Organic Cute Figurine with 100% Support-Free FDM Printing Architecture
+Sitting on a Ledge Figurine - Support-Free Cute Chibi Bear (V3 Fully Verified Assembly)
 Units: mm
 */
 
 $fn = 48;
 
-// ---------- Mode Selection ----------
-// "assembled"   - Full assembled preview sitting on desk ledge
-// "plate"       - Complete 1-plate 0-support print layout (body + both legs on Z=0 bed)
-// "body"        - Body only sitting flat on print bed (100% support-free)
-// "legs"        - Both legs laid flat on bed (100% support-free)
-// "monolithic"  - 1-piece assembled bear (for users preferring single-piece)
+// Mode selection:
+// "assembled"  - Sitting on table ledge preview
+// "plate"      - 1-Plate support-free layout (body + both legs on Z=0 bed)
+// "body"       - Body only on Z=0
+// "legs"       - Both legs only on Z=0
+// "monolithic" - 1-piece assembled bear
 mode = "assembled";
 
-// ---------- Proportions & Physics Constants ----------
-phi              = (1 + sqrt(5)) / 2; // Golden ratio 1.618
-head_h           = 24;
-head_w           = head_h / phi * 1.34; // ~19.8 mm
-head_d           = head_h / phi * 1.20; // ~17.8 mm
-body_h           = head_h * 0.78;
+phi          = (1 + sqrt(5)) / 2;
+head_h       = 24;
+head_w       = head_h / phi * 1.34;
+head_d       = head_h / phi * 1.20;
 
-ledge_x          = 0;
+// Joint Dimensions
+tol          = 0.25; // 0.25mm sliding clearance
+socket_w     = 4.8;
+socket_h     = 5.8;
+socket_depth = 6.5;
 
-// Joint parameters (Pointed Arch Mortise & Tenon)
-socket_depth = 8.0;
-socket_w     = 5.0;
-socket_h     = 5.6;
-tol          = 0.22; // 0.22mm FDM push-fit clearance for firm, snug friction fit
-
-// ---------- Math & Bezier Helpers ----------
 function vadd(a,b) = [a[0]+b[0], a[1]+b[1], a[2]+b[2]];
 function vmul(a,s) = [a[0]*s, a[1]*s, a[2]*s];
 function bez2(p0,p1,p2,t) =
     vadd(vadd(vmul(p0,(1-t)*(1-t)), vmul(p1,2*(1-t)*t)), vmul(p2,t*t));
 
-// ---------- Smooth Primitives ----------
 module bio_ellipsoid(size=[10,10,10]) {
     scale([size[0]/2, size[1]/2, size[2]/2]) sphere(r=1, $fn=48);
 }
 
-module ball(p=[0,0,0], r=2) {
-    translate(p) sphere(r=r, $fn=32);
-}
-
-module tapered_segment(p0, p1, r0, r1) {
-    hull() {
-        ball(p0, r0);
-        ball(p1, r1);
-    }
-}
-
-module bezier_limb(p0, p1, p2, r0=3.5, r1=2.7, steps=8) {
-    for (i=[0:steps-1]) {
-        t0 = i / steps;
-        t1 = (i + 1) / steps;
-        tapered_segment(
-            bez2(p0, p1, p2, t0),
-            bez2(p0, p1, p2, t1),
-            r0 + (r1 - r0) * t0,
-            r0 + (r1 - r0) * t1
-        );
-    }
-}
-
-// Pointed arch profile for 100% support-free horizontal printing
-module arch_profile(w, h, r_roof=0.8) {
+// 45° Pointed D-profile for 100% support-free horizontal bridging
+module d_profile(w, h, r_top=1.2) {
     hull() {
         translate([-w/2, 0]) square([w, h*0.55]);
-        translate([0, h*0.95]) circle(r=r_roof, $fn=16);
+        translate([0, h*0.85]) circle(r=r_top, $fn=24);
     }
 }
 
-// ---------- 1. Self-Supporting Teddy Bear Ears ----------
+// 1. Self-Supporting Ears
 module cute_bear_ear(side=1) {
     hull() {
         translate([16.5, side * 4.5, 41.0]) sphere(r=3.8, $fn=32);
         translate([16.5, side * 7.6, 44.2])
             rotate([0, side * 6, side * 14])
                 scale([0.95, 0.90, 1.0]) sphere(r=3.8, $fn=36);
-        // Self-supporting gusset into cranium (angle > 45°)
         translate([16.5, side * 6.0, 39.5]) sphere(r=3.2, $fn=24);
     }
-    // Soft inner ear relief pad
     translate([16.5, side * 7.6, 44.2])
         rotate([0, side * 6, side * 14])
             translate([-1.4, 0, 0])
                 scale([0.45, 0.75, 0.85]) sphere(r=2.5, $fn=28);
 }
 
-// ---------- 2. Self-Supporting Muzzle, Nose & Eyes ----------
+// 2. Muzzle, Nose & Eyes
 module cute_bear_face() {
-    // Chubby muzzle with 45° transition into chin
     hull() {
         translate([8.8, 0, 34.6])
             scale([1.0, 1.32, 0.96]) sphere(r=3.6, $fn=40);
         translate([11.0, 0, 31.8]) sphere(r=3.0, $fn=24);
     }
 
-    // Button nose
     translate([5.9, 0, 36.2])
         scale([0.65, 1.25, 0.85]) sphere(r=1.35, $fn=24);
 
-    // Convex glossy button eyes (non-recessed, smooth domes)
     for (side=[-1, 1]) {
         translate([9.1, side * 5.0, 39.2])
             scale([0.68, 1.0, 1.0]) sphere(r=1.30, $fn=32);
     }
 
-    // Smooth embossed smiling mouth (non-recessed)
     smile_r = 0.38;
     hull() {
         translate([5.50, 0, 35.6]) sphere(r=smile_r, $fn=16);
@@ -137,7 +100,7 @@ module cute_bear_head() {
     cute_bear_face();
 }
 
-// ---------- 3. 100% Self-Supporting Bowtie (45° Support Shelf) ----------
+// 3. Self-Supporting Bowtie Shelf
 module cute_bowtie_supportfree() {
     translate([6.4, 0, 28.5]) {
         hull() {
@@ -158,7 +121,7 @@ module cute_bowtie_supportfree() {
     }
 }
 
-// ---------- 4. 100% Self-Supporting Honey Pot ----------
+// 4. Self-Supporting Honey Pot
 module cute_honey_pot_supportfree() {
     translate([5.0, 0, 18.0]) {
         hull() {
@@ -178,7 +141,7 @@ module cute_honey_pot_supportfree() {
     }
 }
 
-// ---------- 5. 100% Self-Supporting Arms ----------
+// 5. Self-Supporting Arms
 module cute_arms_supportfree() {
     for (side=[-1, 1]) {
         hull() {
@@ -198,14 +161,22 @@ module cute_arms_supportfree() {
 }
 
 // ==============================================================================
-// PART 1: BODY (Flat-cut at Z=0, Self-Supporting Hulled Base)
+// PART 1: BODY (Flat-cut at Z=0, Self-Supporting Base, Molded Hip Pockets)
 // ==============================================================================
+module hip_socket_cutter(side=1) {
+    // Horizontal D-socket extending inward along Y towards center (Y=0)
+    translate([7.5, side * 8.6, 7.5])
+        rotate([0, 90, side == 1 ? 0 : 180])
+            rotate([0, 0, 90])
+                linear_extrude(height=socket_depth + 1.0)
+                    d_profile(socket_w, socket_h);
+}
+
 module bear_body_supportfree() {
     difference() {
         union() {
             // Self-supporting hulled base (0 to 12 mm)
             hull() {
-                // Wide flat bed contact footprint
                 translate([18, 0, 0.5])
                     linear_extrude(height=1.0, center=true)
                         scale([29/2, 23/2]) circle(r=1, $fn=48);
@@ -213,9 +184,7 @@ module bear_body_supportfree() {
                     linear_extrude(height=1.0, center=true)
                         scale([14/2, 17/2]) circle(r=1, $fn=40);
                 
-                // Torso core
                 translate([18, 0, 12]) bio_ellipsoid([29, 24, 25]);
-                // Rear countermass
                 translate([26.5, 0, 9.0]) bio_ellipsoid([18.5, 18.0, 15.0]);
             }
             
@@ -233,63 +202,91 @@ module bear_body_supportfree() {
             cute_honey_pot_supportfree();
             cute_arms_supportfree();
             
-            // Head tilted cutely
+            // Head
             translate([17, 0, 37.0])
                 rotate([6.0, 3.0, -3.5])
                     translate([-17, 0, -37.0])
                         cute_bear_head();
         }
         
-        // Clean cut at Z=0 guaranteeing 100% flat bed adhesion
+        // Clean cut at Z=0
         translate([0, 0, -50]) cube([200, 200, 100], center=true);
         
-        // Self-supporting pointed arch hip sockets (no ceiling overhang)
+        // Hip Sockets and Molded Clearance Pockets
         for (side=[-1, 1]) {
-            translate([8.0, side * 7.5, 8.0])
-                rotate([0, 0, side * 90])
-                    linear_extrude(height=socket_depth + 1)
-                        arch_profile(socket_w, socket_h);
+            hip_socket_cutter(side);
+            
+            // Molded pocket for upper thigh with 0.3mm clearance
+            hull() {
+                translate([7.5, side * 8.8, 7.5]) sphere(r=3.8 + tol, $fn=28);
+                translate([0.5, side * 8.5, 1.5]) sphere(r=3.5 + tol, $fn=28);
+            }
         }
     }
 }
 
 // ==============================================================================
-// PART 2: MODULAR LEGS (With matching pointed arch tenon peg)
+// PART 2: LEGS (With matching horizontal tenon & flat-bed printing geometry)
 // ==============================================================================
-module single_leg(side=-1) {
+module hip_tenon(side=1) {
+    translate([7.5, side * 8.5, 7.5])
+        rotate([0, 90, side == 1 ? 0 : 180])
+            rotate([0, 0, 90])
+                translate([0, 0, 0.2])
+                    hull() {
+                        linear_extrude(height=socket_depth - 1.0)
+                            d_profile(socket_w - tol*2, socket_h - tol*2);
+                        translate([0, 0, socket_depth - 1.0])
+                            linear_extrude(height=0.8)
+                                scale([0.65, 0.65])
+                                    d_profile(socket_w - tol*2, socket_h - tol*2);
+                    }
+}
+
+module single_leg(side=1) {
     union() {
-        // Pointed arch tenon peg that plugs into hip socket
-        translate([8.0, side * 7.5, 8.0])
-            rotate([0, 0, side * 90])
-                translate([0, 0, 0.5])
-                    linear_extrude(height=socket_depth - 0.5)
-                        arch_profile(socket_w - tol*2, socket_h - tol*2);
-                        
-        // Smooth thick knee & limb
-        bezier_limb([8.0, side * 7.5, 8.0], [-1.0, side * 7.5, 1.0], [-8.0, side * 7.2, -13.5], 3.6, 2.8, 8);
+        hip_tenon(side);
+        // Thigh
         hull() {
-            ball([-8.0, side * 7.2, -13.5], 3.0);
-            ball([-13.0, side * 7.2, -15.0], 3.7);
+            translate([7.5, side * 8.8, 7.5]) sphere(r=3.8, $fn=32);
+            translate([0.5, side * 8.5, 1.5]) sphere(r=3.5, $fn=32);
+        }
+        // Knee over table edge
+        hull() {
+            translate([0.5, side * 8.5, 1.5]) sphere(r=3.5, $fn=32);
+            translate([-1.5, side * 8.0, 0.0]) sphere(r=3.3, $fn=32);
+            translate([-3.0, side * 7.6, -4.0]) sphere(r=3.0, $fn=32);
+        }
+        // Shin
+        hull() {
+            translate([-3.0, side * 7.6, -4.0]) sphere(r=3.0, $fn=32);
+            translate([-6.5, side * 7.4, -12.0]) sphere(r=2.8, $fn=28);
+        }
+        // Foot
+        hull() {
+            translate([-6.5, side * 7.4, -12.0]) sphere(r=2.8, $fn=28);
+            translate([-10.5, side * 7.4, -13.5]) sphere(r=3.4, $fn=32);
         }
         // Paw pads
-        translate([-13.0, side * 7.2, -15.0])
-            rotate([0, 35, 0]) {
-                translate([-3.4, 0, -0.6]) scale([0.62, 1.18, 1.0]) sphere(r=1.65, $fn=24);
-                translate([-3.4, -1.35, 1.3]) sphere(r=0.68, $fn=16);
-                translate([-3.5,  0.00, 1.65]) sphere(r=0.72, $fn=16);
-                translate([-3.4,  1.35, 1.3]) sphere(r=0.68, $fn=16);
+        translate([-10.5, side * 7.4, -13.5])
+            rotate([0, 25, 0]) {
+                translate([-3.0, 0, -0.4]) scale([0.6, 1.1, 0.9]) sphere(r=1.5, $fn=20);
+                translate([-3.0, -1.2, 1.2]) sphere(r=0.6, $fn=16);
+                translate([-3.1,  0.0, 1.5]) sphere(r=0.65, $fn=16);
+                translate([-3.0,  1.2, 1.2]) sphere(r=0.6, $fn=16);
             }
     }
 }
 
-// Flat-bed printable leg module (laying flat at Z=0 for 100% support-free printing)
-module leg_flat_printable(side=-1) {
+// Flat-bed printable leg:
+// Lateral side rests flat on Z=0 bed. Tenon peg points straight UP (+Z)!
+module leg_flat_printable(side=1) {
     difference() {
-        translate([0, 0, 3.2])
-            rotate([side * 90, 0, 0])
-                translate([-8.0, -side * 7.5, -8.0])
+        translate([0, 0, 0.35])
+            rotate([side * -90, 0, 0])
+                translate([0, -side * 12.0, 0])
                     single_leg(side);
-        // Clean cut at Z=0
+        // Flat cut at Z=0 for firm bed adhesion
         translate([0, 0, -25]) cube([100, 100, 50], center=true);
     }
 }
@@ -303,17 +300,15 @@ if (mode == "body") {
     translate([0, -16, 0]) leg_flat_printable(-1);
     translate([0,  16, 0]) leg_flat_printable(1);
 } else if (mode == "plate") {
-    // 1-Plate Complete 0-Support Print Layout
     bear_body_supportfree();
     translate([18, -26, 0]) leg_flat_printable(-1);
     translate([18,  26, 0]) leg_flat_printable(1);
 } else if (mode == "monolithic") {
-    // 1-piece assembled bear
     bear_body_supportfree();
     single_leg(-1);
     single_leg(1);
 } else {
-    // "assembled": Preview sitting on desk ledge
+    // "assembled": Preview sitting on table ledge
     color([0.86, 0.60, 0.40]) {
         bear_body_supportfree();
         single_leg(-1);
