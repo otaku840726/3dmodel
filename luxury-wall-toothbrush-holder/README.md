@@ -2,27 +2,23 @@
 
 專為 **玫瑰金絲綢金屬線材（Rose Gold / Copper Silk PLA）** 量身打造的五星級輕奢衛浴收納套裝。
 
-針對一般衛浴收納「需要向上提起 20cm 碰撞鏡櫃」、「孔徑過大導致普通牙刷容易滑落掉落」、「造型破碎開叉難看」等關鍵痛點進行徹底幾何重構：
-- **一體式奢華平整展台與珠寶級全方位不規則碎鑽水晶晶簇切面（Monolithic Gallery Shelf with Multi-Surface Crystalline Diamond Mesh）**：
+針對一般衛浴收納「需要向上提起 20cm 碰撞鏡櫃」、「孔徑過大導致普通牙刷容易滑落掉落」、「塑料感重缺乏高級質感」等關鍵痛點進行徹底幾何重構：
+- **一體式古典雙重羅馬柱與建築托樑拱筋（Monolithic Dual-Fluted Architecture with Modillion Corbel Brackets）**：
   - 摒棄單薄分叉的夾爪，採用連續貫通的建築式平整展台，下方輔以一體成型 $45^\circ$ 自支撐優雅托樑。
-  - **牙刷區域所有外露面 100% 完整密鋪不規則碎鑽水晶晶簇（Full Multi-Surface Crystalline Diamond Facets）**：
-    - **頂面展台（Top Deck）**：密鋪大小 5.5~10mm、高度 1.2~2.4mm 的立體水晶切面，隨機動態折射鏡前燈光芒。
-    - **底部 $45^\circ$ 懸臂托樑斜面（Bottom Corbel Underside）**：透過嚴密四維局部坐標變換矩陣，整面 $45^\circ$ 斜面密鋪朝向下方的三稜錐與四稜錐晶簇，無斷層、無破洞。
-    - **正面 6mm 直立外唇（Front Vertical Lip）**：前緣立體密鋪直立碎鑽刻面，與頂部和底部切面自然交織一體。
-    - **左右兩側翼斜面（Left & Right Side Flanks）**：側邊三角形側翼全面覆蓋向外綻放的低多邊形水晶晶簇，側視與斜視皆散發璀璨金屬奢華質感。
-    - **內部懸掛槽與導向軌（Smooth Interior Berths）**：四個牙刷入座沉孔、垂直貫通落水孔與喇叭導向喉槽**100% 保持光滑無阻、無任何尖刺刻面**，兼顧極致外觀與盲插衛生流暢性！
-    - **100% 免支撐（Support-Free）**：刻面自然向上/向外聚攏，FDM 3D 列印 0 支撐警報，無任何懸空碎渣或薄片。
-    - **懸掛沉孔 12 面立體鑽石座圈（12-Sided Faceted Jewel Bezels）**：4 個牙刷沉孔上緣雕刻 12 面立體珠寶刻面，牙刷入座如鑽戒鑲嵌於戒托，光彩奪目！
+  - **後排大羅馬柱（Pitch 4.8mm, Radius 1.4mm）**：立體縱向凸柱紋理，隨視線產生豎琴拉絲金屬光影，完美隱藏 FDM 層線。
+  - **前唇與側翼微細凹凸柱飾（Pitch 3.2mm, Radius 0.8mm）**：正面直立邊緣與兩側外壁鋪陳細膩微條紋，手感溫潤且充滿層次。
+  - **底部 5 組建築牛腿托樑拱筋（5 Modillion Corbel Console Ribs）**：分布於 $X = [-72, -36, 0, +36, +72\text{mm}]$，工整環繞 4 個牙刷開孔，將現代力學與歐洲古典拱橋美學完美融合。
+  - **頂面緞面平整易潔展台（Smooth Satin Gallery Deck）**：頂面展台呈現極致平整光潔，杜絕任何水垢沉積死角，一抹即淨、持久光亮！
 - **圓滑切線喇叭口與防掉落沉孔結構（Tangential Trumpet Horns with Anti-Drop Retention Cups）**：
   - **徹底消除前方直角，極致順滑盲插入座**：前方開口不再是生硬直角，採用高階建築曲面 $C^1$ 連續切線圓弧喇叭口（Trumpet Bell Curve）。展台正面與喇叭導槽以圓弧無稜角平滑過渡，入口開口大幅擴展至 **$20.0\text{ mm}$（手動）** 與 **$23.0\text{ mm}$（電動）**。洗漱時無須費力精確對準，牙刷輕靠即可順著流體曲面自然聚攏導中推入！
   - **左側 1 & 2 號位：專屬重型電動牙刷位（Electric Toothbrush Berths）**
     - 喇叭口開闊度 $23.0\text{ mm}$、內部喉寬 $10.5\text{ mm}$：供電動牙刷上頸部（約 $8.5 \sim 9.8\text{ mm}$）順暢滑入。
     - 通孔直徑 $\varnothing 12.8\text{ mm}$：承托手柄頂部金屬頸環，杜絕整支下墜。
-    - 防掉沉孔 $\varnothing 18.5\text{ mm}$（深度 $4.5\text{ mm}$，帶 12 面鑽石座圈）：手柄頂部金屬圓圈/圓錐肩部（$\varnothing 15 \sim 17.5\text{ mm}$）穩妥坐入沉孔凹窩內，由於肩部直徑遠大於 $10.5\text{ mm}$ 喉口，**水平自然咬鎖，碰撞絕不前傾翻落**！
+    - 防掉沉孔 $\varnothing 18.5\text{ mm}$（深度 $4.5\text{ mm}$，帶平滑導引倒角）：手柄頂部金屬圓圈/圓錐肩部（$\varnothing 15 \sim 17.5\text{ mm}$）穩妥坐入沉孔凹窩內，由於肩部直徑遠大於 $10.5\text{ mm}$ 喉口，**水平自然咬鎖，碰撞絕不前傾翻落**！
   - **右側 3 & 4 號位：專屬手動牙刷精密防掉位（Precision Manual Toothbrush Berths）**
     - 喇叭口開闊度 $20.0\text{ mm}$、內部喉寬僅 $7.0\text{ mm}$：手動牙刷纖細刷頸（約 $5.0 \sim 6.2\text{ mm}$）輕鬆滑入。
     - 通孔直徑 $\varnothing 8.8\text{ mm}$：提供刷頸自垂對中空間。
-    - 防掉沉孔 $\varnothing 13.5\text{ mm}$（深度 $4.5\text{ mm}$，帶 12 面鑽石座圈）：刷頭底部過渡區（寬度 $11.5 \sim 13\text{ mm}$）平穩落入沉孔窩內。
+    - 防掉沉孔 $\varnothing 13.5\text{ mm}$（深度 $4.5\text{ mm}$）：刷頭底部過渡區（寬度 $11.5 \sim 13\text{ mm}$）平穩落入沉孔窩內。
     - **100% 物理防掉保證**：普通手動牙刷刷頭（$11.5 \sim 13\text{ mm}$）與手柄（$11 \sim 14\text{ mm}$）寬度**遠大於 $7.0\text{ mm}$ 喉口**，無論如何碰觸、傾斜或晃動，**刷頭均被兩側實心擋肩阻擋，絕對不會向前掉落**！
 - **極致直覺操作（Direct Front Insertion & Retrieval）**：
   - 水平前推進孔、輕微上抬 3mm 即可水平向前順暢取出！
@@ -34,7 +30,7 @@
   - **100% 隱形工程設計**：所有排空孔設於底面、導氣槽設於內壁，**正面、頂面、側面外觀 100% 保持奢華金屬一體感**，無任何突兀外露孔洞。
 - **快拆背板模組**：錐形自鎖燕尾滑軌背板，具備 $>1800\text{ mm}^2$ 超大免打孔黏貼面與 2 個 M4 沉頭螺絲孔。
 - **100% 免支撐（Support-Free）**：拱托嚴格控制在 $45^\circ$ 自支撐角，內部燕尾槽採用尖拱天花板，FDM 列印 0 支撐警報。
-- **3 款專屬外觀美學風格**：提供羅馬柱豎條紋 + 鑽石切面、現代意式極簡微弧、全建築多角鑽石切面。
+- **3 款專屬外觀美學風格**：古典雙重羅馬柱、瑞士名錶巴黎釘紋微金字塔鑽石切面、現代意式階梯瀑布折面。
 
 ---
 
@@ -44,28 +40,26 @@
 
 ### 三大奢華風格對比 (Side-by-Side Comparison)
 ![Rose Gold 3 Styles Comparison](renders/rose_gold_3styles_comparison.png)
-*(由左至右：幾何鑽石切面款 Faceted、現代意式極簡流線款 Curved、輕奢羅馬柱豎條紋款 Fluted)*
+*(由左至右：輕奢雙重羅馬柱款 Fluted、現代意式階梯瀑布款 Curved、瑞士巴黎釘紋鑽石款 Faceted)*
 
 ---
 
-### 風格 1：輕奢羅馬柱豎條紋 + 全方位珠寶級不規則碎鑽水晶晶簇展台 (Fluted + Full Multi-Surface Crystalline Facets) —— ★ 旗艦推薦
-- **設計語彙**：融合 **Art Deco 羅馬柱古典背景壁** 與 **牙刷展台全方位有機不規則立體碎鑽水晶晶簇（Multi-Surface Low-Poly Crystalline Diamond Facets）**：
-  - **後排牙膏高階壁**：環繞立體縱向羅馬柱凸槽紋理（Pitch 4.8mm, R 1.4mm），隨視線產生豎琴拉絲光影，隱藏 FDM 層線。
-  - **牙刷展台頂面（Top Deck）**：密鋪有機不規則多面體水晶切面，隨機反射光影。
-  - **底部 $45^\circ$ 托樑斜面（Bottom Corbel）**：整面密鋪固態晶簇切面，杜絕單調平整，無碎渣、無破洞。
-  - **正面立唇與兩側側翼（Front Lip & Side Flanks）**：側翼與前唇全面鋪設低多邊形切面，任何角度觀賞皆如原礦水晶晶簇。
-  - **內部懸掛槽與導向軌（Interior Berths）**：內部保持 100% 鏡面光滑與 $C^1$ 連續切線圓滑喇叭口（20mm / 23mm），盲插絲滑、不刮手柄、不藏水垢！
-- **多角度實測驗證**：頂面、底面、正面、側翼 360° 全方位無死角碎鑽切面，100% 免支撐直印。
+### 風格 1：古典雙重羅馬柱 + 建築托樑拱筋 (Fluted & Modillion Brackets) —— ★ 旗艦推薦
+- **設計語彙**：融合 **Art Deco 古典羅馬柱後壁**、**前唇細微條紋飾面** 與 **底部 5 組古典牛腿托樑拱筋**：
+  - **後排牙膏高階壁**：環繞立體縱向古典羅馬柱凸槽紋理（Pitch 4.8mm, R 1.4mm），隨視線產生豎琴拉絲光影。
+  - **前唇與側翼**：精緻微細凹凸柱飾（Pitch 3.2mm, R 0.8mm），與後排大柱相呼應，層次豐富。
+  - **底部 $45^\circ$ 托樑拱筋**：5 組實體結構肋條，強化支撐力的同時勾勒出歐洲拱門建築秩序美感。
+  - **頂部牙刷展台**：緞面平滑光潔，牙膏泡沫與水花一擦即淨，不藏汙納垢。
 - **對應檔案**：[`luxury_holder_fluted.stl`](luxury_holder_fluted.stl) 與 [`combo_plate_fluted.stl`](combo_plate_fluted.stl)
 
-### 風格 2：現代意式極簡流線 (Curved Streamline Luxury)
-- **設計語彙**：大圓角有機微弧（R 10mm）與頂部瀑布柔和導角，後排腰部點綴貫穿式 $45^\circ$ 自支撐內凹金屬飾線。
-- **光影效果**：平滑溫潤的流體曲面展現玫瑰金深邃柔和的漸層反射，飾線形成高對比立體陰影，純粹大器。
+### 風格 2：現代意式階梯瀑布折面 (Italian Waterfall Stepped Terraces)
+- **設計語彙**：極簡連續光潔流線與頂部階梯柔和導角，後排腰部與前唇內嵌雙道 $45^\circ$ 自支撐內凹陰影飾線。
+- **光影效果**：平滑溫潤的流體曲面展現玫瑰金深邃柔和的漸層反射，陰影槽線形成高對比立體視覺，極致純粹大器。
 - **對應檔案**：[`luxury_holder_curved.stl`](luxury_holder_curved.stl)
 
-### 風格 3：幾何菱格鑽石切面 (Architectural Faceted / Diamond Luxury)
-- **設計語彙**：後排兩端與頂部皆採用幾何多邊形斜切建築面，邊界交接稜線分明。
-- **光影效果**：在浴室鏡前燈照射下，各個精確切面如同高級珠寶盒與香水瓶般產生璀璨多角度折射。
+### 風格 3：瑞士名錶巴黎釘紋微金字塔鑽石切面 (Swiss Clous de Paris Guilloché Diamond Studs)
+- **設計語彙**：後排上壁與前緣採用嚴謹數學排列的幾何微金字塔釘紋（Pitch 5.0mm, H 1.2mm, 4-sided pyramid），底部搭配立體托樑。
+- **光影效果**：在浴室鏡前燈照射下，每個金字塔四面晶瑩反射光點，呈現如百達翡麗、愛彼名錶錶盤般的璀璨鑽石折射工藝感。
 - **對應檔案**：[`luxury_holder_faceted.stl`](luxury_holder_faceted.stl)
 
 ---
@@ -73,21 +67,21 @@
 ## 📸 視覺渲染畫廊 (Render Gallery)
 
 ### 1. 衛浴安裝與全能收納演示 (Bathroom Wall Installations)
-| 風格 1：羅馬柱豎條紋（★推薦） | 風格 2：意式極簡流線 | 風格 3：幾何鑽石切面 |
+| 風格 1：雙重羅馬柱托樑（★推薦） | 風格 2：意式階梯瀑布 | 風格 3：瑞士巴黎釘紋鑽石 |
 | :---: | :---: | :---: |
 | <img src="renders/fluted_assembled_perspective.png" width="300" alt="Fluted Assembled"> | <img src="renders/curved_assembled_perspective.png" width="300" alt="Curved Assembled"> | <img src="renders/faceted_assembled_perspective.png" width="300" alt="Faceted Assembled"> |
-| 典雅羅馬柱拉絲反光，2 支電動牙刷 + 2 支手動牙刷穩固前懸，2 支牙膏穩坐後階 | 柔和微弧瀑布導角，極簡大器 | 俐落多角鑽石刻面，珠寶工藝感 |
+| 典雅羅馬柱拉絲反光，2 支電動牙刷 + 2 支手動牙刷穩固前懸，2 支牙膏穩坐後階 | 柔和瀑布階梯導角，極簡大器 | 俐落金字塔微釘紋，名錶工藝感 |
 
-### 2. 珠寶級全方位不規則碎鑽水晶晶簇多角度實拍 (Full Multi-Surface Crystalline Diamond Cluster)
-| 頂面展台切面 (Top Deck) | 底部 45° 懸臂托樑 (Bottom Corbel) | 側翼立體切面 (Side Flank) |
+### 2. 羅馬柱旗艦款多視角實拍 (Fluted & Modillion Architecture Details)
+| 頂面平整展台 (Top Deck) | 底部托樑與排空孔 (Bottom Underside) | 側翼細微條紋 (Side Flank) |
 | :---: | :---: | :---: |
-| <img src="renders/fluted_crystalline_top.png" width="300" alt="Top Deck Facets"> | <img src="renders/fluted_crystalline_bottom.png" width="300" alt="Bottom Corbel Facets"> | <img src="renders/fluted_crystalline_side.png" width="300" alt="Side Flank Facets"> |
-| 密鋪有機多面體稜錐，動態折射璀璨光芒 | 100% 密鋪向下晶簇，無破洞無薄片 | 側翼全面覆蓋低多邊形水晶晶簇 |
+| <img src="renders/fluted_crystalline_top.png" width="300" alt="Top Deck"> | <img src="renders/fluted_crystalline_bottom.png" width="300" alt="Bottom Underside"> | <img src="renders/fluted_crystalline_side.png" width="300" alt="Side Flank"> |
+| 光潔平整無水垢死角，喇叭口圓滑過渡 | 5 組建築拱筋 + 6 個錐形排空孔 | 前後條紋呼應，細節層次豐富 |
 
-| 前方直立邊唇 (Front Lip) | 正視等角俯瞰 (Isometric Front) | 仰角等角透視 (Isometric Underside) |
+| 前方微條紋唇邊 (Front Lip) | 正面等角透視 (Isometric Front) | 仰角等角透視 (Isometric Underside) |
 | :---: | :---: | :---: |
-| <img src="renders/fluted_crystalline_front.png" width="300" alt="Front Lip Facets"> | <img src="renders/fluted_crystalline_iso_front.png" width="300" alt="Iso Front View"> | <img src="renders/fluted_crystalline_iso_under.png" width="300" alt="Iso Underside View"> |
-| 正面 6mm 直立唇密鋪立體碎鑽刻面 | 頂面、前唇與側翼水晶切面渾然一體 | 托樑與側翼連貫交融，宛如天然原礦晶簇 |
+| <img src="renders/fluted_crystalline_front.png" width="300" alt="Front Lip"> | <img src="renders/fluted_crystalline_iso_front.png" width="300" alt="Iso Front View"> | <img src="renders/fluted_crystalline_iso_under.png" width="300" alt="Iso Underside View"> |
+| 直立微條紋飾面，手感細膩溫潤 | 羅馬柱與托樑渾然一體，氣度優雅 | 45° 完美自支撐托樑，線條剛勁有力 |
 
 ### 3. 精密人體工學與隱藏式通風瀝水 (Ergonomics & Ventilation Details)
 | 圓滑切線喇叭口與防掉沉孔 | 牙膏倉 360° 內壁導氣煙囪槽 | 底層三重漏斗極速排空孔 |
@@ -118,9 +112,9 @@
 
 | 功能組件 | 規格參數 | 設計原理與功能優勢 |
 | :--- | :--- | :--- |
-| **外觀總尺寸** | 寬 160mm × 深 68mm × 高 66mm | 比例輕盈大器，展台懸挑有力，適配各類衛浴鏡櫃旁牆面。 |
+| **外觀總尺寸** | 寬 160mm × 深 68.8mm × 高 66mm | 比例輕盈大器，展台懸挑有力，適配各類衛浴鏡櫃旁牆面。 |
 | **前排四前推開孔** | 4 個對稱精密位（$X=-54, -18, +18, +54\text{mm}$） | • 間距達 36mm，電動牙刷頭之間保留充足間距，刷毛絕不互碰。<br>• 雙電動（10.5mm 喉口）+ 雙手動（7.0mm 喉口）。<br>• 下方自帶 $45^\circ$ 一體連貫斜撐拱托，100% 免支撐列印。 |
-| **後排雙超大牙膏倉** | 2 個獨立大內腔（$X=\pm 40\text{mm}$，每槽 $50 \times 26\text{mm}$，深 56mm） | • 支援 2 支 200g 超大家庭號牙膏、洗面乳或電動刮鬍刀。<br>• 獨立分倉互不傾倒干擾。<br>• 底面 $12^\circ$ 導水斜坡，直接由 $\varnothing 8\text{mm}$ 通孔排走水滴。 |
+| **後排雙超大牙膏倉** | 2 個獨立大內腔（$X=\pm 40\text{mm}$，每槽 $50 \times 26\text{mm}$，深 56mm） | • 支援 2 支 200g 超大家庭號牙膏、洗面乳或電動刮鬍刀。<br>• 獨立分倉互不傾倒干擾。<br>• 360° 內壁導氣煙囪槽 + 底層三重漏斗排空孔（斷面 $>155\text{mm}^2$），通風極速乾燥。 |
 | **快拆雙用安裝背板** | 寬 46mm × 高 44mm × 厚 6.8mm | • **免打孔黏貼**：背板底面 $Z=0$ 為 $>1800\text{ mm}^2$ 超大連續平面，3M VHB / 無痕膠條黏著力極強。<br>• **螺絲打孔固定**：設有 2 個 M4 沉頭螺絲孔（間距 20mm），自帶向上展開 $45^\circ$ 錐形導角，免支撐列印。<br>• **錐形燕尾滑軌**：$12^\circ$ 錐形滑軌，自帶重力楔緊止位；**清潔時向上推移 2cm 即可秒拆下架**，直接於水龍頭下沖洗！ |
 
 ---
@@ -145,10 +139,10 @@
 
 | 檔案名稱 | 說明 | 推薦用途 |
 | :--- | :--- | :--- |
-| **[`luxury_holder_fluted.stl`](luxury_holder_fluted.stl)** | **羅馬柱豎條紋 + 不規則碎鑽水晶展台置物架主體 (★推薦)** | 經典輕奢立體凸柱紋後壁 + 牙刷展台表面整面密鋪不規則低多邊形碎鑽切面，極致璀璨光影，2 電動 + 2 手動防掉孔 + 2 隱藏通風牙膏倉。 |
-| **[`combo_plate_fluted.stl`](combo_plate_fluted.stl)** | **整盤雙件同印組合檔 (一鍵開印)** | 羅馬柱不規則水晶切面主體 + 快拆背板同盤排列（佔用 $160 \times 116\text{mm}$），單次搞定整套，開箱即印！ |
-| **[`luxury_holder_curved.stl`](luxury_holder_curved.stl)** | 意式極簡流線前推懸掛置物架主體 | 溫潤大圓角與瀑布導角，中位金屬內凹飾線，純粹現代優雅。 |
-| **[`luxury_holder_faceted.stl`](luxury_holder_faceted.stl)** | 幾何鑽石切面前推懸掛置物架主體 | 多邊建築切面，多角度反射玫瑰金光澤，如高級珠寶盒。 |
+| **[`luxury_holder_fluted.stl`](luxury_holder_fluted.stl)** | **古典雙重羅馬柱 + 托樑拱筋置物架主體 (★推薦)** | 經典輕奢立體凸柱紋後壁 + 前唇微細凹凸柱飾 + 5 組建築牛腿托樑，2 電動 + 2 手動防掉孔 + 2 隱藏通風牙膏倉。 |
+| **[`combo_plate_fluted.stl`](combo_plate_fluted.stl)** | **整盤雙件同印組合檔 (一鍵開印)** | 羅馬柱旗艦主體 + 快拆背板同盤排列（佔用 $162.8 \times 118\text{mm}$），單次搞定整套，開箱即印！ |
+| **[`luxury_holder_curved.stl`](luxury_holder_curved.stl)** | 現代意式階梯瀑布折面置物架主體 | 溫潤大圓角與階梯瀑布導角，中位雙道內凹高光陰影飾線，純粹現代優雅。 |
+| **[`luxury_holder_faceted.stl`](luxury_holder_faceted.stl)** | 瑞士名錶巴黎釘紋鑽石切面置物架主體 | 嚴謹微金字塔釘紋裝飾，多角度折射璀璨鑽石光芒，名錶工藝感。 |
 | **[`wall_bracket.stl`](wall_bracket.stl)** | **快拆免打孔雙用背板 (共用件)** | 適用所有款式，平貼熱床印，背貼 3M 膠或打螺絲。 |
 | **[`luxury_wall_toothbrush_holder.scad`](luxury_wall_toothbrush_holder.scad)** | OpenSCAD 參數化原始代碼 | 支援自定義喉徑、間距、牙膏倉尺寸與風格切換。 |
 | **`renders/`** | 高解析多視角渲染圖庫 | 包含全套對比圖、各風格單獨視角、前推取放特寫與單盤切片排版。 |

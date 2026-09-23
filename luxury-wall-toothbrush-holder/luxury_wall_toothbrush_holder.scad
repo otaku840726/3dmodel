@@ -25,9 +25,9 @@ Designed specifically for Rose Gold / Silk Metallic FDM 3D Printing:
   family toothpastes, facial cleansers, or extra electric toothbrushes/shavers.
 - Modular Slide-in Dovetail Wall Bracket (3M VHB tape flat bed + countersunk screw holes)
 - 3 Distinct Luxury Aesthetics in Rose Gold:
-    1. "fluted"  - 輕奢羅馬柱豎條紋 + 珠寶級不規則碎鑽水晶展台 (Fluted Columns + Irregular Diamond Crystalline Mesh)
-    2. "curved"  - 現代意式極簡流線 (Cascading Organic Streamlines with Accent Grooves)
-    3. "faceted" - 幾何菱格切面 + 不規則碎鑽水晶展台 (Architectural Faceted + Irregular Diamond Mesh)
+    1. "fluted"  - 輕奢雙重羅馬柱 + 建築托樑拱筋 (Classical Dual-Fluted Columns & Modillion Corbel Brackets)
+    2. "faceted" - 瑞士名錶巴黎釘紋微金字塔鑽石切面 (Swiss Clous de Paris Guilloché Diamond Studs)
+    3. "curved"  - 現代意式階梯瀑布折面 (Italian Waterfall Stepped Terraces & Chamfers)
 
 Units: millimeters (mm)
 ================================================================================
@@ -284,12 +284,12 @@ module four_precision_berths() {
                     }
                 }
                 
-            // 3. Recessed Concave Retention Cup with Diamond Bezel Chamfer
+            // 3. Recessed Concave Retention Cup with Smooth Bezel Chamfer
             translate([0, tb_hole_y, h_shelf - cup_depth])
                 cylinder(r1=hole_d/2, r2=cup_d/2, h=cup_depth + 0.1);
-            // 12-sided faceted jewel bezel chamfer (clean cut through mesh to open air)
-            translate([0, tb_hole_y, h_shelf - 1.0])
-                cylinder(r1=cup_d/2, r2=cup_d/2 + 2.0, h=4.0, $fn=12);
+            // Smooth collar lead-in bevel
+            translate([0, tb_hole_y, h_shelf - 0.8])
+                cylinder(r1=cup_d/2, r2=cup_d/2 + 1.6, h=1.0);
         }
     }
 }
@@ -360,258 +360,143 @@ module base_holder_structure() {
 // 4. THREE AESTHETIC STYLES (ROSE GOLD SILK OPTIMIZED)
 // =============================================================================
 
-// Unified outer facet envelope: contains the entire shelf interior and expands outwards by margin
-// Pyramids sunk 2.0mm inside the shelf core remain 100% intact and deeply anchored,
-// while outer peaks are cleanly trimmed to the exact curved and sloped shelf contours
-module front_shelf_facet_envelope(margin = 1.6) {
-    w = w_holder;
+// Classical Modillion Bracket Ribs under corbel (5 architectural corbel consoles)
+// Positioned at X = [-72, -36, 0, +36, +72], perfectly framing the 4 toothbrush stations
+module corbel_modillion_brackets() {
     s2 = sqrt(2)/2;
-    d_under = margin * sqrt(2);
-    z_corbel_front = (d_front + margin) - 28.0 - d_under; // exact 45° slope intercept at front
+    rib_w = 4.6;
+    rib_protrude = 2.0;
     
-    difference() {
-        linear_extrude(height = h_shelf + margin)
-            shelf_2d_shape(extra = margin);
-            
-        translate([w + margin*2, 0, 0])
-            rotate([0, -90, 0])
-                linear_extrude(height = (w + margin*2)*2)
-                    polygon([
-                        [-10.0, d_back - 5.0],
-                        [  8.0 - d_under, d_back],
-                        [ z_corbel_front, d_front + margin],
-                        [ z_corbel_front, d_front + margin + 15.0],
-                        [-10.0, d_front + margin + 15.0]
-                    ]);
-    }
-}
-
-// Deterministic pseudo-random hash function for organic crystal variance
-function phash(i, j, k) =
-    let(v = sin(i * 127.1 + j * 311.7 + k * 74.3) * 43758.5453)
-    v - floor(v);
-
-// Check if an (X, Y) coordinate is inside the toothbrush docking apertures/berths
-function is_in_berth(x, y) =
-    let(
-        in_b1 = (abs(x - -54) < 11.5 && y > 46.0),
-        in_b2 = (abs(x - -18) < 11.5 && y > 46.0),
-        in_b3 = (abs(x -  18) <  9.5 && y > 46.0),
-        in_b4 = (abs(x -  54) <  9.5 && y > 46.0)
-    )
-    (in_b1 || in_b2 || in_b3 || in_b4);
-
-// 珠寶級全方位不規則低多邊形碎鑽/水晶晶簇切面網格 (MULTI-SURFACE IRREGULAR CRYSTALLINE DIAMOND FACET MESH)
-// 整個牙刷放置區域所有外露面（頂部展台、底部 45° 懸臂托樑斜面、前方直立邊緣、左右兩側翼）
-// 全面密鋪大小、旋轉、高低各異的多角度立體水晶切面，底座深埋實體內部 2.0mm，保證 100% 熔接一體無空隙
-module irregular_diamond_mesh() {
-    w = w_holder;
-    r = corner_r;
-    s2 = sqrt(2)/2;
-    sink_d = 2.0; // 2mm deep interior anchor into the solid body
-    
-    intersection() {
-        front_shelf_facet_envelope(margin = 1.6);
-        
-        union() {
-            // 1. 頂部展台切面 (TOP SHELF DECK MESH, Normal = [0, 0, 1])
-            pitch_tx = 6.8;
-            pitch_ty = 5.8;
-            nx_t = ceil((w + 10) / pitch_tx) / 2;
-            ny_t = ceil((d_front - d_back + 10) / pitch_ty);
-            
-            translate([0, d_back, h_shelf - sink_d]) {
-                for (ix = [-nx_t : nx_t]) {
-                    for (iy = [0 : ny_t]) {
-                        jx = (phash(ix, iy, 1) - 0.5) * pitch_tx * 0.70;
-                        jy = (phash(iy, ix, 2) - 0.5) * pitch_ty * 0.70;
-                        x_pos = ix * pitch_tx + jx;
-                        y_pos = d_back + iy * pitch_ty + jy;
-                        
-                        if (!is_in_berth(x_pos, y_pos)) {
-                            fn_c = (phash(ix, iy, 3) < 0.25) ? 3 : 4;
-                            base_r = 7.0 + phash(ix, iy, 4) * 3.5;
-                            pyr_h = 1.1 + phash(ix, iy, 5) * 1.3;
-                            rot_deg = phash(ix, iy, 6) * 360;
-                            
-                            translate([x_pos, iy * pitch_ty + jy, 0])
-                                rotate([0, 0, rot_deg])
-                                    cylinder(r1=base_r, r2=0, h=pyr_h + sink_d, $fn=fn_c);
-                        }
-                    }
-                }
-            }
-            
-            // 2. 底部 45° 懸臂托樑斜面 (BOTTOM 45° CORBEL UNDERSIDE MESH, Normal = [0, s2, -s2])
-            pitch_cu = 6.8;
-            pitch_cv = 5.8;
-            nu_c = ceil((w + 10) / pitch_cu) / 2;
-            L_slope = 32.0 * sqrt(2); // exact 45.255 mm
-            nv_c = ceil((L_slope + 5) / pitch_cv);
-            
-            M_corbel = [
-                [1,  0,   0, 0],
-                [0, s2,  s2, d_back],
-                [0, s2, -s2, 8.0],
-                [0,  0,   0, 1]
-            ];
-            
-            multmatrix(M_corbel) {
-                translate([0, 0, -sink_d]) {
-                    for (iu = [-nu_c : nu_c]) {
-                        for (iv = [0 : nv_c]) {
-                            ju = (phash(iu, iv, 101) - 0.5) * pitch_cu * 0.70;
-                            jv = (phash(iv, iu, 102) - 0.5) * pitch_cv * 0.70;
-                            u_pos = iu * pitch_cu + ju;
-                            v_pos = iv * pitch_cv + jv;
-                            y_act = d_back + s2 * v_pos;
-                            
-                            if (v_pos >= -1.0 && v_pos <= L_slope + 2.0 && !is_in_berth(u_pos, y_act)) {
-                                fn_c = (phash(iu, iv, 103) < 0.25) ? 3 : 4;
-                                base_r = 7.0 + phash(iu, iv, 104) * 3.5;
-                                pyr_h = 1.0 + phash(iu, iv, 105) * 1.2;
-                                rot_deg = phash(iu, iv, 106) * 360;
-                                
-                                translate([u_pos, v_pos, 0])
-                                    rotate([0, 0, rot_deg])
-                                        cylinder(r1=base_r, r2=0, h=pyr_h + sink_d, $fn=fn_c);
-                            }
-                        }
-                    }
-                }
-            }
-            
-            // 3. 前方直立邊唇切面 (FRONT VERTICAL LIP MESH, Normal = [0, 1, 0])
-            // 貼合 6mm 高度邊唇，底座精確內縮避免垂流
-            pitch_fx = 4.8;
-            nx_f = ceil((w - 2*r) / pitch_fx) / 2;
-            
-            translate([0, d_front - sink_d, 43.0]) {
-                rotate([-90, 0, 0]) {
-                    for (ix = [-nx_f : nx_f]) {
-                        jx = (phash(ix, 1, 301) - 0.5) * pitch_fx * 0.70;
-                        jz = (phash(1, ix, 302) - 0.5) * 1.0;
-                        x_pos = ix * pitch_fx + jx;
-                        
-                        if (abs(x_pos) <= w/2 - r - 0.5 && !is_in_berth(x_pos, d_front)) {
-                            fn_c = (phash(ix, 2, 303) < 0.25) ? 3 : 4;
-                            base_r = 3.2 + phash(ix, 3, 304) * 1.2;
-                            pyr_h = 0.8 + phash(ix, 4, 305) * 0.6;
-                            rot_deg = phash(ix, 5, 306) * 360;
-                            
-                            translate([x_pos, jz, 0])
-                                rotate([0, 0, rot_deg])
-                                    cylinder(r1=base_r, r2=0, h=pyr_h + sink_d, $fn=fn_c);
-                        }
-                    }
-                }
-            }
-            
-            // 4. 左右兩側翼切面 (LEFT & RIGHT SIDE FLANKS, Normal = [-1, 0, 0] and [+1, 0, 0])
-            // 密鋪低多邊形切面晶簇，完美平滑覆蓋側翼垂直壁面
-            pitch_fy = 4.0;
-            pitch_fz = 4.0;
-            
-            // 左側翼 (Left flank, X = -w/2 = -80.0)
-            translate([-w/2 + sink_d, 0, 0]) {
-                rotate([0, -90, 0]) {
-                    for (y = [d_back + 2.0 : pitch_fy : d_front - r]) {
-                        z_corbel = 8.0 + (y - d_back);
-                        for (z = [z_corbel + 2.0 : pitch_fz : h_shelf - 0.5]) {
-                            iy = round(y * 10);
-                            iz = round(z * 10);
-                            jy = (phash(iy, iz, 401) - 0.5) * pitch_fy * 0.60;
-                            jz = (phash(iz, iy, 402) - 0.5) * pitch_fz * 0.60;
-                            fn_c = (phash(iy, iz, 403) < 0.25) ? 3 : 4;
-                            base_r = 5.2 + phash(iy, iz, 404) * 1.8;
-                            pyr_h = 0.9 + phash(iy, iz, 405) * 0.6;
-                            rot_deg = phash(iy, iz, 406) * 360;
-                            
-                            y_act = y + jy;
-                            z_act = z + jz;
-                            if (y_act >= d_back && y_act <= d_front - r && z_act >= z_corbel && z_act <= h_shelf) {
-                                translate([z_act, y_act, 0])
-                                    rotate([0, 0, rot_deg])
-                                        cylinder(r1=base_r, r2=0, h=pyr_h + sink_d, $fn=fn_c);
-                            }
-                        }
-                    }
-                }
-            }
-            
-            // 右側翼 (Right flank, X = +w/2 = +80.0)
-            translate([w/2 - sink_d, 0, 0]) {
-                rotate([0, 90, 0]) {
-                    for (y = [d_back + 2.0 : pitch_fy : d_front - r]) {
-                        z_corbel = 8.0 + (y - d_back);
-                        for (z = [z_corbel + 2.0 : pitch_fz : h_shelf - 0.5]) {
-                            iy = round(y * 10);
-                            iz = round(z * 10);
-                            jy = (phash(iy, iz, 501) - 0.5) * pitch_fy * 0.60;
-                            jz = (phash(iz, iy, 502) - 0.5) * pitch_fz * 0.60;
-                            fn_c = (phash(iy, iz, 503) < 0.25) ? 3 : 4;
-                            base_r = 5.2 + phash(iy, iz, 504) * 1.8;
-                            pyr_h = 0.9 + phash(iy, iz, 505) * 0.6;
-                            rot_deg = phash(iy, iz, 506) * 360;
-                            
-                            y_act = y + jy;
-                            z_act = z + jz;
-                            if (y_act >= d_back && y_act <= d_front - r && z_act >= z_corbel && z_act <= h_shelf) {
-                                translate([-z_act, y_act, 0])
-                                    rotate([0, 0, rot_deg])
-                                        cylinder(r1=base_r, r2=0, h=pyr_h + sink_d, $fn=fn_c);
-                            }
-                        }
-                    }
-                }
+    for (x_rib = [-72.0, -36.0, 0.0, 36.0, 72.0]) {
+        translate([x_rib, 0, 0]) {
+            hull() {
+                translate([-rib_w/2, d_back, 8.0])
+                    cube([rib_w, 2.0, 4.0]);
+                translate([-rib_w/2, d_front - 2.0, 40.0])
+                    cube([rib_w, 2.0, 4.0]);
+                translate([-rib_w/2 + 0.6, d_back + s2 * rib_protrude, 8.0 - s2 * rib_protrude])
+                    cube([rib_w - 1.2, 1.0, 1.0]);
+                translate([-rib_w/2 + 0.6, d_front + s2 * rib_protrude - 2.0, 40.0 - s2 * rib_protrude])
+                    cube([rib_w - 1.2, 1.0, 1.0]);
             }
         }
     }
 }
 
-// STYLE 1: 輕奢羅馬柱豎條紋 + 不規則碎鑽水晶切面展台 (FLUTED REEDED REAR + IRREGULAR DIAMOND MESH FRONT)
+// Micro-reeded fluting on front lip and flanks
+module front_micro_flutes() {
+    w = w_holder;
+    r = corner_r;
+    pitch = 3.2;
+    rib_r = 0.8;
+    
+    // Front lip vertical micro-flutes (between front rounded corners)
+    for (x = [-w/2+r : pitch : w/2-r]) {
+        translate([x, d_front, 40.0])
+            cylinder(r=rib_r, h=6.0, $fn=16);
+    }
+    
+    // Left & right flank vertical micro-flutes
+    for (y = [d_back + 1.0 : pitch : d_front - r]) {
+        z_corbel = 8.0 + (y - d_back);
+        h_flute = h_shelf - z_corbel;
+        if (h_flute > 1.0) {
+            translate([-w/2, y, z_corbel])
+                cylinder(r=rib_r, h=h_flute, $fn=16);
+            translate([ w/2, y, z_corbel])
+                cylinder(r=rib_r, h=h_flute, $fn=16);
+        }
+    }
+}
+
+// STYLE 1: 輕奢雙重羅馬柱 + 托樑拱筋 (CLASSICAL DUAL-FLUTED & MODILLION BRACKETS)
+// 後排大羅馬柱 (P=4.8mm, R=1.4mm) + 前緣微細凹凸柱飾 (P=3.2mm, R=0.8mm) + 底部 5 組建築牛腿托樑拱筋
 module holder_style_fluted() {
     w = w_holder;
     r = corner_r;
-    pitch = 4.8;
-    rib_r = 1.4;
+    pitch_rear = 4.8;
+    rib_r_rear = 1.4;
     
     union() {
         base_holder_structure();
         
-        // Vertical decorative flutes along rear tier sides and front face
-        for (x = [-w/2+r : pitch : w/2-r]) {
-            // Above shelf level on rear tier front face (Z = h_shelf to h_back)
+        // Rear tier classical flutes (above shelf level Z = 46 to 66)
+        for (x = [-w/2+r : pitch_rear : w/2-r]) {
             translate([x, d_back, h_shelf])
-                cylinder(r=rib_r, h=h_back - h_shelf);
+                cylinder(r=rib_r_rear, h=h_back - h_shelf);
         }
-        for (y = [r : pitch : d_back-r]) {
-            translate([-w/2, y, 0]) cylinder(r=rib_r, h=h_back);
-            translate([ w/2, y, 0]) cylinder(r=rib_r, h=h_back);
+        for (y = [r : pitch_rear : d_back-r]) {
+            translate([-w/2, y, 0]) cylinder(r=rib_r_rear, h=h_back);
+            translate([ w/2, y, 0]) cylinder(r=rib_r_rear, h=h_back);
         }
         
-        // 牙刷放置區域全面密鋪不規則低多邊形碎鑽切面網格 (Irregular Crystalline Diamond Mesh)
-        irregular_diamond_mesh();
+        // Front lip & flank micro-reeded flutes
+        front_micro_flutes();
+        
+        // Architectural Modillion Bracket Ribs under 45° corbel
+        corbel_modillion_brackets();
     }
 }
 
-// STYLE 2: 現代意式極簡流線 (CURVED STREAMLINE LUXURY)
+// STYLE 2: 瑞士名錶巴黎釘紋 (SWISS CLOUS DE PARIS GUILLOCHÉ DIAMOND STUDS)
+// 幾何規則金字塔微釘紋 (P=5.0mm, H=1.2mm, 4-sided pyramid) 裝飾於後排上部與前緣，底面搭配立體托樑
+module holder_style_faceted() {
+    w = w_holder;
+    r = corner_r;
+    pitch_g = 5.0;
+    pyr_base = 3.8;
+    pyr_h = 1.2;
+    
+    union() {
+        base_holder_structure();
+        
+        // Rear Tier Guilloché Diamond Hobnails (Z = 46 to 64)
+        for (x = [-w/2+r : pitch_g : w/2-r]) {
+            for (z = [h_shelf + 3.0 : pitch_g : h_back - 3.0]) {
+                translate([x, d_back + 0.1, z])
+                    rotate([-90, 0, 45])
+                        cylinder(r1=pyr_base/sqrt(2), r2=0, h=pyr_h + 0.2, $fn=4);
+            }
+        }
+        
+        // Front Lip Diamond Studs (along front edge)
+        for (x = [-w/2+r : pitch_g : w/2-r]) {
+            translate([x, d_front, 43.0])
+                rotate([-90, 0, 45])
+                    cylinder(r1=pyr_base/sqrt(2), r2=0, h=pyr_h + 0.2, $fn=4);
+        }
+        
+        // Corbel Modillion Brackets with Diamond Faceted Crest
+        corbel_modillion_brackets();
+    }
+}
+
+// STYLE 3: 現代意式階梯瀑布折面 (ITALIAN WATERFALL STEPPED TERRACES)
+// 極簡連續光潔平整曲面，後排與前緣內嵌 45° 自支撐高光陰影槽線，極致抗污、最易擦拭清潔
 module holder_style_curved() {
     w = w_holder;
     
     difference() {
         base_holder_structure();
         
-        // 45° Self-supporting horizontal metallic accent groove on rear tier at Z=56mm
-        translate([-w/2, 0, 56.0])
-            rotate([90, 0, 0])
-                rotate([0, 0, 45])
-                    cube([1.8, 1.8, d_back*2], center=true);
-        translate([ w/2, 0, 56.0])
-            rotate([90, 0, 0])
-                rotate([0, 0, 45])
-                    cube([1.8, 1.8, d_back*2], center=true);
-        translate([0, d_back, 56.0])
+        // Architectural Horizontal Accent Shadow Grooves (45° self-supporting)
+        for (z_groove = [52.0, 58.0]) {
+            translate([-w/2, 0, z_groove])
+                rotate([90, 0, 0])
+                    rotate([0, 0, 45])
+                        cube([1.8, 1.8, d_back*2], center=true);
+            translate([ w/2, 0, z_groove])
+                rotate([90, 0, 0])
+                    rotate([0, 0, 45])
+                        cube([1.8, 1.8, d_back*2], center=true);
+            translate([0, d_back, z_groove])
+                rotate([0, 90, 0])
+                    rotate([0, 0, 45])
+                        cube([1.8, 1.8, w*2], center=true);
+        }
+        
+        // Front lip stepped horizontal reveal groove
+        translate([0, d_front, 43.0])
             rotate([0, 90, 0])
                 rotate([0, 0, 45])
                     cube([1.8, 1.8, w*2], center=true);
@@ -621,25 +506,6 @@ module holder_style_curved() {
             rotate([0, 90, 0])
                 rotate([0, 0, 45])
                     cube([2.5, 2.5, w*2], center=true);
-    }
-}
-
-// STYLE 3: 幾何菱格鑽石切面 (ARCHITECTURAL FACETED / DIAMOND LUXURY)
-module holder_style_faceted() {
-    difference() {
-        union() {
-            base_holder_structure();
-            // Irregular diamond mesh across the front toothbrush shelf
-            irregular_diamond_mesh();
-        }
-        
-        // Faceted angular cuts on the outer top corners
-        translate([-w_holder/2, 0, h_back])
-            rotate([0, 45, 0])
-                cube([10.0, d_back*3, 10.0], center=true);
-        translate([ w_holder/2, 0, h_back])
-            rotate([0, 45, 0])
-                cube([10.0, d_back*3, 10.0], center=true);
     }
 }
 
