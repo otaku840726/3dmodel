@@ -180,29 +180,58 @@ module female_dovetail_cavity() {
     }
 }
 
-// Twin Oversized Toothpaste Wells in Rear Tier (Left X=-40, Right X=+40)
+// Twin Oversized Toothpaste Wells with 360° Aeration Flutes & Triple High-Flow Ports
 module twin_toothpaste_cavities() {
     for (x_pos = [-tp_x, tp_x]) {
-        translate([x_pos, tp_y, tp_floor_z]) {
-            // Rounded rectangular well (48mm x 26mm, depth 56mm)
-            hull() {
-                translate([-tp_w/2 + 6.0, -tp_d/2 + 6.0, 0]) cylinder(r=6.0, h=h_back);
-                translate([ tp_w/2 - 6.0, -tp_d/2 + 6.0, 0]) cylinder(r=6.0, h=h_back);
-                translate([-tp_w/2 + 6.0,  tp_d/2 - 6.0, 0]) cylinder(r=6.0, h=h_back);
-                translate([ tp_w/2 - 6.0,  tp_d/2 - 6.0, 0]) cylinder(r=6.0, h=h_back);
+        translate([x_pos, tp_y, 0]) {
+            // 1. Main Well Cavity (48mm x 26mm, interior depth 56mm from Z = tp_floor_z to h_back)
+            translate([0, 0, tp_floor_z]) {
+                hull() {
+                    translate([-tp_w/2 + 6.0, -tp_d/2 + 6.0, 0]) cylinder(r=6.0, h=h_back);
+                    translate([ tp_w/2 - 6.0, -tp_d/2 + 6.0, 0]) cylinder(r=6.0, h=h_back);
+                    translate([-tp_w/2 + 6.0,  tp_d/2 - 6.0, 0]) cylinder(r=6.0, h=h_back);
+                    translate([ tp_w/2 - 6.0,  tp_d/2 - 6.0, 0]) cylinder(r=6.0, h=h_back);
+                }
             }
-            // Sloped self-draining funnel floor (12° slope)
-            hull() {
-                translate([-tp_w/2 + 6.0, -tp_d/2 + 6.0, 3.0]) cylinder(r=5.0, h=0.1);
-                translate([ tp_w/2 - 6.0, -tp_d/2 + 6.0, 3.0]) cylinder(r=5.0, h=0.1);
-                translate([-tp_w/2 + 6.0,  tp_d/2 - 6.0, 3.0]) cylinder(r=5.0, h=0.1);
-                translate([ tp_w/2 - 6.0,  tp_d/2 - 6.0, 3.0]) cylinder(r=5.0, h=0.1);
-                translate([0, 0, -tp_floor_z - 0.1]) cylinder(d=8.0, h=0.1);
+            
+            // 2. Interior Wall Vertical Aeration Flutes (360° Anti-Sticking Chimney Channels)
+            // 100% invisible from outside; allows continuous convection around tube body
+            for (x_f = [-18.0 : 6.0 : 18.0]) {
+                // Front interior wall flutes
+                translate([x_f, tp_d/2, tp_floor_z])
+                    cylinder(r=1.2, h=h_back);
+                // Back interior wall flutes
+                translate([x_f, -tp_d/2, tp_floor_z])
+                    cylinder(r=1.2, h=h_back);
             }
+            for (y_f = [-6.0, 6.0]) {
+                // Left interior wall flutes
+                translate([-tp_w/2, y_f, tp_floor_z])
+                    cylinder(r=1.2, h=h_back);
+                // Right interior wall flutes
+                translate([ tp_w/2, y_f, tp_floor_z])
+                    cylinder(r=1.2, h=h_back);
+            }
+            
+            // 3. Triple High-Flow Vertical Drainage & Aeration Ports (>155mm² open air draft)
+            // Center port: Ø10mm through-hole + 45° conical intake bowl (Ø18mm down to Ø10mm)
+            translate([0, 0, -1.0])
+                cylinder(d=10.0, h=tp_floor_z + 2.0);
+            translate([0, 0, tp_floor_z - 0.01])
+                cylinder(r1=10.0/2, r2=18.0/2, h=4.0);
+                
+            // Left port: Ø7mm through-hole + 45° conical intake bowl (Ø13mm down to Ø7mm)
+            translate([-14.0, 0, -1.0])
+                cylinder(d=7.0, h=tp_floor_z + 2.0);
+            translate([-14.0, 0, tp_floor_z - 0.01])
+                cylinder(r1=7.0/2, r2=13.0/2, h=3.0);
+                
+            // Right port: Ø7mm through-hole + 45° conical intake bowl (Ø13mm down to Ø7mm)
+            translate([ 14.0, 0, -1.0])
+                cylinder(d=7.0, h=tp_floor_z + 2.0);
+            translate([ 14.0, 0, tp_floor_z - 0.01])
+                cylinder(r1=7.0/2, r2=13.0/2, h=3.0);
         }
-        // Vertical drainage through-hole
-        translate([x_pos, tp_y, -1.0])
-            cylinder(d=8.0, h=tp_floor_z + 2.0);
     }
 }
 

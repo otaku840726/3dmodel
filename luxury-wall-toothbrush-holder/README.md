@@ -19,7 +19,10 @@
   - 水平前推進孔、輕微上抬 3mm 即可水平向前順暢取出！
   - **垂直空間零死角干涉**：無須向上拔起整支牙刷，完美適用鏡櫃下方、壁龕或低矮層架空間。
 - **360° 懸垂通風速乾**：手柄懸垂於下方開闊空間，水滴經由垂直貫通孔直接滴落排空，徹底杜絕筒底積水黑斑與細菌發霉。
-- **後排高階牙膏倉（H=66mm，內深 56mm）**：**雙獨立超大牙膏倉（$50 \times 26\text{ mm}$）**，平穩直立收納 2 支 200g 大家庭號牙膏、洗面乳或電動刮鬍刀。
+- **後排高階牙膏倉（隱藏式 360° 立體導氣槽 + 底層三重漏斗極速排空，零影響外觀美學）**：
+  - **360° 內壁縱向導氣煙囪槽（Interior Aeration Flutes）**：牙膏倉內壁四面均勻雕琢立體通風導氣槽（半徑 $1.2\text{ mm}$）。當大家庭號牙膏管、洗面乳放入時，管身僅接觸槽棱，**管壁與倉壁之間保留連續垂直空氣通道，牙膏絕不貼壁吸附**，自然形成煙囪熱對流，蒸發水氣極速乾燥！
+  - **底層三重 $45^\circ$ 漏斗急速排空孔（Triple Conical Drainage Ports）**：倉底設有 **1 個 $\varnothing 10\text{ mm}$ 核心孔 + 2 個 $\varnothing 7\text{ mm}$ 輔助孔**，上方均銜接 $45^\circ$ 自支撐錐形倒角漏斗。總排氣/排水斷面積高達 **$>155\text{ mm}^2$（舊版 3 倍以上）**，水滴順坡秒排，絕無死角積水、滑膩發黑！
+  - **100% 隱形工程設計**：所有排空孔設於底面、導氣槽設於內壁，**正面、頂面、側面外觀 100% 保持奢華金屬一體感**，無任何突兀外露孔洞。
 - **快拆背板模組**：錐形自鎖燕尾滑軌背板，具備 $>1800\text{ mm}^2$ 超大免打孔黏貼面與 2 個 M4 沉頭螺絲孔。
 - **100% 免支撐（Support-Free）**：拱托嚴格控制在 $45^\circ$ 自支撐角，內部燕尾槽採用尖拱天花板，FDM 列印 0 支撐警報。
 - **3 款專屬外觀美學風格**：提供羅馬柱豎條紋、現代意式極簡微弧、建築多角鑽石切面。
@@ -61,11 +64,17 @@
 | <img src="renders/fluted_assembled_perspective.png" width="300" alt="Fluted Assembled"> | <img src="renders/curved_assembled_perspective.png" width="300" alt="Curved Assembled"> | <img src="renders/faceted_assembled_perspective.png" width="300" alt="Faceted Assembled"> |
 | 典雅羅馬柱拉絲反光，2 支電動牙刷 + 2 支手動牙刷穩固前懸，2 支牙膏穩坐後階 | 柔和微弧瀑布導角，極簡大器 | 俐落多角鑽石刻面，珠寶工藝感 |
 
-### 2. 精密開孔與 3D 列印佈局 (Ergonomic Details & Print Bed)
-| 精密開孔與防掉落沉孔特寫 (Precision Berths Detail) | 快拆錐形燕尾背板 (Wall Slide Bracket) | 單盤同印佈局 (1-Plate Combo Layout) |
+### 2. 精密人體工學與隱藏式通風瀝水 (Ergonomics & Ventilation Details)
+| 圓滑切線喇叭口與防掉沉孔 | 牙膏倉 360° 內壁導氣煙囪槽 | 底層三重漏斗極速排空孔 |
 | :---: | :---: | :---: |
-| <img src="renders/front_tier_ergo_detail.png" width="300" alt="Front Tier Ergonomics Detail"> | <img src="renders/wall_bracket_mounting.png" width="300" alt="Wall Bracket Detail"> | <img src="renders/print_bed_layout.png" width="300" alt="Print Bed Layout"> |
-| 雙規格防掉孔（7mm / 10.5mm 喉口 + 4.5mm 沉孔） + 一體平整展台 | 100% 平整熱床貼合面 + 沉頭螺絲孔 + 錐形自鎖燕尾軌 | $160 \times 116\text{mm}$ 極緊湊排版，主體 + 快拆背板一盤印完 |
+| <img src="renders/front_tier_ergo_detail.png" width="300" alt="Front Tier Ergonomics Detail"> | <img src="renders/toothpaste_well_aeration_detail.png" width="300" alt="Toothpaste Well Aeration Detail"> | <img src="renders/toothpaste_well_bottom_drainage.png" width="300" alt="Toothpaste Well Bottom Drainage"> |
+| 消除直角之切線圓滑喇叭口（20/23mm 入口），盲插極致順滑 | 內壁均布縱向微槽，牙膏管身不貼壁，水氣暢通對流 | 1 個 Ø10mm + 2 個 Ø7mm 錐形大通孔，排空斷面 $>155\text{mm}^2$ |
+
+### 3. 模組化快拆背板與 3D 列印佈局 (Mounting & Print Bed)
+| 快拆錐形燕尾背板 (Wall Slide Bracket) | 單盤同印佈局 (1-Plate Combo Layout) |
+| :---: | :---: |
+| <img src="renders/wall_bracket_mounting.png" width="300" alt="Wall Bracket Detail"> | <img src="renders/print_bed_layout.png" width="300" alt="Print Bed Layout"> |
+| 100% 平整熱床貼合面 + 沉頭螺絲孔 + 錐形自鎖燕尾軌 | $160 \times 116\text{mm}$ 極緊湊排版，主體 + 快拆背板一盤印完 |
 
 ---
 
