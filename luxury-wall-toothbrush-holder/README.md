@@ -4,13 +4,14 @@
 
 針對一般衛浴收納「需要向上提起 20cm 碰撞鏡櫃」、「孔徑過大導致普通牙刷容易滑落掉落」、「造型破碎開叉難看」等關鍵痛點進行徹底幾何重構：
 - **一體式奢華平整展台（Monolithic Continuous Gallery Shelf, W=160mm, H=46mm）**：摒棄單薄分叉的夾爪，採用連續貫通的建築式平整展台，下方輔以一體成型 $45^\circ$ 自支撐優雅拱托，完美襯托玫瑰金金屬絲綢光澤。
-- **雙規格專屬精密開孔與防掉落沉孔結構（Dual-Format Precision Berths with Anti-Drop Retention Cups）**：
+- **圓滑切線喇叭口與防掉落沉孔結構（Tangential Trumpet Horns with Anti-Drop Retention Cups）**：
+  - **徹底消除前方直角，極致順滑盲插入座**：前方開口不再是生硬直角，採用高階建築曲面 $C^1$ 連續切線圓弧喇叭口（Trumpet Bell Curve）。展台正面與喇叭導槽以圓弧無稜角平滑過渡，入口開口大幅擴展至 **$20.0\text{ mm}$（手動）** 與 **$23.0\text{ mm}$（電動）**。洗漱時無須費力精確對準，牙刷輕靠即可順著流體曲面自然聚攏導中推入！
   - **左側 1 & 2 號位：專屬重型電動牙刷位（Electric Toothbrush Berths）**
-    - 喉寬 $10.5\text{ mm}$（喇叭口 $16\text{ mm}$）：供電動牙刷上頸部（約 $8.5 \sim 9.8\text{ mm}$）水平順滑推入。
+    - 喇叭口開闊度 $23.0\text{ mm}$、內部喉寬 $10.5\text{ mm}$：供電動牙刷上頸部（約 $8.5 \sim 9.8\text{ mm}$）順暢滑入。
     - 通孔直徑 $\varnothing 12.8\text{ mm}$：承托手柄頂部金屬頸環，杜絕整支下墜。
     - 防掉沉孔 $\varnothing 18.5\text{ mm}$（深度 $4.5\text{ mm}$）：手柄頂部金屬圓圈/圓錐肩部（$\varnothing 15 \sim 17.5\text{ mm}$）穩妥坐入沉孔凹窩內，由於肩部直徑遠大於 $10.5\text{ mm}$ 喉口，**水平自然咬鎖，碰撞絕不前傾翻落**！
   - **右側 3 & 4 號位：專屬手動牙刷精密防掉位（Precision Manual Toothbrush Berths）**
-    - 喉寬僅 $7.0\text{ mm}$（喇叭口 $12\text{ mm}$）：手動牙刷纖細刷頸（約 $5.0 \sim 6.2\text{ mm}$）輕鬆水平滑入。
+    - 喇叭口開闊度 $20.0\text{ mm}$、內部喉寬僅 $7.0\text{ mm}$：手動牙刷纖細刷頸（約 $5.0 \sim 6.2\text{ mm}$）輕鬆滑入。
     - 通孔直徑 $\varnothing 8.8\text{ mm}$：提供刷頸自垂對中空間。
     - 防掉沉孔 $\varnothing 13.5\text{ mm}$（深度 $4.5\text{ mm}$）：刷頭底部過渡區（寬度 $11.5 \sim 13\text{ mm}$）平穩落入沉孔窩內。
     - **100% 物理防掉保證**：普通手動牙刷刷頭（$11.5 \sim 13\text{ mm}$）與手柄（$11 \sim 14\text{ mm}$）寬度**遠大於 $7.0\text{ mm}$ 喉口**，無論如何碰觸、傾斜或晃動，**刷頭均被兩側實心擋肩阻擋，絕對不會向前掉落**！
@@ -74,8 +75,8 @@
 
 | 懸掛位類型 | 規格參數 | 牙刷適用規格 | 防掉落與操作幾何原理 |
 | :--- | :--- | :--- | :--- |
-| **左側 1 & 2 號位：<br>重型電動牙刷位** | • 喉口寬：$10.5\text{ mm}$<br>• 通孔徑：$\varnothing 12.8\text{ mm}$<br>• 沉孔徑：$\varnothing 18.5\text{ mm}$<br>• 沉孔深：$4.5\text{ mm}$ | Oral-B（iO / Pro / Genius 全系列）、Philips Sonicare、小米、Panasonic 等粗手柄電動牙刷 | • **水平進出**：電動牙刷金屬/塑膠頸部（直徑 8.5~10mm）由 $10.5\text{ mm}$ 喉口輕鬆推入。<br>• **沉孔咬鎖**：手柄頂部金屬圓環/圓錐肩部（$\varnothing 15 \sim 17.5\text{ mm}$）坐入 $4.5\text{ mm}$ 深的沉孔內。<br>• **防傾防掉**：手柄肩部遠大於 $10.5\text{ mm}$ 喉口，沉孔前壁形成實心阻擋壁，晃動不脫出。 |
-| **右側 3 & 4 號位：<br>手動牙刷精密防掉位** | • 喉口寬：$7.0\text{ mm}$<br>• 通孔徑：$\varnothing 8.8\text{ mm}$<br>• 沉孔徑：$\varnothing 13.5\text{ mm}$<br>• 沉孔深：$4.5\text{ mm}$ | 高露潔、黑人/好來、獅王 Lion、舒適達 Sensodyne、瑞士 Curaprox 等所有市售普通手動牙刷 | • **精準喉徑**：刷頸（直徑 5.0~6.2mm）可順暢滑入 $7.0\text{ mm}$ 喉口。<br>• **物理零掉落**：刷頭寬度（$11.5 \sim 13\text{ mm}$）遠大於 $7.0\text{ mm}$ 喉口，整整保留 $4.5 \sim 6\text{ mm}$ 的實體阻擋台階！即便旋轉傾斜亦**絕對無法從前方脫出**！<br>• **刷頭定位**：刷頭底部過渡區安穩落入 $\varnothing 13.5\text{ mm}$ 沉孔，重心筆直下垂。 |
+| **左側 1 & 2 號位：<br>重型電動牙刷位** | • 喇叭口寬：$23.0\text{ mm}$<br>• 內部喉寬：$10.5\text{ mm}$<br>• 通孔徑：$\varnothing 12.8\text{ mm}$<br>• 沉孔徑：$\varnothing 18.5\text{ mm}$<br>• 沉孔深：$4.5\text{ mm}$ | Oral-B（iO / Pro / Genius 全系列）、Philips Sonicare、小米、Panasonic 等粗手柄電動牙刷 | • **無直角圓滑喇叭口**：正面採用 $C^1$ 切線圓弧過渡，23mm 超寬導引口，無須精確瞄準即可輕鬆推入。<br>• **沉孔咬鎖**：手柄頂部金屬圓環/圓錐肩部（$\varnothing 15 \sim 17.5\text{ mm}$）坐入 $4.5\text{ mm}$ 深的沉孔內。<br>• **防傾防掉**：手柄肩部遠大於 $10.5\text{ mm}$ 喉口，沉孔前壁形成實心阻擋壁，晃動不脫出。 |
+| **右側 3 & 4 號位：<br>手動牙刷精密防掉位** | • 喇叭口寬：$20.0\text{ mm}$<br>• 內部喉寬：$7.0\text{ mm}$<br>• 通孔徑：$\varnothing 8.8\text{ mm}$<br>• 沉孔徑：$\varnothing 13.5\text{ mm}$<br>• 沉孔深：$4.5\text{ mm}$ | 高露潔、黑人/好來、獅王 Lion、舒適達 Sensodyne、瑞士 Curaprox 等所有市售普通手動牙刷 | • **無直角圓滑喇叭口**：正面切線圓弧倒角，20mm 寬導引口，輕輕一碰即可自動聚攏導向中心。<br>• **物理零掉落**：刷頭寬度（$11.5 \sim 13\text{ mm}$）遠大於 $7.0\text{ mm}$ 喉口，整整保留 $4.5 \sim 6\text{ mm}$ 的實體阻擋台階！即便旋轉傾斜亦**絕對無法從前方脫出**！<br>• **刷頭定位**：刷頭底部過渡區安穩落入 $\varnothing 13.5\text{ mm}$ 沉孔，重心筆直下垂。 |
 
 ---
 

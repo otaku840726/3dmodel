@@ -64,16 +64,18 @@ tb_pitch     = 36.0;    // Center-to-center pitch
 tb_hole_y    = 52.0;    // Y coordinate of hole center
 
 // Electric Toothbrush Stations (Stations 1 & 2: X = -54, -18)
-tb_elec_slot = 10.5;    // Throat width for electric brush neck
-tb_elec_hole = 12.8;    // Through hole diameter
-tb_elec_cup  = 18.5;    // Recessed retention cup diameter
-tb_elec_lead = 16.0;    // Flared front entry width
+tb_elec_slot     = 10.5;    // Throat width for electric brush neck
+tb_elec_hole     = 12.8;    // Through hole diameter
+tb_elec_cup      = 18.5;    // Recessed retention cup diameter
+tb_elec_mouth    = 23.0;    // Flared front entry width (generous blind docking target)
+tb_elec_y_throat = 60.5;    // Y coordinate where trumpet flare joins throat slot
 
 // Manual Toothbrush Stations (Stations 3 & 4: X = +18, +54)
-tb_manu_slot = 7.0;     // Throat width for manual brush neck (neck 5.5mm slides in easily)
-tb_manu_hole = 8.8;     // Through hole diameter
-tb_manu_cup  = 13.5;    // Recessed retention cup diameter (holds head base, throat 7mm prevents fall!)
-tb_manu_lead = 12.0;    // Flared front entry width
+tb_manu_slot     = 7.0;     // Throat width for manual brush neck (neck 5.5mm slides in easily)
+tb_manu_hole     = 8.8;     // Through hole diameter
+tb_manu_cup      = 13.5;    // Recessed retention cup diameter (holds head base, throat 7mm prevents fall!)
+tb_manu_mouth    = 20.0;    // Flared front entry width (generous blind docking target)
+tb_manu_y_throat = 57.5;    // Y coordinate where trumpet flare joins throat slot
 
 cup_depth    = 4.5;     // Depth of recessed retention cup
 
@@ -204,36 +206,56 @@ module twin_toothpaste_cavities() {
     }
 }
 
-// 4 Precision Toothbrush Apertures & Anti-Drop Retention Berths
+// 4 Precision Toothbrush Apertures & Anti-Drop Retention Berths with Tangential Trumpet Horns
 module four_precision_berths() {
     for (i = [0:3]) {
         x_pos = (i - 1.5) * tb_pitch; // -54, -18, +18, +54
         is_electric = (i < 2);        // Left 2 = Electric, Right 2 = Manual
         
-        slot_w   = is_electric ? tb_elec_slot : tb_manu_slot;
-        hole_d   = is_electric ? tb_elec_hole : tb_manu_hole;
-        cup_d    = is_electric ? tb_elec_cup  : tb_manu_cup;
-        lead_w   = is_electric ? tb_elec_lead : tb_manu_lead;
+        slot_w   = is_electric ? tb_elec_slot     : tb_manu_slot;
+        hole_d   = is_electric ? tb_elec_hole     : tb_manu_hole;
+        cup_d    = is_electric ? tb_elec_cup      : tb_manu_cup;
+        mouth_w  = is_electric ? tb_elec_mouth    : tb_manu_mouth;
+        y_throat = is_electric ? tb_elec_y_throat : tb_manu_y_throat;
+        
+        delta_y = d_front - y_throat;
+        delta_x = mouth_w/2 - slot_w/2;
+        R = (delta_x*delta_x + delta_y*delta_y) / (2 * delta_y);
+        y_center = d_front - R;
         
         translate([x_pos, 0, 0]) {
             // 1. Through Hole: Vertical drainage all the way through corbel to open air
             translate([0, tb_hole_y, -1.0])
                 cylinder(d=hole_d, h=h_shelf + 2.0);
                 
-            // 2. Front Insertion Slot: Through to front edge
-            translate([-slot_w/2, tb_hole_y, -1.0])
-                cube([slot_w, d_front - tb_hole_y + 2.0, h_shelf + 2.0]);
-                
-            // 3. Smooth Flared Front Lead-in (effortless blind docking)
-            translate([0, d_front, -1.0])
-                hull() {
-                    translate([-slot_w/2, 0, 0])
-                        cube([slot_w, 0.1, h_shelf + 2.0]);
-                    translate([-lead_w/2, 2.5, 0])
-                        cube([lead_w, 0.1, h_shelf + 2.0]);
+            // 2. Tangential Trumpet Horn Opening (100% C1 continuous tangency, ZERO sharp right angles)
+            translate([0, 0, -1.0])
+                linear_extrude(height = h_shelf + 2.0) {
+                    difference() {
+                        union() {
+                            // Parallel throat slot
+                            translate([-slot_w/2, tb_hole_y])
+                                square([slot_w, y_throat - tb_hole_y + 0.05]);
+                            // Raw wedge
+                            polygon([
+                                [-slot_w/2, y_throat],
+                                [-mouth_w/2, d_front],
+                                [-mouth_w/2, d_front + 5.0],
+                                [ mouth_w/2, d_front + 5.0],
+                                [ mouth_w/2, d_front],
+                                [ slot_w/2, y_throat]
+                            ]);
+                            // Extension past d_front for clean cutting
+                            translate([-mouth_w/2, d_front - 0.01])
+                                square([mouth_w, 5.0]);
+                        }
+                        // Subtract tangential circular arcs to create organic curved trumpet walls
+                        translate([-mouth_w/2, y_center]) circle(r=R);
+                        translate([ mouth_w/2, y_center]) circle(r=R);
+                    }
                 }
                 
-            // 4. Recessed Concave Retention Cup (4.5mm deep pocket with 45° chamfer)
+            // 3. Recessed Concave Retention Cup (4.5mm deep pocket with 45° chamfer)
             translate([0, tb_hole_y, h_shelf - cup_depth])
                 cylinder(r1=hole_d/2, r2=cup_d/2, h=cup_depth + 0.1);
         }
