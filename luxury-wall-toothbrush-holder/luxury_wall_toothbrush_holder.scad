@@ -25,9 +25,9 @@ Designed specifically for Rose Gold / Silk Metallic FDM 3D Printing:
   family toothpastes, facial cleansers, or extra electric toothbrushes/shavers.
 - Modular Slide-in Dovetail Wall Bracket (3M VHB tape flat bed + countersunk screw holes)
 - 3 Distinct Luxury Aesthetics in Rose Gold:
-    1. "fluted"  - 輕奢羅馬柱豎條紋 + 珠寶級鑽石切面前台 (Art Deco Fluted Columns + Diamond-Cut Jewel Facets)
+    1. "fluted"  - 輕奢羅馬柱豎條紋 + 珠寶級密鋪鑽石網格展台 (Fluted Columns + Diamond Mesh Deck)
     2. "curved"  - 現代意式極簡流線 (Cascading Organic Streamlines with Accent Grooves)
-    3. "faceted" - 全幾何菱格鑽石切面 (Full Architectural Diamond-Cut Facets)
+    3. "faceted" - 幾何菱格切面 + 密鋪鑽石網格展台 (Architectural Faceted + Diamond Mesh Deck)
 
 Units: millimeters (mm)
 ================================================================================
@@ -254,12 +254,12 @@ module four_precision_berths() {
         
         translate([x_pos, 0, 0]) {
             // 1. Through Hole: Vertical drainage all the way through corbel to open air
-            translate([0, tb_hole_y, -1.0])
-                cylinder(d=hole_d, h=h_shelf + 2.0);
+            translate([0, tb_hole_y, -5.0])
+                cylinder(d=hole_d, h=h_shelf + 15.0);
                 
             // 2. Tangential Trumpet Horn Opening (100% C1 continuous tangency, ZERO sharp right angles)
-            translate([0, 0, -1.0])
-                linear_extrude(height = h_shelf + 2.0) {
+            translate([0, 0, -5.0])
+                linear_extrude(height = h_shelf + 15.0) {
                     difference() {
                         union() {
                             // Parallel throat slot
@@ -287,9 +287,9 @@ module four_precision_berths() {
             // 3. Recessed Concave Retention Cup with Diamond Bezel Chamfer
             translate([0, tb_hole_y, h_shelf - cup_depth])
                 cylinder(r1=hole_d/2, r2=cup_d/2, h=cup_depth + 0.1);
-            // 12-sided faceted jewel bezel chamfer (brilliant light reflection rim)
-            translate([0, tb_hole_y, h_shelf - 1.4])
-                cylinder(r1=cup_d/2, r2=cup_d/2 + 1.8, h=1.5, $fn=12);
+            // 12-sided faceted jewel bezel chamfer (clean cut through mesh to open air)
+            translate([0, tb_hole_y, h_shelf - 1.0])
+                cylinder(r1=cup_d/2, r2=cup_d/2 + 2.0, h=4.0, $fn=12);
         }
     }
 }
@@ -334,77 +334,65 @@ module base_holder_structure() {
 // 4. THREE AESTHETIC STYLES (ROSE GOLD SILK OPTIMIZED)
 // =============================================================================
 
-// DIAMOND-CUT FACETS (珠寶級立體鑽石切面 - 專為玫瑰金/絲綢耗材設計之多面光影反射結構)
-module diamond_faceted_front_tier() {
+// Bounding mask of the front shelf (for trimming diamond mesh cleanly to outer contour)
+module shelf_top_mask(extra_h=2.0) {
     w = w_holder;
-    
-    // 1. Primary Outer Corner Gem Facets (45° in XY, 45° in Z)
-    // Left Front Corner Multi-Facet Cut
-    translate([-w/2, d_front, h_shelf])
-        rotate([0, 0, 45])
-            rotate([45, 0, 0])
-                cube([18.0, 18.0, 24.0], center=true);
-                
-    // Right Front Corner Multi-Facet Cut
-    translate([ w/2, d_front, h_shelf])
-        rotate([0, 0, -45])
-            rotate([45, 0, 0])
-                cube([18.0, 18.0, 24.0], center=true);
-                
-    // 2. Corbel Flank Diamond Facets (Left & Right 45° architectural cuts)
-    translate([-w/2, d_front - 12.0, h_shelf - 12.0])
-        rotate([0, 45, 0])
-            rotate([0, 0, 45])
-                cube([16.0, 36.0, 16.0], center=true);
-    translate([ w/2, d_front - 12.0, h_shelf - 12.0])
-        rotate([0, -45, 0])
-            rotate([0, 0, -45])
-                cube([16.0, 36.0, 16.0], center=true);
-                
-    // 3. Crisp Top Front Edge Diamond Facet Bevel (45° jewel chamfer)
-    translate([0, d_front, h_shelf])
-        rotate([45, 0, 0])
-            cube([w*2, 3.2, 3.2], center=true);
-            
-    // 4. Undercut Diamond Facet Bevel along the lower front edge of shelf
-    translate([0, d_front, h_shelf - 6.0])
-        rotate([45, 0, 0])
-            cube([w*2, 3.0, 3.0], center=true);
-            
-    // 5. Left & Right Shelf Top Edge Diamond Facet Chamfers (along side rims)
-    translate([-w/2, (d_back + d_front)/2, h_shelf])
-        rotate([0, 45, 0])
-            cube([3.2, (d_front - d_back)*2, 3.2], center=true);
-    translate([ w/2, (d_back + d_front)/2, h_shelf])
-        rotate([0, 45, 0])
-            cube([3.2, (d_front - d_back)*2, 3.2], center=true);
+    r = corner_r;
+    hull() {
+        translate([-w/2+r, d_back, h_shelf - 0.2])
+            cube([w - r*2, 0.1, extra_h + 0.4]);
+        translate([-w/2+r, d_front-r, h_shelf - 0.2])
+            cylinder(r=r, h=extra_h + 0.4);
+        translate([ w/2-r, d_front-r, h_shelf - 0.2])
+            cylinder(r=r, h=extra_h + 0.4);
+    }
 }
 
-// STYLE 1: 輕奢羅馬柱豎條紋 + 珠寶級鑽石切面前台 (FLUTED REEDED REAR + JEWEL-FACETED FRONT)
+// 珠寶級立體密鋪鑽石金字塔網格 (SEAMLESS DIAMOND FACET MESH ACROSS ENTIRE TOOTHBRUSH SHELF)
+// 整個牙刷放置表面密鋪 4 面體立體鑽石金字塔，折射璀璨各向異性金屬光澤，100% 免支撐
+module diamond_mesh_top_shelf(cell_size=6.0, h_pyr=1.4) {
+    R = cell_size / sqrt(2);
+    nx = ceil((w_holder + 10) / cell_size) / 2 + 1;
+    ny = ceil((d_front - d_back + 10) / cell_size) + 1;
+    
+    intersection() {
+        shelf_top_mask(extra_h=h_pyr);
+        
+        translate([0, d_back, h_shelf - 0.05]) {
+            for (ix = [-nx : nx]) {
+                for (iy = [0 : ny]) {
+                    translate([ix * cell_size, iy * cell_size, 0])
+                        rotate([0, 0, 45])
+                            cylinder(r1=R, r2=0, h=h_pyr + 0.05, $fn=4);
+                }
+            }
+        }
+    }
+}
+
+// STYLE 1: 輕奢羅馬柱豎條紋 + 珠寶級密鋪鑽石網格展台 (FLUTED REEDED REAR + DIAMOND MESH FRONT)
 module holder_style_fluted() {
     w = w_holder;
     r = corner_r;
     pitch = 4.8;
     rib_r = 1.4;
     
-    difference() {
-        union() {
-            base_holder_structure();
-            
-            // Vertical decorative flutes along rear tier sides and front face
-            for (x = [-w/2+r : pitch : w/2-r]) {
-                // Above shelf level on rear tier front face (Z = h_shelf to h_back)
-                translate([x, d_back, h_shelf])
-                    cylinder(r=rib_r, h=h_back - h_shelf);
-            }
-            for (y = [r : pitch : d_back-r]) {
-                translate([-w/2, y, 0]) cylinder(r=rib_r, h=h_back);
-                translate([ w/2, y, 0]) cylinder(r=rib_r, h=h_back);
-            }
+    union() {
+        base_holder_structure();
+        
+        // Vertical decorative flutes along rear tier sides and front face
+        for (x = [-w/2+r : pitch : w/2-r]) {
+            // Above shelf level on rear tier front face (Z = h_shelf to h_back)
+            translate([x, d_back, h_shelf])
+                cylinder(r=rib_r, h=h_back - h_shelf);
+        }
+        for (y = [r : pitch : d_back-r]) {
+            translate([-w/2, y, 0]) cylinder(r=rib_r, h=h_back);
+            translate([ w/2, y, 0]) cylinder(r=rib_r, h=h_back);
         }
         
-        // Architectural Diamond-Cut Facets across front toothbrush shelf & flanks
-        diamond_faceted_front_tier();
+        // 牙刷放置區域全面密鋪立體鑽石網格 (Seamless Diamond Faceted Mesh)
+        diamond_mesh_top_shelf(cell_size=6.0, h_pyr=1.4);
     }
 }
 
@@ -440,7 +428,11 @@ module holder_style_curved() {
 // STYLE 3: 幾何菱格鑽石切面 (ARCHITECTURAL FACETED / DIAMOND LUXURY)
 module holder_style_faceted() {
     difference() {
-        base_holder_structure();
+        union() {
+            base_holder_structure();
+            // Diamond mesh across the front toothbrush shelf
+            diamond_mesh_top_shelf(cell_size=6.0, h_pyr=1.4);
+        }
         
         // Faceted angular cuts on the outer top corners
         translate([-w_holder/2, 0, h_back])
@@ -449,9 +441,6 @@ module holder_style_faceted() {
         translate([ w_holder/2, 0, h_back])
             rotate([0, 45, 0])
                 cube([10.0, d_back*3, 10.0], center=true);
-                
-        // Architectural Diamond-Cut Facets across front toothbrush shelf & flanks
-        diamond_faceted_front_tier();
     }
 }
 

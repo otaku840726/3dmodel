@@ -3,13 +3,13 @@
 專為 **玫瑰金絲綢金屬線材（Rose Gold / Copper Silk PLA）** 量身打造的五星級輕奢衛浴收納套裝。
 
 針對一般衛浴收納「需要向上提起 20cm 碰撞鏡櫃」、「孔徑過大導致普通牙刷容易滑落掉落」、「造型破碎開叉難看」等關鍵痛點進行徹底幾何重構：
-- **一體式奢華平整展台（Monolithic Continuous Gallery Shelf, W=160mm, H=46mm）與立體鑽石切面（Diamond-Cut Facets）**：
+- **一體式奢華平整展台與珠寶級密鋪立體鑽石網格（Monolithic Gallery Shelf with Tessellated 3D Diamond Facet Mesh）**：
   - 摒棄單薄分叉的夾爪，採用連續貫通的建築式平整展台，下方輔以一體成型 $45^\circ$ 自支撐優雅拱托。
-  - **珠寶級多角度立體鑽石切面（Jewel-Faceted Front Tier）**：
-    - **外側雙角鑽石寶石切角（Outer Gem Facets）**：前緣左右兩側施加 $45^\circ$ 複合空間切角，勾勒出如祖母綠切割般的俐落輪廓。
-    - **兩側拱托多面切削（Corbel Flank Facets）**：下方左右兩翼採用 $45^\circ$ 幾何折面雕琢，由厚轉薄極具建築雕塑張力。
-    - **展台前唇雙層 $45^\circ$ 反光切角（Dual Front Lip Chamfers）**：頂面外緣與底面懸空緣各施加一圈精準 $45^\circ$ 鑽石導角，將玫瑰金金屬絲綢的璀璨反光凝聚於金屬稜線上。
-    - **懸掛沉孔 12 面立體鑽石寶石座圈（12-Sided Faceted Jewel Bezels）**：4 個牙刷沉孔上緣雕刻 12 面立體珠寶刻面，牙刷入座如鑽戒鑲嵌於戒托，光彩奪目！
+  - **整面密鋪 3D 鑽石金字塔網格（Full Tessellated Diamond Pyramid Mesh）**：
+    - 牙刷放置區域之整個水平展台表面，**100% 完整密鋪立體 4 面體鑽石金字塔網格**（單元寬度 $6.0\text{ mm}$，錐高 $1.4\text{ mm}$）。
+    - 每個鑽石金字塔具備 4 個不同朝向的傾斜三角形刻面，在浴室鏡前燈照射下，形成數百個微型金屬反光面，折射出璀璨如鑽石鋪鑲（Diamond Pavé）般的立體珠寶光影！
+    - **100% 免支撐（Support-Free）**：金字塔斜角嚴格維持於 $45^\circ$ 幾何安全角，每一層均向上自然收攏，FDM 列印層線隨金字塔自然聚縮，極致工藝感。
+    - **懸掛沉孔 12 面立體鑽石座圈（12-Sided Faceted Jewel Bezels）**：4 個牙刷沉孔上緣雕刻 12 面立體珠寶刻面，牙刷入座如鑽戒鑲嵌於戒托，光彩奪目！
 - **圓滑切線喇叭口與防掉落沉孔結構（Tangential Trumpet Horns with Anti-Drop Retention Cups）**：
   - **徹底消除前方直角，極致順滑盲插入座**：前方開口不再是生硬直角，採用高階建築曲面 $C^1$ 連續切線圓弧喇叭口（Trumpet Bell Curve）。展台正面與喇叭導槽以圓弧無稜角平滑過渡，入口開口大幅擴展至 **$20.0\text{ mm}$（手動）** 與 **$23.0\text{ mm}$（電動）**。洗漱時無須費力精確對準，牙刷輕靠即可順著流體曲面自然聚攏導中推入！
   - **左側 1 & 2 號位：專屬重型電動牙刷位（Electric Toothbrush Berths）**
@@ -45,11 +45,11 @@
 
 ---
 
-### 風格 1：輕奢羅馬柱豎條紋 + 珠寶級鑽石切面 (Fluted + Diamond Facets) —— ★ 旗艦推薦
-- **設計語彙**：融合 **Art Deco 羅馬柱古典背景壁** 與 **幾何立體鑽石切面（Diamond-Cut Jewel Facets）前展台**：
+### 風格 1：輕奢羅馬柱豎條紋 + 珠寶級密鋪鑽石網格 (Fluted + Diamond Mesh) —— ★ 旗艦推薦
+- **設計語彙**：融合 **Art Deco 羅馬柱古典背景壁** 與 **整面密鋪立體鑽石金字塔網格（Tessellated Diamond Pyramid Mesh）展台**：
   - 後排高階立面與側壁環繞立體縱向羅馬柱凸槽紋理（Pitch 4.8mm, R 1.4mm）。
-  - 前排懸掛展台全面升級為多角度珠寶級鑽石刻面（兩側寶石轉角、拱托折面、上下前唇 $45^\circ$ 雙切面、12 面牙刷座圈）。
-- **光影效果**：後方縱向柱紋隨視線移動產生如豎琴琴弦般的拉絲金屬反光，**100% 完美隱藏 FDM 列印層線**；前方鑽石切面則在鏡前燈下如璀璨寶石般閃耀多維度高光，動靜相宜，極致奢華！
+  - 前排牙刷展台表面全面密鋪立體 4 面鑽石金字塔網格（單元 6.0mm，高 1.4mm），四座懸掛沉孔環繞 12 面立體珠寶刻面座圈。
+- **光影效果**：後方縱向柱紋隨視線移動產生如豎琴琴弦般的拉絲金屬反光，**100% 完美隱藏 FDM 列印層線**；前方整片密鋪的鑽石金字塔網格則在鏡前燈下如璀璨寶石鋪鑲般閃爍數百個金屬折射點，流光溢彩，極致奢華！
 - **對應檔案**：[`luxury_holder_fluted.stl`](luxury_holder_fluted.stl) 與 [`combo_plate_fluted.stl`](combo_plate_fluted.stl)
 
 ### 風格 2：現代意式極簡流線 (Curved Streamline Luxury)
@@ -128,8 +128,8 @@
 
 | 檔案名稱 | 說明 | 推薦用途 |
 | :--- | :--- | :--- |
-| **[`luxury_holder_fluted.stl`](luxury_holder_fluted.stl)** | **羅馬柱豎條紋 + 鑽石切面前台置物架主體 (★推薦)** | 經典輕奢立體凸柱紋後壁 + 珠寶級立體鑽石切面展台，極致璀璨光影，2 電動 + 2 手動防掉孔 + 2 隱藏通風牙膏倉。 |
-| **[`combo_plate_fluted.stl`](combo_plate_fluted.stl)** | **整盤雙件同印組合檔 (一鍵開印)** | 羅馬柱鑽石切面主體 + 快拆背板同盤排列（佔用 $160 \times 116\text{mm}$），單次搞定整套，開箱即印！ |
+| **[`luxury_holder_fluted.stl`](luxury_holder_fluted.stl)** | **羅馬柱豎條紋 + 密鋪鑽石網格展台置物架主體 (★推薦)** | 經典輕奢立體凸柱紋後壁 + 牙刷展台表面整面密鋪 3D 鑽石金字塔網格，極致璀璨光影，2 電動 + 2 手動防掉孔 + 2 隱藏通風牙膏倉。 |
+| **[`combo_plate_fluted.stl`](combo_plate_fluted.stl)** | **整盤雙件同印組合檔 (一鍵開印)** | 羅馬柱鑽石網格主體 + 快拆背板同盤排列（佔用 $160 \times 116\text{mm}$），單次搞定整套，開箱即印！ |
 | **[`luxury_holder_curved.stl`](luxury_holder_curved.stl)** | 意式極簡流線前推懸掛置物架主體 | 溫潤大圓角與瀑布導角，中位金屬內凹飾線，純粹現代優雅。 |
 | **[`luxury_holder_faceted.stl`](luxury_holder_faceted.stl)** | 幾何鑽石切面前推懸掛置物架主體 | 多邊建築切面，多角度反射玫瑰金光澤，如高級珠寶盒。 |
 | **[`wall_bracket.stl`](wall_bracket.stl)** | **快拆免打孔雙用背板 (共用件)** | 適用所有款式，平貼熱床印，背貼 3M 膠或打螺絲。 |
