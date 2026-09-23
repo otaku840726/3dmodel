@@ -22,22 +22,22 @@ openscad --csglimit=1000000 --camera=0,40,15,58,0,205,560 --imgsize=1600,1000 --
     -D 'style="faceted"' -D 'mode="assembled"' -o "$RENDERS/faceted_assembled_perspective.png" "$SCAD"
 
 echo "Rendering Front Tier Multi-Angle Crystalline Views..."
-openscad --csglimit=1000000 --camera=0,50,110,35,0,25,320 --imgsize=1600,1000 --colorscheme=Cornfield \
+openscad --render --csglimit=1000000 --camera=0,50,110,35,0,25,320 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_top.png" "$SCAD"
 
-openscad --csglimit=1000000 --camera=0,65,-10,125,0,210,350 --imgsize=1600,1000 --colorscheme=Cornfield \
+openscad --render --csglimit=1000000 --camera=0,65,-10,125,0,210,350 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_bottom.png" "$SCAD"
 
-openscad --csglimit=1000000 --camera=65,45,30,90,0,90,260 --imgsize=1600,1000 --colorscheme=Cornfield \
+openscad --render --csglimit=1000000 --camera=65,45,30,90,0,90,260 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_side.png" "$SCAD"
 
-openscad --csglimit=1000000 --camera=0,65,30,90,0,180,260 --imgsize=1600,1000 --colorscheme=Cornfield \
+openscad --render --csglimit=1000000 --camera=0,65,30,90,0,180,260 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_front.png" "$SCAD"
 
-openscad --csglimit=1000000 --camera=-100,100,80,60,0,220,320 --imgsize=1600,1000 --colorscheme=Cornfield \
+openscad --render --csglimit=1000000 --camera=-100,100,80,60,0,220,320 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_iso_front.png" "$SCAD"
 
-openscad --csglimit=1000000 --camera=-100,100,-40,115,0,220,320 --imgsize=1600,1000 --colorscheme=Cornfield \
+openscad --render --csglimit=1000000 --camera=-100,100,-40,115,0,220,320 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_iso_under.png" "$SCAD"
 
 echo "Rendering Front Tier Ergonomic Detail..."
