@@ -3,12 +3,15 @@
 專為 **玫瑰金絲綢金屬線材（Rose Gold / Copper Silk PLA）** 量身打造的五星級輕奢衛浴收納套裝。
 
 針對一般衛浴收納「需要向上提起 20cm 碰撞鏡櫃」、「孔徑過大導致普通牙刷容易滑落掉落」、「造型破碎開叉難看」等關鍵痛點進行徹底幾何重構：
-- **一體式奢華平整展台與珠寶級不規則碎鑽水晶切面網格（Monolithic Gallery Shelf with Irregular Crystalline Diamond Mesh）**：
-  - 摒棄單薄分叉的夾爪，採用連續貫通的建築式平整展台，下方輔以一體成型 $45^\circ$ 自支撐優雅拱托。
-  - **整面密鋪不規則低多邊形碎鑽/水晶晶簇切面（Organic Low-Poly Crystalline Facet Mesh）**：
-    - 牙刷放置區域之整個展台表面，**100% 完整密鋪有機不規則多面體立體碎鑽切面**（尺寸 5.5~10mm，高低起伏 1.2~2.4mm，混合 3 面與 4 面不規則稜錐）。
-    - 告別死板生硬的工業化對稱格子，每個水晶刻面具有**隨機旋轉角度與多維傾斜朝向**，如未經人工切割的天然奢華碎鑽晶簇。在浴室鏡前燈下，光影隨視角晃動動態躍遷，極富藝術感與未來感！
-    - **100% 免支撐（Support-Free）**：刻面自然向上聚攏，FDM 3D 列印 0 支撐警報。
+- **一體式奢華平整展台與珠寶級全方位不規則碎鑽水晶晶簇切面（Monolithic Gallery Shelf with Multi-Surface Crystalline Diamond Mesh）**：
+  - 摒棄單薄分叉的夾爪，採用連續貫通的建築式平整展台，下方輔以一體成型 $45^\circ$ 自支撐優雅托樑。
+  - **牙刷區域所有外露面 100% 完整密鋪不規則碎鑽水晶晶簇（Full Multi-Surface Crystalline Diamond Facets）**：
+    - **頂面展台（Top Deck）**：密鋪大小 5.5~10mm、高度 1.2~2.4mm 的立體水晶切面，隨機動態折射鏡前燈光芒。
+    - **底部 $45^\circ$ 懸臂托樑斜面（Bottom Corbel Underside）**：透過嚴密四維局部坐標變換矩陣，整面 $45^\circ$ 斜面密鋪朝向下方的三稜錐與四稜錐晶簇，無斷層、無破洞。
+    - **正面 6mm 直立外唇（Front Vertical Lip）**：前緣立體密鋪直立碎鑽刻面，與頂部和底部切面自然交織一體。
+    - **左右兩側翼斜面（Left & Right Side Flanks）**：側邊三角形側翼全面覆蓋向外綻放的低多邊形水晶晶簇，側視與斜視皆散發璀璨金屬奢華質感。
+    - **內部懸掛槽與導向軌（Smooth Interior Berths）**：四個牙刷入座沉孔、垂直貫通落水孔與喇叭導向喉槽**100% 保持光滑無阻、無任何尖刺刻面**，兼顧極致外觀與盲插衛生流暢性！
+    - **100% 免支撐（Support-Free）**：刻面自然向上/向外聚攏，FDM 3D 列印 0 支撐警報，無任何懸空碎渣或薄片。
     - **懸掛沉孔 12 面立體鑽石座圈（12-Sided Faceted Jewel Bezels）**：4 個牙刷沉孔上緣雕刻 12 面立體珠寶刻面，牙刷入座如鑽戒鑲嵌於戒托，光彩奪目！
 - **圓滑切線喇叭口與防掉落沉孔結構（Tangential Trumpet Horns with Anti-Drop Retention Cups）**：
   - **徹底消除前方直角，極致順滑盲插入座**：前方開口不再是生硬直角，採用高階建築曲面 $C^1$ 連續切線圓弧喇叭口（Trumpet Bell Curve）。展台正面與喇叭導槽以圓弧無稜角平滑過渡，入口開口大幅擴展至 **$20.0\text{ mm}$（手動）** 與 **$23.0\text{ mm}$（電動）**。洗漱時無須費力精確對準，牙刷輕靠即可順著流體曲面自然聚攏導中推入！
@@ -45,13 +48,14 @@
 
 ---
 
-### 風格 1：輕奢羅馬柱豎條紋 + 頂面珠寶級不規則碎鑽水晶展台 (Fluted + Top Irregular Diamond Mesh) —— ★ 旗艦推薦
-- **設計語彙**：融合 **Art Deco 羅馬柱古典背景壁** 與 **牙刷平台頂面密鋪不規則立體碎鑽水晶切面（Irregular Low-Poly Crystalline Mesh Deck）**：
+### 風格 1：輕奢羅馬柱豎條紋 + 全方位珠寶級不規則碎鑽水晶晶簇展台 (Fluted + Full Multi-Surface Crystalline Facets) —— ★ 旗艦推薦
+- **設計語彙**：融合 **Art Deco 羅馬柱古典背景壁** 與 **牙刷展台全方位有機不規則立體碎鑽水晶晶簇（Multi-Surface Low-Poly Crystalline Diamond Facets）**：
   - **後排牙膏高階壁**：環繞立體縱向羅馬柱凸槽紋理（Pitch 4.8mm, R 1.4mm），隨視線產生豎琴拉絲光影，隱藏 FDM 層線。
-  - **牙刷展台頂面（Top Deck）**：密鋪有機不規則多面體水晶切面（大小 5.5~10mm，高低起伏 1.2~2.4mm，混合 3 稜錐與 4 稜錐多向旋轉）。
-  - **底面與側壁（Clean Structural Corbel & Sides）**：底部維持 $45^\circ$ 自支撐結構斜面，側壁線條乾淨流暢，無任何碎渣、破洞或懸空毛刺。
+  - **牙刷展台頂面（Top Deck）**：密鋪有機不規則多面體水晶切面，隨機反射光影。
+  - **底部 $45^\circ$ 托樑斜面（Bottom Corbel）**：整面密鋪固態晶簇切面，杜絕單調平整，無碎渣、無破洞。
+  - **正面立唇與兩側側翼（Front Lip & Side Flanks）**：側翼與前唇全面鋪設低多邊形切面，任何角度觀賞皆如原礦水晶晶簇。
   - **內部懸掛槽與導向軌（Interior Berths）**：內部保持 100% 鏡面光滑與 $C^1$ 連續切線圓滑喇叭口（20mm / 23mm），盲插絲滑、不刮手柄、不藏水垢！
-- **多角度實測驗證**：頂面璀璨閃爍、正面俐落順暢、側翼平整大器、底部結構堅固平滑，100% 免支撐直印。
+- **多角度實測驗證**：頂面、底面、正面、側翼 360° 全方位無死角碎鑽切面，100% 免支撐直印。
 - **對應檔案**：[`luxury_holder_fluted.stl`](luxury_holder_fluted.stl) 與 [`combo_plate_fluted.stl`](combo_plate_fluted.stl)
 
 ### 風格 2：現代意式極簡流線 (Curved Streamline Luxury)
@@ -74,13 +78,24 @@
 | <img src="renders/fluted_assembled_perspective.png" width="300" alt="Fluted Assembled"> | <img src="renders/curved_assembled_perspective.png" width="300" alt="Curved Assembled"> | <img src="renders/faceted_assembled_perspective.png" width="300" alt="Faceted Assembled"> |
 | 典雅羅馬柱拉絲反光，2 支電動牙刷 + 2 支手動牙刷穩固前懸，2 支牙膏穩坐後階 | 柔和微弧瀑布導角，極簡大器 | 俐落多角鑽石刻面，珠寶工藝感 |
 
-### 2. 精密人體工學與隱藏式通風瀝水 (Ergonomics & Ventilation Details)
+### 2. 珠寶級全方位不規則碎鑽水晶晶簇多角度實拍 (Full Multi-Surface Crystalline Diamond Cluster)
+| 頂面展台切面 (Top Deck) | 底部 45° 懸臂托樑 (Bottom Corbel) | 側翼立體切面 (Side Flank) |
+| :---: | :---: | :---: |
+| <img src="renders/fluted_crystalline_top.png" width="300" alt="Top Deck Facets"> | <img src="renders/fluted_crystalline_bottom.png" width="300" alt="Bottom Corbel Facets"> | <img src="renders/fluted_crystalline_side.png" width="300" alt="Side Flank Facets"> |
+| 密鋪有機多面體稜錐，動態折射璀璨光芒 | 100% 密鋪向下晶簇，無破洞無薄片 | 側翼全面覆蓋低多邊形水晶晶簇 |
+
+| 前方直立邊唇 (Front Lip) | 正視等角俯瞰 (Isometric Front) | 仰角等角透視 (Isometric Underside) |
+| :---: | :---: | :---: |
+| <img src="renders/fluted_crystalline_front.png" width="300" alt="Front Lip Facets"> | <img src="renders/fluted_crystalline_iso_front.png" width="300" alt="Iso Front View"> | <img src="renders/fluted_crystalline_iso_under.png" width="300" alt="Iso Underside View"> |
+| 正面 6mm 直立唇密鋪立體碎鑽刻面 | 頂面、前唇與側翼水晶切面渾然一體 | 托樑與側翼連貫交融，宛如天然原礦晶簇 |
+
+### 3. 精密人體工學與隱藏式通風瀝水 (Ergonomics & Ventilation Details)
 | 圓滑切線喇叭口與防掉沉孔 | 牙膏倉 360° 內壁導氣煙囪槽 | 底層三重漏斗極速排空孔 |
 | :---: | :---: | :---: |
 | <img src="renders/front_tier_ergo_detail.png" width="300" alt="Front Tier Ergonomics Detail"> | <img src="renders/toothpaste_well_aeration_detail.png" width="300" alt="Toothpaste Well Aeration Detail"> | <img src="renders/toothpaste_well_bottom_drainage.png" width="300" alt="Toothpaste Well Bottom Drainage"> |
 | 消除直角之切線圓滑喇叭口（20/23mm 入口），盲插極致順滑 | 內壁均布縱向微槽，牙膏管身不貼壁，水氣暢通對流 | 1 個 Ø10mm + 2 個 Ø7mm 錐形大通孔，排空斷面 $>155\text{mm}^2$ |
 
-### 3. 模組化快拆背板與 3D 列印佈局 (Mounting & Print Bed)
+### 4. 模組化快拆背板與 3D 列印佈局 (Mounting & Print Bed)
 | 快拆錐形燕尾背板 (Wall Slide Bracket) | 單盤同印佈局 (1-Plate Combo Layout) |
 | :---: | :---: |
 | <img src="renders/wall_bracket_mounting.png" width="300" alt="Wall Bracket Detail"> | <img src="renders/print_bed_layout.png" width="300" alt="Print Bed Layout"> |

@@ -334,17 +334,17 @@ module base_holder_structure() {
 // 4. THREE AESTHETIC STYLES (ROSE GOLD SILK OPTIMIZED)
 // =============================================================================
 
-// Bounding mask of the front shelf (for trimming diamond mesh cleanly to outer contour)
-module shelf_top_mask(extra_h=3.5) {
+// Unified outer envelope of the front shelf (for trimming diamond mesh cleanly to outer contour)
+module front_shelf_envelope(extra=2.5) {
     w = w_holder;
     r = corner_r;
     hull() {
-        translate([-w/2+r, d_back, h_shelf - 0.2])
-            cube([w - r*2, 0.1, extra_h + 0.4]);
-        translate([-w/2+r, d_front-r, h_shelf - 0.2])
-            cylinder(r=r, h=extra_h + 0.4);
-        translate([ w/2-r, d_front-r, h_shelf - 0.2])
-            cylinder(r=r, h=extra_h + 0.4);
+        translate([-w/2+r - extra, d_back - 0.2, 8.0 - extra])
+            cube([w - r*2 + extra*2, 0.1, h_shelf - 8.0 + extra*2]);
+        translate([-w/2+r, d_front-r, h_shelf - 6.0 - extra])
+            cylinder(r=r + extra, h=6.0 + extra*2);
+        translate([ w/2-r, d_front-r, h_shelf - 6.0 - extra])
+            cylinder(r=r + extra, h=6.0 + extra*2);
     }
 }
 
@@ -353,41 +353,175 @@ function phash(i, j, k) =
     let(v = sin(i * 127.1 + j * 311.7 + k * 74.3) * 43758.5453)
     v - floor(v);
 
-// 珠寶級不規則低多邊形碎鑽/水晶切面網格 (IRREGULAR LOW-POLY CRYSTALLINE DIAMOND FACET MESH)
-// 整個牙刷放置表面密鋪大小、旋轉、高低各異的多角度立體水晶切面，隨機反射璀璨光影，100% 免支撐
+// 珠寶級全方位不規則低多邊形碎鑽/水晶晶簇切面網格 (MULTI-SURFACE IRREGULAR CRYSTALLINE DIAMOND FACET MESH)
+// 整個牙刷放置區域所有外露面（頂部展台、底部 45° 懸臂托樑斜面、前方直立邊緣、左右兩側翼）
+// 全面密鋪大小、旋轉、高低各異的多角度立體水晶切面，隨機折射璀璨光影，內部插孔保持光滑無阻
 module irregular_diamond_mesh() {
     w = w_holder;
-    pitch_x = 6.8;
-    pitch_y = 5.8;
+    r = corner_r;
+    s2 = sqrt(2)/2;
     
-    nx = ceil((w + 20) / pitch_x) / 2 + 1;
-    ny = ceil((d_front - d_back + 15) / pitch_y) + 1;
+    ang = atan2(10, 22); // 24.44 deg flank taper angle
+    L_flank = sqrt(10*10 + 22*22); // 24.166 mm flank slope length
     
     intersection() {
-        shelf_top_mask(extra_h=3.0);
+        front_shelf_envelope(extra=2.5);
         
-        translate([0, d_back, h_shelf - 0.1]) {
-            for (ix = [-nx : nx]) {
-                for (iy = [0 : ny]) {
-                    // Jittered position (有機錯位)
-                    jx = (phash(ix, iy, 1) - 0.5) * pitch_x * 0.70;
-                    jy = (phash(ix, iy, 2) - 0.5) * pitch_y * 0.70;
-                    
-                    // Mix of 3-sided and 4-sided faceted crystal pyramids
-                    fn_choice = (phash(ix, iy, 3) < 0.25) ? 3 : 4;
-                                
-                    // Overlapping base size: 6.5mm to 10.0mm
-                    base_r = (6.5 + phash(ix, iy, 4) * 3.5);
-                    
-                    // Organic varied heights: 1.2mm to 2.4mm
-                    pyr_h = 1.2 + phash(ix, iy, 5) * 1.4;
-                    
-                    // Asymmetrical rotation angle (0° to 360°)
-                    rot_deg = phash(ix, iy, 6) * 360;
-                    
-                    translate([ix * pitch_x + jx, iy * pitch_y + jy, 0])
-                        rotate([0, 0, rot_deg])
-                            cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_choice);
+        union() {
+            // 1. 頂部展台切面 (TOP SHELF DECK MESH, Normal = [0, 0, 1])
+            pitch_tx = 6.8;
+            pitch_ty = 5.8;
+            nx_t = ceil((w + 20) / pitch_tx) / 2 + 1;
+            ny_t = ceil((d_front - d_back + 15) / pitch_ty) + 1;
+            
+            translate([0, d_back, h_shelf - 0.1]) {
+                for (ix = [-nx_t : nx_t]) {
+                    for (iy = [0 : ny_t]) {
+                        jx = (phash(ix, iy, 1) - 0.5) * pitch_tx * 0.70;
+                        jy = (phash(iy, ix, 2) - 0.5) * pitch_ty * 0.70;
+                        fn_c = (phash(ix, iy, 3) < 0.25) ? 3 : 4;
+                        base_r = (6.5 + phash(ix, iy, 4) * 3.5);
+                        pyr_h = 1.2 + phash(ix, iy, 5) * 1.4;
+                        rot_deg = phash(ix, iy, 6) * 360;
+                        
+                        translate([ix * pitch_tx + jx, iy * pitch_ty + jy, 0])
+                            rotate([0, 0, rot_deg])
+                                cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_c);
+                    }
+                }
+            }
+            
+            // 2. 底部 45° 懸臂托樑斜面 (BOTTOM 45° CORBEL UNDERSIDE MESH, Normal = [0, 1, -1]/sqrt(2))
+            pitch_cu = 6.8;
+            pitch_cv = 5.8;
+            nu_c = ceil((w + 20) / pitch_cu) / 2 + 1;
+            L_slope = 30.0 * sqrt(2);
+            nv_c = ceil((L_slope + 10) / pitch_cv) + 1;
+            
+            M_corbel = [
+                [-1,  0,   0, 0],
+                [ 0, s2,  s2, d_back],
+                [ 0, s2, -s2, 8.0],
+                [ 0,  0,   0, 1]
+            ];
+            
+            multmatrix(M_corbel) {
+                translate([0, 0, -0.1]) {
+                    for (iu = [-nu_c : nu_c]) {
+                        for (iv = [0 : nv_c]) {
+                            ju = (phash(iu, iv, 101) - 0.5) * pitch_cu * 0.70;
+                            jv = (phash(iv, iu, 102) - 0.5) * pitch_cv * 0.70;
+                            fn_c = (phash(iu, iv, 103) < 0.25) ? 3 : 4;
+                            base_r = (6.5 + phash(iu, iv, 104) * 3.5);
+                            pyr_h = 1.0 + phash(iu, iv, 105) * 1.2;
+                            rot_deg = phash(iu, iv, 106) * 360;
+                            
+                            u_pos = iu * pitch_cu + ju;
+                            v_pos = iv * pitch_cv + jv;
+                            
+                            if (v_pos >= -2.0 && v_pos <= L_slope + 2.0) {
+                                translate([u_pos, v_pos, 0])
+                                    rotate([0, 0, rot_deg])
+                                        cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_c);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 3. 前方直立邊唇切面 (FRONT VERTICAL LIP MESH, Normal = [0, 1, 0])
+            pitch_fx = 5.5;
+            nx_f = ceil((w - 2*r) / pitch_fx) / 2 + 1;
+            
+            translate([0, d_front, 43.0]) {
+                rotate([-90, 0, 0]) {
+                    translate([0, 0, -0.1]) {
+                        for (ix = [-nx_f : nx_f]) {
+                            jx = (phash(ix, 1, 301) - 0.5) * pitch_fx * 0.70;
+                            jz = (phash(1, ix, 302) - 0.5) * 1.5;
+                            fn_c = (phash(ix, 2, 303) < 0.25) ? 3 : 4;
+                            base_r = (3.5 + phash(ix, 3, 304) * 1.5);
+                            pyr_h = 1.0 + phash(ix, 4, 305) * 0.8;
+                            rot_deg = phash(ix, 5, 306) * 360;
+                            
+                            x_pos = ix * pitch_fx + jx;
+                            
+                            // Only generate on the flat front lip face (between corner rounds)
+                            if (abs(x_pos) <= w/2 - r - 1.0) {
+                                translate([x_pos, jz, 0])
+                                    rotate([0, 0, rot_deg])
+                                        cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_c);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 4. 左右兩側翼切面 (LEFT & RIGHT SIDE FLANKS)
+            pitch_u = 5.0;
+            pitch_z = 4.8;
+            
+            // 左側翼 (Left flank, Normal = [-cos(ang), -sin(ang), 0])
+            translate([-w/2+r, d_back, 0]) {
+                rotate([0, 0, ang]) {
+                    rotate([0, -90, 0]) {
+                        translate([0, 0, -0.1]) {
+                            for (u = [3.0 : pitch_u : L_flank - 1.5]) {
+                                z_corbel = 8.0 + u * (32.0 / L_flank);
+                                for (z = [z_corbel + 2.5 : pitch_z : h_shelf - 0.5]) {
+                                    iu = round(u * 10);
+                                    iz = round(z * 10);
+                                    ju = (phash(iu, iz, 401) - 0.5) * pitch_u * 0.55;
+                                    jz = (phash(iz, iu, 402) - 0.5) * pitch_z * 0.55;
+                                    fn_c = (phash(iu, iz, 403) < 0.25) ? 3 : 4;
+                                    base_r = (4.0 + phash(iu, iz, 404) * 1.8);
+                                    pyr_h = 0.9 + phash(iu, iz, 405) * 0.7;
+                                    rot = phash(iu, iz, 406) * 360;
+                                    
+                                    u_act = u + ju;
+                                    z_act = z + jz;
+                                    
+                                    if (u_act >= 1.5 && u_act <= L_flank - 0.5 && z_act >= z_corbel + 1.5 && z_act <= h_shelf) {
+                                        translate([z_act, u_act, 0])
+                                            rotate([0, 0, rot])
+                                                cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_c);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 右側翼 (Right flank, Normal = [+cos(ang), -sin(ang), 0])
+            translate([w/2-r, d_back, 0]) {
+                rotate([0, 0, -ang]) {
+                    rotate([0, 90, 0]) {
+                        translate([0, 0, -0.1]) {
+                            for (u = [3.0 : pitch_u : L_flank - 1.5]) {
+                                z_corbel = 8.0 + u * (32.0 / L_flank);
+                                for (z = [z_corbel + 2.5 : pitch_z : h_shelf - 0.5]) {
+                                    iu = round(u * 10);
+                                    iz = round(z * 10);
+                                    ju = (phash(iu, iz, 501) - 0.5) * pitch_u * 0.55;
+                                    jz = (phash(iz, iu, 502) - 0.5) * pitch_z * 0.55;
+                                    fn_c = (phash(iu, iz, 503) < 0.25) ? 3 : 4;
+                                    base_r = (4.0 + phash(iu, iz, 504) * 1.8);
+                                    pyr_h = 0.9 + phash(iu, iz, 505) * 0.7;
+                                    rot = phash(iu, iz, 506) * 360;
+                                    
+                                    u_act = u + ju;
+                                    z_act = z + jz;
+                                    
+                                    if (u_act >= 1.5 && u_act <= L_flank - 0.5 && z_act >= z_corbel + 1.5 && z_act <= h_shelf) {
+                                        translate([-z_act, u_act, 0])
+                                            rotate([0, 0, rot])
+                                                cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_c);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
