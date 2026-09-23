@@ -21,8 +21,11 @@
    - **正中兩側：雙多功能牙膏大艙（Twin Universal Toothpaste Wells, $X = \pm 22\text{ mm}$）**：
      - 尺寸擴增為 **$36 \times 38\text{ mm}$**（四角導圓角 $R = 10\text{ mm}$），深度達 **$33.5\text{ mm}$**。
      - **100% 物理相容市售直徑高達 $\varnothing 36\text{ mm}$、厚度達 $15 \sim 22\text{ mm}$ 的立體直立圓蓋牙膏**（如高露潔全效 Colgate Total 立式大圓蓋、Crest 3D White、好來 Darlie 翻蓋、Marvis、Sensodyne 等）與 200g 超大家庭號直立管。
-   - **4 處獨立底層平坦支撐台階 + $45^\circ$ 極速自排空倒角漏斗 + $\varnothing 8\text{ mm}$ 垂直通天排空口**：
-     - 倉底設有寬闊水平邊階供厚實大圓蓋平穩站立，中央銜接 $45^\circ$ 自排空斜面與直徑 $8\text{mm}$ 垂直導水孔，直通下方開放空氣。水滴順坡秒排，絕無死角積水、滑膩發黑！
+   - **4 處獨立底層支撐台階 + $45^\circ$ 極速自排空漏斗 + $\varnothing 14\text{mm}/\varnothing 12\text{mm}$ 直通開放大排空孔 + 底部十字立體導流風道**：
+     - **直通開放空氣層（Through-Drain Architecture）**：穿透後排艙底與 8mm 實心展台層，全段完全貫通直達底層開放通風腔，零死角零封閉！
+     - **洗面乳專屬超大排水孔（$\varnothing 14.0\text{ mm}$）**：配備 $45^\circ$ 聚水倒角漏斗（$\varnothing 24\text{mm} \to \varnothing 14\text{mm}$）。
+     - **牙膏專屬大排水孔（$\varnothing 12.0\text{ mm}$）**：配備 $45^\circ$ 聚水倒角漏斗（$\varnothing 20\text{mm} \to \varnothing 12\text{mm}$）。
+     - **底部十字立體防密閉風道（Cross-Ventilation Channels，寬 $4.0\text{mm} \times$ 深 $2.0\text{mm}$）**：即使大圓蓋牙膏或洗面乳平整壓在倉底，十字導流溝槽依然能保證水流順暢排出；同時藉由煙囪效應讓底部新鮮空氣向上對流，常保乾燥清爽，徹底告別發黑發霉！
 
 2. **前排 4 組人體工學前推取放牙刷位（Four Precision Front-Release Berths）**：
    - **超寬 20mm 前景平台（20mm Front Terrace Clearance）**：後排收納艙前壁位於 $Y = 58.0\text{ mm}$，前排牙刷懸掛中心位於 $Y = 78.0\text{ mm}$，兩者淨空長達 **$20.0\text{ mm}$**！粗柄電動牙刷（直徑 $27\text{mm}$）後方保留充足的 **$6.5\text{ mm}$ 空氣餘裕**，抽插後排洗面乳或牙膏時手部與瓶身絕不碰撞前方牙刷頭！
@@ -114,7 +117,7 @@
 | 功能組件 | 旗艦大殿版（Grand 8-in-1） | 經典雅緻版（Compact 6-in-1） | 設計原理與功能優勢 |
 | :--- | :--- | :--- | :--- |
 | **外觀總尺寸** | **寬 204mm × 深 94mm × 高 88mm** | 寬 168mm × 深 94mm × 高 88mm | 支援標準 $220 \times 220$、$250 \times 210$、$256 \times 256$ 列印床 |
-| **後排收納艙** | **4 倉一體連貫長虹迴廊（寬 188mm × 深 50mm）**<br>• 2 洗面乳倉（$46 \times 44\text{mm}$，**相容 Ø44mm 厚圓蓋**）<br>• 2 牙膏倉（$36 \times 38\text{mm}$，**相容 Ø36mm 厚圓蓋**） | 2 倉獨立長虹艙（寬 90mm × 深 50mm）<br>• 2 牙膏倉（$36 \times 38\text{mm}$） | 洗面乳與牙膏各得其所，倒錐底漏斗 + $\varnothing 8\text{mm}$ 排水孔秒速自排空 |
+| **後排收納艙** | **4 倉一體連貫長虹迴廊（寬 188mm × 深 50mm）**<br>• 2 洗面乳倉（$46 \times 44\text{mm}$，**相容 Ø44mm 厚圓蓋**）<br>• 2 牙膏倉（$36 \times 38\text{mm}$，**相容 Ø36mm 厚圓蓋**） | 2 倉獨立長虹艙（寬 90mm × 深 50mm）<br>• 2 牙膏倉（$36 \times 38\text{mm}$） | 洗面乳與牙膏各得其所，倒錐底漏斗 + $\varnothing 14\text{mm}/\varnothing 12\text{mm}$ 全貫穿直通排水大孔 + 十字立體防密閉風道 |
 | **前排牙刷位** | **4 位（間距 44mm）**<br>$X = [-66, -22, +22, +66\text{mm}]$ | 4 位（間距 36mm）<br>$X = [-54, -18, +18, +54\text{mm}]$ | 左側 2 電動 + 右側 2 手動，與後艙精確同軸對齊 |
 | **建築托柱** | **5 組實心托柱（間距 44mm）**<br>4 處開闊通風艙（**寬度 36mm**） | 5 組實心托柱（間距 36mm）<br>4 處開闊通風艙（寬度 28mm） | 45° S 反曲鵝頸線，100% 免支撐列印 |
 | **熱床貼合面積** | **$> 3500\text{ mm}^2$**（連續地基底座） | $> 3000\text{ mm}^2$ | 徹底消除列印翹曲風險 |

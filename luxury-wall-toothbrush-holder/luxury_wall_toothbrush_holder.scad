@@ -261,13 +261,12 @@ module squircle_cavity(w, d, r, h) {
     }
 }
 
-module rear_storage_pod(style_type="fluted") {
+module rear_storage_pod_solid(style_type="fluted") {
     w = tp_pod_w;
     d = tp_pod_d;
     r = 16.0;
     z_base = h_shelf;
     h = tp_pod_h;
-    y_center = d_wall + d/2;
     
     difference() {
         union() {
@@ -314,52 +313,93 @@ module rear_storage_pod(style_type="fluted") {
             rotate([0, 90, 0])
                 rotate([0, 0, 45])
                     cube([1.6, 1.6, w*2], center=true);
-                    
-        // ---------------------------------------------------------------------
-        // 1. Center Twin Universal Toothpaste Wells
-        // Fits large thick circular standing flip-caps up to Ø36mm & 200g tubes
-        // Cavity: 36.0 x 38.0mm, corner radius 10mm
-        // ---------------------------------------------------------------------
-        tp_x = has_cleansers ? 22.0 : 18.0;
-        for (x_off = [-tp_x, tp_x]) {
-            translate([x_off, y_center, 0]) {
+    }
+}
+
+// Dedicated subtraction module penetrating BOTH storage pod AND shelf deck cleanly to open air below
+module rear_storage_cavities_and_drains() {
+    y_center = d_wall + tp_pod_d/2; // 33.0
+    z_base = h_shelf; // 36.0
+    h = tp_pod_h;     // 36.0
+    
+    // -------------------------------------------------------------------------
+    // 1. Center Twin Universal Toothpaste Wells
+    // Fits large thick circular standing flip-caps up to Ø36mm & 200g tubes
+    // Cavity: 36.0 x 38.0mm, corner radius 10mm
+    // 45° conical funnel down to Ø12.0mm vertical through-drain hole
+    // Cross-ventilation grooves (4mm x 2mm) across floor ensure drainage even when capped
+    // -------------------------------------------------------------------------
+    tp_x = has_cleansers ? 22.0 : 18.0;
+    for (x_off = [-tp_x, tp_x]) {
+        translate([x_off, y_center, 0]) {
+            // Main squircle cavity (from tp_floor_z up to top)
+            translate([0, 0, tp_floor_z]) {
+                squircle_cavity(36.0, 38.0, 10.0, h_total);
+            }
+            
+            // 45° Lead-in top rim funnel flare (smooth blind insertion)
+            translate([0, 0, z_base + h - 2.5])
+                cylinder(r1=36.0/2 - 2.0, r2=36.0/2 + 2.0, h=3.0);
+                
+            // 45° Conical drainage funnel (from Z=38.5 down to Z=34.5)
+            translate([0, 0, tp_floor_z - 4.0])
+                cylinder(r1=6.0, r2=10.0, h=4.01);
+                
+            // Ø12mm Vertical Through-Drain Hole penetrating through shelf deck to open air!
+            translate([0, 0, -5.0])
+                cylinder(d=12.0, h=tp_floor_z + 2.0);
+                
+            // Cross-ventilation / drainage grooves across cavity floor
+            translate([0, 0, tp_floor_z]) {
+                cube([36.0, 4.0, 2.0], center=true);
+                cube([4.0, 38.0, 2.0], center=true);
+            }
+        }
+    }
+    
+    // -------------------------------------------------------------------------
+    // 2. Twin Universal Facial Cleanser Wells (Grand Edition only)
+    // Fits large thick circular flip-caps up to Ø44mm & 150g tubes
+    // Cavity: 46.0 x 44.0mm, corner radius 12mm
+    // 45° conical funnel down to Ø14.0mm vertical through-drain hole
+    // Cross-ventilation grooves (4mm x 2mm) across floor ensure drainage even when capped
+    // -------------------------------------------------------------------------
+    if (has_cleansers) {
+        for (side = [-1, 1]) {
+            cx = side * 66.0;
+            translate([cx, y_center, 0]) {
+                // Main squircle cavity
                 translate([0, 0, tp_floor_z]) {
-                    squircle_cavity(36.0, 38.0, 10.0, h_total);
+                    squircle_cavity(46.0, 44.0, 12.0, h_total);
                 }
-                // 45° Lead-in top rim funnel flare (smooth blind insertion)
+                
+                // 45° Lead-in top rim funnel flare
                 translate([0, 0, z_base + h - 2.5])
-                    cylinder(r1=36.0/2 - 2.0, r2=36.0/2 + 2.0, h=3.0);
-                // 45° Conical drainage funnel + Ø8mm vertical drain hole
-                translate([0, 0, tp_floor_z - 0.01])
-                    cylinder(r1=4.0, r2=10.0, h=4.0);
+                    cylinder(r1=44.0/2 - 2.0, r2=44.0/2 + 2.0, h=3.0);
+                    
+                // 45° Conical drainage funnel (from Z=38.5 down to Z=33.5)
+                translate([0, 0, tp_floor_z - 5.0])
+                    cylinder(r1=7.0, r2=12.0, h=5.01);
+                    
+                // Ø14mm Vertical Through-Drain Hole penetrating through shelf deck to open air!
                 translate([0, 0, -5.0])
-                    cylinder(d=8.0, h=tp_floor_z + 10.0);
-            }
-        }
-        
-        // ---------------------------------------------------------------------
-        // 2. Twin Universal Facial Cleanser Wells (Grand Edition only)
-        // Fits large thick circular flip-caps up to Ø44mm & 150g tubes
-        // Cavity: 46.0 x 44.0mm, corner radius 12mm
-        // ---------------------------------------------------------------------
-        if (has_cleansers) {
-            for (side = [-1, 1]) {
-                cx = side * 66.0;
-                translate([cx, y_center, 0]) {
-                    translate([0, 0, tp_floor_z]) {
-                        squircle_cavity(46.0, 44.0, 12.0, h_total);
-                    }
-                    // 45° Lead-in top rim funnel flare
-                    translate([0, 0, z_base + h - 2.5])
-                        cylinder(r1=44.0/2 - 2.0, r2=44.0/2 + 2.0, h=3.0);
-                    // 45° Conical drainage funnel + Ø8mm vertical drain hole
-                    translate([0, 0, tp_floor_z - 0.01])
-                        cylinder(r1=4.0, r2=12.0, h=5.0);
-                    translate([0, 0, -5.0])
-                        cylinder(d=8.0, h=tp_floor_z + 10.0);
+                    cylinder(d=14.0, h=tp_floor_z + 2.0);
+                    
+                // Cross-ventilation / drainage grooves across cavity floor
+                translate([0, 0, tp_floor_z]) {
+                    cube([46.0, 4.0, 2.0], center=true);
+                    cube([4.0, 44.0, 2.0], center=true);
                 }
             }
         }
+    }
+}
+
+// Standalone backward-compatible wrapper
+module rear_storage_pod(style_type="fluted") {
+    difference() {
+        rear_storage_pod_solid(style_type);
+        rear_storage_cavities_and_drains();
     }
 }
 
@@ -467,7 +507,7 @@ module luxury_holder(style_type="fluted") {
             arch_backplate();
             five_sculpted_brackets(style_type);
             shelf_deck();
-            rear_storage_pod(style_type);
+            rear_storage_pod_solid(style_type);
         }
         
         // Dovetail slide-in mounting slot on rear
@@ -475,6 +515,10 @@ module luxury_holder(style_type="fluted") {
         
         // 4 Front-Release Toothbrush Berths
         four_front_release_berths();
+        
+        // Rear Storage Cavities, Conical Funnels, Floor Cross Grooves, and Vertical Through-Drains
+        // Cuts cleanly through both rear storage pod AND the 8mm solid shelf deck!
+        rear_storage_cavities_and_drains();
         
         // Clean cut at Z=0 ensuring 100% planar bed adhesion
         translate([0, 0, -50.0]) cube([500.0, 500.0, 100.0], center=true);
