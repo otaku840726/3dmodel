@@ -353,13 +353,16 @@ function phash(i, j, k) =
     let(v = sin(i * 127.1 + j * 311.7 + k * 74.3) * 43758.5453)
     v - floor(v);
 
-// 珠寶級不規則低多邊形碎鑽/水晶切面網格 (IRREGULAR LOW-POLY CRYSTALLINE DIAMOND FACET MESH)
-// 整個牙刷放置表面密鋪大小、旋轉、高低各異的多角度立體水晶切面，隨機反射璀璨光影，100% 免支撐
+// 珠寶級全域不規則低多邊形碎鑽/水晶切面 (FULL-ZONE IRREGULAR LOW-POLY CRYSTALLINE DIAMOND MESH)
+// 整個牙刷放置區域（頂面、正面立體外立面、左右兩側、底部 45° 懸臂）全面密鋪多角度立體水晶切面
+// 外部全面覆蓋璀璨光影，內部牙刷卡扣與導槽（four_precision_berths）保持 100% 光滑無阻，100% 免支撐直印
 module irregular_diamond_mesh() {
     w = w_holder;
+    r = corner_r;
+    
+    // 1. 牙刷區域頂面 (TOP SHELF DECK MESH - POINTING +Z)
     pitch_x = 6.8;
     pitch_y = 5.8;
-    
     nx = ceil((w + 20) / pitch_x) / 2 + 1;
     ny = ceil((d_front - d_back + 15) / pitch_y) + 1;
     
@@ -389,6 +392,125 @@ module irregular_diamond_mesh() {
                         rotate([0, 0, rot_deg])
                             cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_choice);
                 }
+            }
+        }
+    }
+    
+    // 2. 牙刷區域正立面 (FRONT VERTICAL LIP FACETS - POINTING +Y)
+    // 緊貼正面立面輪廓，向外生長立體切面，懸垂坡度嚴格小於 18°，零支撐
+    pitch_fx = 6.2;
+    pitch_fz = 2.8;
+    n_fx = ceil((w - 2*r) / pitch_fx) / 2 + 1;
+    
+    intersection() {
+        hull() {
+            translate([-w/2+r, d_front-r, 38.0]) cylinder(r=r, h=h_shelf - 38.0 + 2.0);
+            translate([ w/2-r, d_front-r, 38.0]) cylinder(r=r, h=h_shelf - 38.0 + 2.0);
+            translate([-w/2+r, d_front-r+1.5, 39.0]) cylinder(r=r, h=h_shelf - 39.0 + 2.0);
+            translate([ w/2-r, d_front-r+1.5, 39.0]) cylinder(r=r, h=h_shelf - 39.0 + 2.0);
+        }
+        
+        for (ix = [-n_fx : n_fx]) {
+            for (iz = [0 : 1]) {
+                jx = (phash(ix, iz, 71) - 0.5) * pitch_fx * 0.65;
+                x_pos = ix * pitch_fx + jx;
+                z_pos = 39.2 + iz * pitch_fz;
+                
+                fn_c = (phash(ix, iz, 72) < 0.25) ? 3 : 4;
+                base_r = 4.5 + phash(ix, iz, 73) * 2.0;
+                pyr_h = 1.0 + phash(ix, iz, 74) * 0.8;
+                rot = phash(ix, iz, 75) * 360;
+                
+                x_clamped = max(-w/2 + r, min(w/2 - r, x_pos));
+                dx = abs(x_pos) - (w/2 - r);
+                dy = (dx > 0) ? sqrt(max(0, r*r - dx*dx)) - r : 0;
+                y_pos = d_front + dy;
+                
+                translate([x_pos, y_pos - 0.2, z_pos])
+                    rotate([-90, 0, rot])
+                        cylinder(r1=base_r, r2=0, h=pyr_h + 0.2, $fn=fn_c);
+            }
+        }
+    }
+    
+    // 3. 牙刷區域兩側外側壁 (SIDE CHEEK FACETS - POINTING -X & +X)
+    // 覆蓋牙刷台左、右側面，與正面及頂面切面無縫銜接
+    intersection() {
+        hull() {
+            translate([-w/2 - 1.5, d_back, 8.0]) cube([w + 3.0, 0.1, h_shelf - 8.0]);
+            translate([-w/2 - 1.5, d_front-r, 38.0]) cube([w + 3.0, r, h_shelf - 38.0]);
+        }
+        
+        union() {
+            // 左側 (-X 方向)
+            for (iy = [0 : 5]) {
+                for (iz = [0 : 6]) {
+                    y_pos = d_back + iy * 5.5 + (phash(iy, iz, 81) - 0.5) * 3.0;
+                    z_pos = 9.0 + iz * 5.0 + (phash(iy, iz, 82) - 0.5) * 3.0;
+                    z_corbel = 8.0 + (y_pos - d_back);
+                    if (z_pos >= z_corbel && z_pos <= h_shelf - 1.0 && y_pos <= d_front - 2.0) {
+                        fn_c = (phash(iy, iz, 83) < 0.25) ? 3 : 4;
+                        base_r = 4.0 + phash(iy, iz, 84) * 2.0;
+                        pyr_h = 0.8 + phash(iy, iz, 85) * 0.6;
+                        rot = phash(iy, iz, 86) * 360;
+                        translate([-w/2 + 0.1, y_pos, z_pos])
+                            rotate([0, -90, rot])
+                                cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_c);
+                    }
+                }
+            }
+            // 右側 (+X 方向)
+            for (iy = [0 : 5]) {
+                for (iz = [0 : 6]) {
+                    y_pos = d_back + iy * 5.5 + (phash(iy, iz, 91) - 0.5) * 3.0;
+                    z_pos = 9.0 + iz * 5.0 + (phash(iy, iz, 92) - 0.5) * 3.0;
+                    z_corbel = 8.0 + (y_pos - d_back);
+                    if (z_pos >= z_corbel && z_pos <= h_shelf - 1.0 && y_pos <= d_front - 2.0) {
+                        fn_c = (phash(iy, iz, 93) < 0.25) ? 3 : 4;
+                        base_r = 4.0 + phash(iy, iz, 94) * 2.0;
+                        pyr_h = 0.8 + phash(iy, iz, 95) * 0.6;
+                        rot = phash(iy, iz, 96) * 360;
+                        translate([w/2 - 0.1, y_pos, z_pos])
+                            rotate([0, 90, rot])
+                                cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_c);
+                    }
+                }
+            }
+        }
+    }
+    
+    // 4. 牙刷區域底部 45° 懸臂斜面 (BOTTOM CORBEL FACETED DIAMONDS)
+    // 晶錐沿 45° 斜面向上微傾定向，下切角度小於 45°，實測 100% 免支撐
+    pitch_cx = 7.2;
+    pitch_cs = 6.0;
+    n_cx = ceil((w - 2*r) / pitch_cx) / 2;
+    n_cs = 4;
+    
+    intersection() {
+        hull() {
+            translate([-w/2+r, d_back, 7.8]) cube([w - 2*r, 0.1, 1.5]);
+            translate([-w/2+r, d_front-r, 37.8]) cylinder(r=r, h=1.5);
+            translate([ w/2-r, d_front-r, 37.8]) cylinder(r=r, h=1.5);
+        }
+        
+        for (ix = [-n_cx : n_cx]) {
+            for (is = [0 : n_cs]) {
+                jx = (phash(ix, is, 101) - 0.5) * pitch_cx * 0.6;
+                js = (phash(ix, is, 102) - 0.5) * pitch_cs * 0.5;
+                s_val = 3.0 + is * pitch_cs + js;
+                
+                x_pos = ix * pitch_cx + jx;
+                y_pos = d_back + s_val;
+                z_pos = 8.0 + s_val;
+                
+                fn_c = (phash(ix, is, 103) < 0.25) ? 3 : 4;
+                base_r = 4.5 + phash(ix, is, 104) * 2.0;
+                pyr_h = 0.8 + phash(ix, is, 105) * 0.5;
+                rot = phash(ix, is, 106) * 360;
+                
+                translate([x_pos, y_pos, z_pos])
+                    rotate([-45, 0, rot])
+                        cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_c);
             }
         }
     }

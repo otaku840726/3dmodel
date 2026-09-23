@@ -5,7 +5,7 @@ SCAD="$DIR/luxury_wall_toothbrush_holder.scad"
 RENDERS="$DIR/renders"
 
 echo "Rendering 3 Styles Comparison..."
-openscad --camera=0,30,15,60,0,195,1350 --imgsize=1600,900 --colorscheme=Cornfield \
+openscad --csglimit=1000000 --camera=0,30,15,60,0,195,1350 --imgsize=1600,900 --colorscheme=Cornfield \
     -D 'mode="all_styles"' -o "$RENDERS/rose_gold_3styles_comparison.png" "$SCAD"
 
 echo "Rendering Fluted Assembled Perspective (Front-Release Action)..."
