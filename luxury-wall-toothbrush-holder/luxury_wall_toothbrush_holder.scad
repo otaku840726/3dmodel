@@ -25,9 +25,9 @@ Designed specifically for Rose Gold / Silk Metallic FDM 3D Printing:
   family toothpastes, facial cleansers, or extra electric toothbrushes/shavers.
 - Modular Slide-in Dovetail Wall Bracket (3M VHB tape flat bed + countersunk screw holes)
 - 3 Distinct Luxury Aesthetics in Rose Gold:
-    1. "fluted"  - 輕奢羅馬柱豎條紋 + 珠寶級密鋪鑽石網格展台 (Fluted Columns + Diamond Mesh Deck)
+    1. "fluted"  - 輕奢羅馬柱豎條紋 + 珠寶級不規則碎鑽水晶展台 (Fluted Columns + Irregular Diamond Crystalline Mesh)
     2. "curved"  - 現代意式極簡流線 (Cascading Organic Streamlines with Accent Grooves)
-    3. "faceted" - 幾何菱格切面 + 密鋪鑽石網格展台 (Architectural Faceted + Diamond Mesh Deck)
+    3. "faceted" - 幾何菱格切面 + 不規則碎鑽水晶展台 (Architectural Faceted + Irregular Diamond Mesh)
 
 Units: millimeters (mm)
 ================================================================================
@@ -335,7 +335,7 @@ module base_holder_structure() {
 // =============================================================================
 
 // Bounding mask of the front shelf (for trimming diamond mesh cleanly to outer contour)
-module shelf_top_mask(extra_h=2.0) {
+module shelf_top_mask(extra_h=3.5) {
     w = w_holder;
     r = corner_r;
     hull() {
@@ -348,29 +348,53 @@ module shelf_top_mask(extra_h=2.0) {
     }
 }
 
-// 珠寶級立體密鋪鑽石金字塔網格 (SEAMLESS DIAMOND FACET MESH ACROSS ENTIRE TOOTHBRUSH SHELF)
-// 整個牙刷放置表面密鋪 4 面體立體鑽石金字塔，折射璀璨各向異性金屬光澤，100% 免支撐
-module diamond_mesh_top_shelf(cell_size=6.0, h_pyr=1.4) {
-    R = cell_size / sqrt(2);
-    nx = ceil((w_holder + 10) / cell_size) / 2 + 1;
-    ny = ceil((d_front - d_back + 10) / cell_size) + 1;
+// Deterministic pseudo-random hash function for organic crystal variance
+function phash(i, j, k) =
+    let(v = sin(i * 127.1 + j * 311.7 + k * 74.3) * 43758.5453)
+    v - floor(v);
+
+// 珠寶級不規則低多邊形碎鑽/水晶切面網格 (IRREGULAR LOW-POLY CRYSTALLINE DIAMOND FACET MESH)
+// 整個牙刷放置表面密鋪大小、旋轉、高低各異的多角度立體水晶切面，隨機反射璀璨光影，100% 免支撐
+module irregular_diamond_mesh() {
+    w = w_holder;
+    pitch_x = 6.8;
+    pitch_y = 5.8;
+    
+    nx = ceil((w + 20) / pitch_x) / 2 + 1;
+    ny = ceil((d_front - d_back + 15) / pitch_y) + 1;
     
     intersection() {
-        shelf_top_mask(extra_h=h_pyr);
+        shelf_top_mask(extra_h=3.0);
         
-        translate([0, d_back, h_shelf - 0.05]) {
+        translate([0, d_back, h_shelf - 0.1]) {
             for (ix = [-nx : nx]) {
                 for (iy = [0 : ny]) {
-                    translate([ix * cell_size, iy * cell_size, 0])
-                        rotate([0, 0, 45])
-                            cylinder(r1=R, r2=0, h=h_pyr + 0.05, $fn=4);
+                    // Jittered position (有機錯位)
+                    jx = (phash(ix, iy, 1) - 0.5) * pitch_x * 0.70;
+                    jy = (phash(ix, iy, 2) - 0.5) * pitch_y * 0.70;
+                    
+                    // Mix of 3-sided and 4-sided faceted crystal pyramids
+                    fn_choice = (phash(ix, iy, 3) < 0.25) ? 3 : 4;
+                                
+                    // Overlapping base size: 6.5mm to 10.0mm
+                    base_r = (6.5 + phash(ix, iy, 4) * 3.5);
+                    
+                    // Organic varied heights: 1.2mm to 2.4mm
+                    pyr_h = 1.2 + phash(ix, iy, 5) * 1.4;
+                    
+                    // Asymmetrical rotation angle (0° to 360°)
+                    rot_deg = phash(ix, iy, 6) * 360;
+                    
+                    translate([ix * pitch_x + jx, iy * pitch_y + jy, 0])
+                        rotate([0, 0, rot_deg])
+                            cylinder(r1=base_r, r2=0, h=pyr_h + 0.1, $fn=fn_choice);
                 }
             }
         }
     }
 }
 
-// STYLE 1: 輕奢羅馬柱豎條紋 + 珠寶級密鋪鑽石網格展台 (FLUTED REEDED REAR + DIAMOND MESH FRONT)
+// STYLE 1: 輕奢羅馬柱豎條紋 + 不規則碎鑽水晶切面展台 (FLUTED REEDED REAR + IRREGULAR DIAMOND MESH FRONT)
 module holder_style_fluted() {
     w = w_holder;
     r = corner_r;
@@ -391,8 +415,8 @@ module holder_style_fluted() {
             translate([ w/2, y, 0]) cylinder(r=rib_r, h=h_back);
         }
         
-        // 牙刷放置區域全面密鋪立體鑽石網格 (Seamless Diamond Faceted Mesh)
-        diamond_mesh_top_shelf(cell_size=6.0, h_pyr=1.4);
+        // 牙刷放置區域全面密鋪不規則低多邊形碎鑽切面網格 (Irregular Crystalline Diamond Mesh)
+        irregular_diamond_mesh();
     }
 }
 
@@ -430,8 +454,8 @@ module holder_style_faceted() {
     difference() {
         union() {
             base_holder_structure();
-            // Diamond mesh across the front toothbrush shelf
-            diamond_mesh_top_shelf(cell_size=6.0, h_pyr=1.4);
+            // Irregular diamond mesh across the front toothbrush shelf
+            irregular_diamond_mesh();
         }
         
         // Faceted angular cuts on the outer top corners
