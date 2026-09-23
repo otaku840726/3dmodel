@@ -1,25 +1,21 @@
 // =============================================================================
-// LUXURY WALL-MOUNTED TOOTHBRUSH & TOOTHPASTE ORGANIZER
+// LUXURY WALL-MOUNTED ORGANIZER (ROMAN PALAZZO COLONNADE)
 // Support-Free FDM 3D Printable (Tailored for Rose Gold Silk Metallic PLA)
-// Architectural Language: Roman Palazzo Colonnade Console
+// Configurable Suite: Grand Edition (2 Cleansers + 2 Toothpastes + 4 Toothbrushes)
+//                 or: Compact Edition (2 Toothpastes + 4 Toothbrushes)
 // =============================================================================
 // Design Highlights:
-//  - 4 Front-Release Toothbrush Berths (Zero vertical clearance conflict under mirror cabinets)
-//    * Left 2 Electric Berths: Ø19mm conical anti-drop seat, 10.5mm flared keyhole throat
-//    * Right 2 Manual Berths: Ø14.5mm conical anti-drop seat, 7.0mm flared keyhole throat
-//    * Generous 20mm clearance from rear pod -> Zero collision with brush heads
-//  - 5 Sculpted Architectural Modillion Pilasters (10mm wide solid Tuscan consoles)
-//    * Classical 45° S-curved cyma reversa profile (dz/dy >= 1.0 everywhere)
-//    * Continuous plinth at Z=0 uniting all 5 brackets with backplate (>2400mm² bed contact)
-//    * 4 Open-Air Bays (26mm wide) directly beneath toothbrushes -> Zero mold, instant drainage
-//  - Elevated Toothpaste Pod (Twin hygienic wells fitting 2x 200g oversized tubes)
-//    * Self-evacuating 45° conical funnels + Ø8mm through-drain channels to open air
-//  - Architectural Tablet Backplate with Stepped Molding
-//    * Clean, harmonious rounded tablet silhouette (W=168mm, H=84mm, R=10mm)
-//    * Framed molding relief on front face, concealed dovetail receiver on rear
-//  - Universal No-Drill / Screw Mount System
-//    * Concealed sliding dovetail bracket with 0.3mm print-in-place slide tolerance
-//    * Dual 3M Command / VHB tape channels + 2x countersunk screw anchors
+//  - Grand 8-in-1 Suite Architecture (204mm width):
+//    * 2 Facial Cleanser Chambers (Left & Right, 44x18mm, fitting 100-150g tubes)
+//    * 2 Oversized Toothpaste Chambers (Center, 32x17mm, fitting 200g tubes)
+//    * 4 Self-Evacuating 45° Conical Drainage Funnels + Ø8mm Vertical Drain Ports
+//    * 4 Front-Release Toothbrush Berths (2 Electric + 2 Manual, Pitch 42mm)
+//    * 5 Sculpted Architectural Tuscan Modillion Pilasters (10mm wide)
+//    * 4 Wide Open-Air Under-Bays (32mm open clearance) -> Instant vertical drainage
+//    * Continuous Baseline Plinth at Z=0 (>2800mm² bed contact) -> Zero warping
+//    * 8mm Slender Floating Cantilever Deck with R=10mm rounded corners
+//  - Universal No-Drill / Screw Mount System:
+//    * Concealed sliding dovetail bracket with 0.3mm tolerance and stop ceiling
 //  - Three Distinct Luxury Styles:
 //    * "fluted": Roman Palazzo vertical fluted reeding (silk PLA specular highlights)
 //    * "curved": Minimalist Satin Curve (pure continuous tangential curvature)
@@ -29,42 +25,47 @@
 $fn = 60;
 
 // User / Build Parameters
-style = "fluted";     // "fluted" | "curved" | "faceted"
-mode  = "holder";     // "holder" | "bracket" | "plate" | "assembled" | "all_styles"
+edition = "grand";    // "grand" (204mm with 2 Cleansers) | "compact" (168mm)
+style   = "fluted";   // "fluted" | "curved" | "faceted"
+mode    = "holder";   // "holder" | "bracket" | "plate" | "assembled" | "all_styles"
+
+has_cleansers = (edition == "grand");
 
 // Dimensions & Mechanical Specifications
-w_total     = 168.0;   // Overall width (X)
-d_shelf     = 66.0;    // Front shelf edge (Y)
+w_total     = has_cleansers ? 204.0 : 168.0;
+d_shelf     = 68.0;    // Front shelf edge (Y)
 d_wall      = 8.0;     // Backplate thickness (Y)
 h_total     = 84.0;    // Total backplate height (Z)
 h_shelf     = 36.0;    // Shelf top deck level (Z)
 th_shelf    = 8.0;     // Slender shelf deck thickness (Z = 28 to 36)
 z_shelf_bot = h_shelf - th_shelf; // 28.0
 
-// Toothbrush Stations (4 Berths at Y = 52.0)
-// Pitch = 36mm: X = [-54, -18, +18, +54]
-tb_pitch   = 36.0;
-tb_y       = 52.0;
+r_corner    = 10.0;    // Corner radius for backplate and shelf
 
-// Electric Berths (Left 2: X = -54, -18)
+// Toothbrush Stations (4 Berths at Y = 53.0)
+// Grand: Pitch = 42mm: X = [-63, -21, +21, +63]
+// Compact: Pitch = 36mm: X = [-54, -18, +18, +54]
+tb_pitch   = has_cleansers ? 42.0 : 36.0;
+tb_y       = 53.0;
+
+// Electric Berths (Left 2)
 elec_slot     = 10.5;
 elec_hole_d   = 13.0;
 elec_cup_d    = 19.0;
 elec_mouth_w  = 20.0;
 
-// Manual Berths (Right 2: X = +18, +54)
+// Manual Berths (Right 2)
 manu_slot     = 7.0;
 manu_hole_d   = 8.5;
 manu_cup_d    = 14.5;
 manu_mouth_w  = 16.0;
 
-// Rear Toothpaste Pod (Center-Rear: pill/capsule shape)
-tp_pod_w    = 84.0;
-tp_pod_d    = 24.0;    // Y = 8.0 to 32.0 (Leaves 20mm clearance to tb_y=52.0)
+// Rear Storage Pod (Center-Rear: pill/capsule shape)
+// Grand: W = 186.0 (2 Cleansers + 2 Toothpastes)
+// Compact: W = 84.0 (2 Toothpastes)
+tp_pod_w    = has_cleansers ? 186.0 : 84.0;
+tp_pod_d    = 24.0;    // Y = 8.0 to 32.0 (Leaves 21mm clearance to tb_y=53.0)
 tp_pod_h    = 36.0;    // Height above shelf: Z = 36 to 72
-tp_well_w   = 35.0;
-tp_well_d   = 17.0;
-tp_well_x   = 21.0;
 tp_floor_z  = h_shelf + 2.5;
 
 // Wall Bracket & Dovetail
@@ -75,8 +76,6 @@ dove_th    = 4.4;
 dove_w_top = 26.0;
 dove_w_bot = 22.0;
 dove_angle = 12.0;
-
-r_corner   = 10.0;     // Corner radius for backplate and shelf
 
 // Rose Gold Material Colors
 rose_gold_base  = [0.88, 0.58, 0.52];
@@ -92,7 +91,7 @@ wall_tile_color = [0.94, 0.95, 0.96];
 module wall_bracket() {
     difference() {
         union() {
-            // Flat base plate (Z = 0 to bracket_th, >1500mm² 100% flat bed contact)
+            // Flat base plate (Z = 0 to bracket_th, >1500mm² flat bed contact)
             hull() {
                 translate([-bracket_w/2+4, 4, 0]) cylinder(r=4, h=bracket_th);
                 translate([ bracket_w/2-4, 4, 0]) cylinder(r=4, h=bracket_th);
@@ -169,10 +168,10 @@ module arch_backplate() {
 
 
 // =============================================================================
-// 3. FIVE SCULPTED ARCHITECTURAL MODILLION PILASTERS (五組古典牛腿托柱拱筋)
+// 3. FIVE SCULPTED ARCHITECTURAL MODILLION PILASTERS (五組古典牛腿托樑柱)
 // Rising from Z=0 to Z=z_shelf_bot=28 with strictly <= 45° overhang
-// Positioned at X = [-72, -36, 0, +36, +72]
-// Interleaved with 4 toothbrush stations -> 4 wide open-air bays (26mm)!
+// Grand Edition: X = [-84, -42, 0, +42, +84] (Interleaved with 4 bays, pitch 42)
+// Compact Edition: X = [-72, -36, 0, +36, +72] (Interleaved with 4 bays, pitch 36)
 // =============================================================================
 module five_sculpted_brackets(style_type="fluted") {
     b_w = 10.0; // 10mm wide solid architectural presence
@@ -188,7 +187,9 @@ module five_sculpted_brackets(style_type="fluted") {
         [ d_wall,        z_shelf_bot]
     ];
     
-    for (x_b = [-72.0, -36.0, 0.0, 36.0, 72.0]) {
+    x_list = has_cleansers ? [-84.0, -42.0, 0.0, 42.0, 84.0] : [-72.0, -36.0, 0.0, 36.0, 72.0];
+    
+    for (x_b = x_list) {
         translate([x_b - b_w/2, 0, 0]) {
             rotate([90, 0, 90]) {
                 linear_extrude(height = b_w)
@@ -206,7 +207,7 @@ module five_sculpted_brackets(style_type="fluted") {
         }
     }
     
-    // Continuous baseline plinth tying all 5 brackets together at Z=0 (>2400mm² bed adhesion)
+    // Continuous baseline plinth tying all 5 brackets together at Z=0
     translate([-w_total/2 + r_corner, d_wall, 0])
         cube([w_total - 2*r_corner, 8.0, 3.0]);
 }
@@ -214,7 +215,7 @@ module five_sculpted_brackets(style_type="fluted") {
 
 // =============================================================================
 // 4. FLOATING CANTILEVER SHELF DECK (8mm 纖薄懸浮展台)
-// Pure floating deck from Y=0 to d_shelf=66.0, rounded front corners R=10
+// Pure floating deck from Y=0 to d_shelf=68.0, rounded front corners R=10
 // =============================================================================
 module shelf_deck() {
     w = w_total;
@@ -242,9 +243,11 @@ module shelf_deck() {
 
 
 // =============================================================================
-// 5. TOOTHPASTE POD (獨立橢圓羅馬柱牙膏艙)
+// 5. REAR STORAGE GALLERY (後排長虹柱面收納大艙)
+// Grand Edition: 4 Chambers (2 Facial Cleansers + 2 Toothpastes)
+// Compact Edition: 2 Chambers (2 Toothpastes)
 // =============================================================================
-module toothpaste_pod(style_type="fluted") {
+module rear_storage_pod(style_type="fluted") {
     w = tp_pod_w;
     d = tp_pod_d;
     r = d / 2;
@@ -262,15 +265,13 @@ module toothpaste_pod(style_type="fluted") {
             // Fluted Reeding Columns (Palazzo Fluting)
             if (style_type == "fluted") {
                 pitch = 3.6;
-                n_front = floor((w - 2*r) / pitch);
-                for (i = [-n_front/2 : n_front/2]) {
-                    x = i * pitch;
+                for (x = [-w/2 + r : pitch : w/2 - r]) {
                     translate([x, d_wall + d, z_base])
                         cylinder(r=1.5, h=h, $fn=20);
                 }
                 for (side = [-1, 1]) {
                     cx = side * (w/2 - r);
-                    for (a = [-70 : 25 : 70]) {
+                    for (a = [-75 : 20 : 75]) {
                         rad = a * side;
                         translate([cx + sin(rad)*(r + 0.1), d_wall + r + cos(rad)*(r + 0.1), z_base])
                             cylinder(r=1.5, h=h, $fn=16);
@@ -281,9 +282,7 @@ module toothpaste_pod(style_type="fluted") {
             // Faceted diamond ribs for 'faceted' style
             if (style_type == "faceted") {
                 pitch = 6.0;
-                n_front = floor((w - 2*r) / pitch);
-                for (i = [-n_front/2 : n_front/2]) {
-                    x = i * pitch;
+                for (x = [-w/2 + r : pitch : w/2 - r]) {
                     translate([x, d_wall + d - 0.5, z_base])
                         rotate([0, 0, 45])
                             cube([2.2, 2.2, h]);
@@ -297,23 +296,45 @@ module toothpaste_pod(style_type="fluted") {
                 rotate([0, 0, 45])
                     cube([1.6, 1.6, w*2], center=true);
                     
-        // Twin Silky Smooth Hygienic Well Cavities
-        for (x_off = [-tp_well_x, tp_well_x]) {
+        // 1. Center Twin Toothpaste Wells (2x 200g tubes)
+        tp_x = 21.0;
+        for (x_off = [-tp_x, tp_x]) {
             translate([x_off, d_wall + d/2, 0]) {
                 translate([0, 0, tp_floor_z]) {
                     hull() {
-                        translate([-tp_well_w/2 + 4.5, -tp_well_d/2 + 4.5, 0]) cylinder(r=4.5, h=h_total);
-                        translate([ tp_well_w/2 - 4.5, -tp_well_d/2 + 4.5, 0]) cylinder(r=4.5, h=h_total);
-                        translate([-tp_well_w/2 + 4.5,  tp_well_d/2 - 4.5, 0]) cylinder(r=4.5, h=h_total);
-                        translate([ tp_well_w/2 - 4.5,  tp_well_d/2 - 4.5, 0]) cylinder(r=4.5, h=h_total);
+                        translate([-32.0/2 + 4.0, -17.0/2 + 4.0, 0]) cylinder(r=4.0, h=h_total);
+                        translate([ 32.0/2 - 4.0, -17.0/2 + 4.0, 0]) cylinder(r=4.0, h=h_total);
+                        translate([-32.0/2 + 4.0,  17.0/2 - 4.0, 0]) cylinder(r=4.0, h=h_total);
+                        translate([ 32.0/2 - 4.0,  17.0/2 - 4.0, 0]) cylinder(r=4.0, h=h_total);
                     }
                 }
-                // 45° Conical drainage funnel (instant self-evacuation)
+                // 45° Conical drainage funnel + Ø8mm vertical drain hole
                 translate([0, 0, tp_floor_z - 0.01])
                     cylinder(r1=3.5, r2=7.5, h=3.0);
-                // Ø8mm vertical drain hole through shelf to open air
                 translate([0, 0, -5.0])
                     cylinder(d=8.0, h=tp_floor_z + 10.0);
+            }
+        }
+        
+        // 2. Twin Facial Cleanser Wells (Grand Edition only: X = -65, +65)
+        if (has_cleansers) {
+            for (side = [-1, 1]) {
+                cx = side * 65.0;
+                translate([cx, d_wall + d/2, 0]) {
+                    translate([0, 0, tp_floor_z]) {
+                        hull() {
+                            translate([-44.0/2 + 6.0, -18.0/2 + 6.0, 0]) cylinder(r=6.0, h=h_total);
+                            translate([ 44.0/2 - 6.0, -18.0/2 + 6.0, 0]) cylinder(r=6.0, h=h_total);
+                            translate([-44.0/2 + 6.0,  18.0/2 - 6.0, 0]) cylinder(r=6.0, h=h_total);
+                            translate([ 44.0/2 - 6.0,  18.0/2 - 6.0, 0]) cylinder(r=6.0, h=h_total);
+                        }
+                    }
+                    // 45° Conical drainage funnel + Ø8mm vertical drain hole
+                    translate([0, 0, tp_floor_z - 0.01])
+                        cylinder(r1=4.0, r2=8.5, h=3.0);
+                    translate([0, 0, -5.0])
+                        cylinder(d=8.0, h=tp_floor_z + 10.0);
+                }
             }
         }
     }
@@ -326,8 +347,8 @@ module toothpaste_pod(style_type="fluted") {
 // =============================================================================
 module four_front_release_berths() {
     for (i = [0:3]) {
-        x_pos = (i - 1.5) * tb_pitch; // -54, -18, +18, +54
-        is_elec = (i < 2);
+        x_pos = (i - 1.5) * tb_pitch;
+        is_elec = (x_pos > 0);
         
         slot_w  = is_elec ? elec_slot    : manu_slot;
         hole_d  = is_elec ? elec_hole_d  : manu_hole_d;
@@ -426,7 +447,7 @@ module luxury_holder(style_type="fluted") {
             arch_backplate();
             five_sculpted_brackets(style_type);
             shelf_deck();
-            toothpaste_pod(style_type);
+            rear_storage_pod(style_type);
         }
         
         // Dovetail slide-in mounting slot on rear
@@ -436,7 +457,7 @@ module luxury_holder(style_type="fluted") {
         four_front_release_berths();
         
         // Clean cut at Z=0 ensuring 100% planar bed adhesion
-        translate([0, 0, -50.0]) cube([400.0, 400.0, 100.0], center=true);
+        translate([0, 0, -50.0]) cube([500.0, 500.0, 100.0], center=true);
     }
 }
 
@@ -489,9 +510,9 @@ module manual_toothbrush_prop(color_grip=[0.2, 0.7, 0.8]) {
             translate([0, 0, 10.0]) {
                 hull() {
                     cylinder(d=11.0, h=4.0);
-                    translate([0, -8.0, 0]) cylinder(d=9.0, h=4.0);
+                    translate([0, 8.0, 0]) cylinder(d=9.0, h=4.0);
                 }
-                translate([0, -4.0, 4.0]) cube([5.5, 14.0, 8.5], center=true);
+                translate([0, 4.0, 4.0]) cube([5.5, 14.0, 8.5], center=true);
             }
     }
 }
@@ -507,11 +528,22 @@ module toothpaste_tube_prop(color_tube=[0.22, 0.58, 0.88]) {
     }
 }
 
+module cleanser_tube_prop(color_tube=[0.85, 0.90, 0.95]) {
+    color(color_tube) {
+        cylinder(d=32.0, h=16.0);
+        translate([0, 0, 16.0])
+            scale([1.25, 0.70, 1.0])
+                cylinder(r1=16.0, r2=19.0, h=80.0);
+        translate([0, 0, 96.0])
+            cube([44.0, 3.5, 12.0], center=true);
+    }
+}
+
 module preview_assembled(style_type="fluted") {
     // Wall Tile
     color(wall_tile_color)
         translate([0, -2.0, 45.0])
-            cube([260.0, 4.0, 280.0], center=true);
+            cube([w_total + 80.0, 4.0, 280.0], center=true);
             
     // Wall Bracket (mounted to wall)
     color([0.35, 0.35, 0.38])
@@ -523,17 +555,30 @@ module preview_assembled(style_type="fluted") {
     color(rose_gold_base)
         luxury_holder(style_type);
         
-    // 4 Hanging Toothbrushes
-    translate([-54.0, 0, 0]) electric_toothbrush_prop([0.96, 0.96, 0.96], rose_gold_base);
-    translate([-18.0, 0, 0]) electric_toothbrush_prop([0.22, 0.22, 0.25], accent_brass);
-    translate([ 18.0, 0, 0]) manual_toothbrush_prop([0.20, 0.72, 0.82]);
-    translate([ 54.0, 0, 0]) manual_toothbrush_prop([0.92, 0.45, 0.50]);
+    // 4 Hanging Toothbrushes (Left to Right from User Facing View: +X to -X)
+    x_elec1 =  1.5 * tb_pitch; // Leftmost: Electric 1
+    x_elec2 =  0.5 * tb_pitch; // Center-Left: Electric 2
+    x_manu1 = -0.5 * tb_pitch; // Center-Right: Manual 1
+    x_manu2 = -1.5 * tb_pitch; // Rightmost: Manual 2
     
-    // 2 Toothpastes in Pod
-    translate([-tp_well_x, d_wall + tp_pod_d/2, tp_floor_z])
-        toothpaste_tube_prop([0.20, 0.58, 0.85]);
-    translate([ tp_well_x, d_wall + tp_pod_d/2, tp_floor_z])
+    translate([x_elec1, 0, 0]) electric_toothbrush_prop([0.96, 0.96, 0.96], rose_gold_base);
+    translate([x_elec2, 0, 0]) electric_toothbrush_prop([0.22, 0.22, 0.25], accent_brass);
+    translate([x_manu1, 0, 0]) manual_toothbrush_prop([0.20, 0.72, 0.82]);
+    translate([x_manu2, 0, 0]) manual_toothbrush_prop([0.92, 0.45, 0.50]);
+    
+    // 2 Toothpastes in Center Pod (Left: +21, Right: -21)
+    translate([ 21.0, d_wall + tp_pod_d/2, tp_floor_z])
         toothpaste_tube_prop([0.88, 0.30, 0.35]);
+    translate([-21.0, d_wall + tp_pod_d/2, tp_floor_z])
+        toothpaste_tube_prop([0.20, 0.58, 0.85]);
+        
+    // 2 Facial Cleansers on Flanks (Grand Edition: Left: +65, Right: -65)
+    if (has_cleansers) {
+        translate([ 65.0, d_wall + tp_pod_d/2, tp_floor_z])
+            cleanser_tube_prop([0.22, 0.40, 0.72]);
+        translate([-65.0, d_wall + tp_pod_d/2, tp_floor_z])
+            cleanser_tube_prop([0.92, 0.92, 0.95]);
+    }
 }
 
 
@@ -545,13 +590,14 @@ if (mode == "holder") {
 } else if (mode == "bracket") {
     color([0.35, 0.35, 0.38]) wall_bracket();
 } else if (mode == "plate") {
-    // 1-Plate Combo: Compact 168mm x 112mm footprint at Z=0
+    // 1-Plate Combo: Compact footprint at Z=0
     color(rose_gold_base) luxury_holder(style);
     color([0.35, 0.35, 0.38]) translate([0, 75.0, 0]) wall_bracket();
 } else if (mode == "assembled") {
     preview_assembled(style);
 } else if (mode == "all_styles") {
-    translate([-190.0, 0, 0]) preview_assembled("fluted");
-    translate([   0.0, 0, 0]) preview_assembled("curved");
-    translate([ 190.0, 0, 0]) preview_assembled("faceted");
+    spacing = w_total + 25.0;
+    translate([-spacing, 0, 0]) preview_assembled("fluted");
+    translate([      0.0, 0, 0]) preview_assembled("curved");
+    translate([ spacing, 0, 0]) preview_assembled("faceted");
 }
