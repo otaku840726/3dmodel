@@ -1,18 +1,25 @@
 /*
 ================================================================================
-Luxury Wall-Mounted Organizer: Front-Release Toothbrush Cradles + Twin Toothpastes
-(奢華輕奢壁掛式全能置物架 - 前推前取懸掛牙刷座 + 後排雙超大牙膏艙)
+Luxury Wall-Mounted Organizer: Front-Release Anti-Drop Toothbrush Berths + Twin Toothpastes
+(奢華輕奢壁掛式全能置物架 - 前推前取防掉落懸掛牙刷座 + 後排雙超大牙膏艙)
 
 Designed specifically for Rose Gold / Silk Metallic FDM 3D Printing:
 - 100% Support-Free Printing (Pointed-arch ceilings, 45° self-supporting corbels, 0 support alert)
-- DIRECT FRONT INSERTION & RETRIEVAL (直接從前方推入與取出，無須上下抬放):
-  * Front Tier (H=48mm): 4 Front-Loading Cantilevered Cradles (X = -54, -18, +18, +54)
-    holding toothbrushes at the upper neck / brush head transition.
-  * Direct Horizontal Action: Push horizontally to dock, pull horizontally forward to release!
-    Zero vertical clearance required — ideal under mirror cabinets and shelves!
-  * Universal Fit: Accommodates thick electric toothbrush necks (Oral-B iO/Pro, Sonicare,
-    Xiaomi) in the 13.5mm saddle with 24mm flared lead-in, and manual toothbrushes in the
-    inner 8.5mm rear notch.
+- PROPER PRECISION APERTURES & ANTI-DROP RETENTION CUPS (精密開孔與防掉落沉孔結構):
+  * Monolithic Continuous Shelf (一體式輕奢平整展台, W=160mm, H=46mm)
+  * Dual-Format Dedicated Berths (左側雙電動 + 右側雙手動，共4個獨立懸掛位):
+    - Berths 1 & 2 (Left, X = -54, -18): Electric Toothbrushes (Oral-B iO/Pro, Sonicare, Xiaomi)
+      * Slot Throat: 10.5mm with 16mm flared front lead-in
+      * Through Hole: Ø12.8mm (prevents handle collar drop-through)
+      * Retention Cup: Ø18.5mm, 4.5mm deep (seats handle collar, locked from forward falling)
+    - Berths 3 & 4 (Right, X = +18, +54): Manual Toothbrushes (Colgate, Oral-B, Darlie, Curaprox)
+      * Slot Throat: 7.0mm with 12mm flared front lead-in
+      * Through Hole: Ø8.8mm
+      * Retention Cup: Ø13.5mm, 4.5mm deep (seats brush head transition)
+      * 100% Anti-Drop: Throat (7.0mm) is MUCH narrower than brush head (11.5-13mm) and
+        handle (11-14mm). Toothbrush CANNOT fall forward, slip out, or slide down!
+  * Direct Front Insertion & Retrieval (直接從前方推入與取出):
+    Zero vertical clearance required — effortlessly slide in/out under low mirror cabinets!
   * 360° Open Air Drip: Handles hang freely in open air; zero standing water, zero mold!
 - Rear Tier (H=66mm, Depth 56mm): 2 Generous Compartments (50mm x 26mm) for 200g
   family toothpastes, facial cleansers, or extra electric toothbrushes/shavers.
@@ -38,7 +45,7 @@ style = "fluted";
 // "holder"     - Main front-release organizer body (for selected style)
 // "bracket"    - Wall mounting slide bracket (fits all styles)
 // "plate"      - 1-Plate combo (Holder + Bracket on Z=0 bed)
-// "assembled"  - Full color assembled wall preview with front-hung electric toothbrushes & toothpastes
+// "assembled"  - Full color assembled wall preview with toothbrushes & toothpastes
 // "all_styles" - Side-by-side visual comparison of all 3 styles in Rose Gold
 mode = "holder";
 
@@ -47,17 +54,28 @@ mode = "holder";
 // -----------------------------------------------------------------------------
 w_holder     = 160.0;   // Overall width (X)
 d_back       = 36.0;    // Depth of rear toothpaste tier (Y)
-d_front      = 68.0;    // Total depth to tip of front cantilevered cradles (Y)
+d_front      = 68.0;    // Depth of front continuous shelf (Y)
 h_back       = 66.0;    // Rear tier height (Z)
-h_fork       = 48.0;    // Front fork landing level (Z)
+h_shelf      = 46.0;    // Front shelf top surface level (Z)
 corner_r     = 10.0;    // Outer corner radius
 
-// Front Toothbrush Stations (X = -54, -18, +18, +54)
+// Toothbrush Stations (X = -54, -18, +18, +54, Y = 52.0)
 tb_pitch     = 36.0;    // Center-to-center pitch
-tb_throat_w  = 13.5;    // Throat width for electric brush necks
-tb_entrance_w= 24.0;    // Flared front entry width
-tb_saddle_y  = 52.0;    // Center Y position of cradle saddle
-tb_inner_w   = 8.5;     // Inner rear notch width for slim manual toothbrushes
+tb_hole_y    = 52.0;    // Y coordinate of hole center
+
+// Electric Toothbrush Stations (Stations 1 & 2: X = -54, -18)
+tb_elec_slot = 10.5;    // Throat width for electric brush neck
+tb_elec_hole = 12.8;    // Through hole diameter
+tb_elec_cup  = 18.5;    // Recessed retention cup diameter
+tb_elec_lead = 16.0;    // Flared front entry width
+
+// Manual Toothbrush Stations (Stations 3 & 4: X = +18, +54)
+tb_manu_slot = 7.0;     // Throat width for manual brush neck (neck 5.5mm slides in easily)
+tb_manu_hole = 8.8;     // Through hole diameter
+tb_manu_cup  = 13.5;    // Recessed retention cup diameter (holds head base, throat 7mm prevents fall!)
+tb_manu_lead = 12.0;    // Flared front entry width
+
+cup_depth    = 4.5;     // Depth of recessed retention cup
 
 // Rear Toothpaste Compartments
 tp_w         = 50.0;    // Compartment width (X)
@@ -121,7 +139,7 @@ module wall_bracket() {
 
 
 // =============================================================================
-// 2. INTERNAL CAVITIES & FRONT-RELEASE CRADLE SLOTS (100% SELF-SUPPORTING)
+// 2. INTERNAL CAVITIES & PRECISION APERTURES
 // =============================================================================
 
 // Female dovetail receiver inside holder back (with 45° pointed pyramid roof)
@@ -186,59 +204,48 @@ module twin_toothpaste_cavities() {
     }
 }
 
-// 4 Front-Release Cantilevered Fork Slots (X = -54, -18, +18, +54)
-module four_front_release_slots() {
+// 4 Precision Toothbrush Apertures & Anti-Drop Retention Berths
+module four_precision_berths() {
     for (i = [0:3]) {
-        x_pos = (i - 1.5) * tb_pitch; // -54, -18, 18, 54
+        x_pos = (i - 1.5) * tb_pitch; // -54, -18, +18, +54
+        is_electric = (i < 2);        // Left 2 = Electric, Right 2 = Manual
+        
+        slot_w   = is_electric ? tb_elec_slot : tb_manu_slot;
+        hole_d   = is_electric ? tb_elec_hole : tb_manu_hole;
+        cup_d    = is_electric ? tb_elec_cup  : tb_manu_cup;
+        lead_w   = is_electric ? tb_elec_lead : tb_manu_lead;
         
         translate([x_pos, 0, 0]) {
-            // 1. Through-slot from front (horizontal insertion/removal)
-            // Throat for electric brush neck
-            hull() {
-                translate([0, tb_saddle_y, h_fork - 10.0])
-                    cylinder(d=tb_throat_w, h=30.0);
-                translate([0, d_front + 4.0, h_fork - 10.0])
-                    cylinder(d=tb_throat_w, h=30.0);
-            }
-            
-            // 2. Wide Flared 45° Front Mouth (24mm wide entry at front face)
-            translate([0, d_front - 2.0, h_fork - 10.0])
+            // 1. Through Hole: Vertical drainage all the way through corbel to open air
+            translate([0, tb_hole_y, -1.0])
+                cylinder(d=hole_d, h=h_shelf + 2.0);
+                
+            // 2. Front Insertion Slot: Through to front edge
+            translate([-slot_w/2, tb_hole_y, -1.0])
+                cube([slot_w, d_front - tb_hole_y + 2.0, h_shelf + 2.0]);
+                
+            // 3. Smooth Flared Front Lead-in (effortless blind docking)
+            translate([0, d_front, -1.0])
                 hull() {
-                    translate([0, 0, 0])
-                        cube([tb_throat_w, 0.1, 30.0], center=true);
-                    translate([0, 8.0, 0])
-                        cube([tb_entrance_w, 0.1, 30.0], center=true);
+                    translate([-slot_w/2, 0, 0])
+                        cube([slot_w, 0.1, h_shelf + 2.0]);
+                    translate([-lead_w/2, 2.5, 0])
+                        cube([lead_w, 0.1, h_shelf + 2.0]);
                 }
                 
-            // 3. Inner Notch for Slim Manual Toothbrushes (8.5mm wide at deepest point)
-            hull() {
-                translate([0, tb_saddle_y - 6.0, h_fork - 10.0])
-                    cylinder(d=tb_inner_w, h=30.0);
-                translate([0, tb_saddle_y, h_fork - 10.0])
-                    cylinder(d=tb_inner_w, h=30.0);
-            }
-            
-            // 4. Contoured Landing Saddle (3.0mm deep recess at tb_saddle_y)
-            translate([0, tb_saddle_y, h_fork - 3.0])
-                cylinder(r1=tb_throat_w/2, r2=20.0/2, h=3.1);
-                
-            // 5. Smooth 45° Front Exit Ramp (enables effortless forward slide-out)
-            hull() {
-                translate([0, tb_saddle_y + 1.0, h_fork - 3.0])
-                    cube([tb_throat_w, 0.1, 3.1], center=true);
-                translate([0, tb_saddle_y + 5.0, h_fork])
-                    cube([tb_throat_w, 0.1, 0.1], center=true);
-            }
+            // 4. Recessed Concave Retention Cup (4.5mm deep pocket with 45° chamfer)
+            translate([0, tb_hole_y, h_shelf - cup_depth])
+                cylinder(r1=hole_d/2, r2=cup_d/2, h=cup_depth + 0.1);
         }
     }
 }
 
 
 // =============================================================================
-// 3. SOLID GEOMETRY BUILDER (45° SELF-SUPPORTING CORBEL ARMS)
+// 3. SOLID GEOMETRY BUILDER (MONOLITHIC CONTINUOUS ARCHITECTURAL CORBEL)
 // =============================================================================
 
-// Base solid body with rear tier and 4 forward cantilevered corbel arms
+// Base solid body with rear tier and continuous front shelf with 45° corbel underneath
 module base_holder_structure() {
     w = w_holder;
     r = corner_r;
@@ -252,34 +259,18 @@ module base_holder_structure() {
             translate([ w/2-r, d_back-r, 0]) cylinder(r=r, h=h_back);
         }
         
-        // 2. Continuous Backrest Baffle below rear tier
+        // 2. Monolithic Continuous Front Shelf with 45° Architectural Corbel Underneath
+        // 100% self-supporting overhang (slopes up from Z=8mm at back to Z=40mm at front)
         hull() {
-            translate([-w/2+r, r, 0]) cylinder(r=r, h=h_fork);
-            translate([ w/2-r, r, 0]) cylinder(r=r, h=h_fork);
-            translate([-w/2+r, d_back, 0]) cube([0.1, 0.1, h_fork]);
-            translate([ w/2-r, d_back, 0]) cube([0.1, 0.1, h_fork]);
-        }
-        
-        // 3. Four Forward Cantilevered Corbel Arms (45° Underside slope, 100% self-supporting)
-        for (i = [0:3]) {
-            x_pos = (i - 1.5) * tb_pitch; // -54, -18, 18, 54
-            
-            translate([x_pos, 0, 0]) {
-                hull() {
-                    // Arm root at rear tier front face (Y = d_back)
-                    // Slopes down from Z=h_fork to Z=h_fork - (d_front - d_back) = 16.0mm
-                    translate([0, d_back, 16.0])
-                        cube([31.0, 0.1, h_fork - 16.0], center=true);
-                    translate([0, d_back, h_fork/2])
-                        cube([31.0, 0.1, h_fork], center=true);
-                        
-                    // Arm cantilever tip at front (Y = d_front)
-                    translate([-31.0/2 + 4.0, d_front - 4.0, h_fork - 8.0])
-                        cylinder(r=4.0, h=8.0);
-                    translate([ 31.0/2 - 4.0, d_front - 4.0, h_fork - 8.0])
-                        cylinder(r=4.0, h=8.0);
-                }
-            }
+            // Corbel base root along rear tier (Y = d_back, Z = 8 to h_shelf)
+            translate([-w/2+r, d_back, 8.0])
+                cube([w - r*2, 0.1, h_shelf - 8.0]);
+                
+            // Front shelf edge (Y = d_front - r, Z = h_shelf - 6 to h_shelf)
+            translate([-w/2+r, d_front-r, h_shelf - 6.0])
+                cylinder(r=r, h=6.0);
+            translate([ w/2-r, d_front-r, h_shelf - 6.0])
+                cylinder(r=r, h=6.0);
         }
     }
 }
@@ -301,26 +292,17 @@ module holder_style_fluted() {
         
         // Vertical decorative flutes along rear tier sides and front face
         for (x = [-w/2+r : pitch : w/2-r]) {
-            // Above fork level (Z = h_fork to h_back)
-            translate([x, d_back, h_fork])
-                cylinder(r=rib_r, h=h_back - h_fork);
+            // Above shelf level on rear tier front face (Z = h_shelf to h_back)
+            translate([x, d_back, h_shelf])
+                cylinder(r=rib_r, h=h_back - h_shelf);
         }
         for (y = [r : pitch : d_back-r]) {
             translate([-w/2, y, 0]) cylinder(r=rib_r, h=h_back);
             translate([ w/2, y, 0]) cylinder(r=rib_r, h=h_back);
         }
         
-        // Architectural reeded ribs on the sides of each cantilever arm
-        for (i = [0:3]) {
-            x_pos = (i - 1.5) * tb_pitch;
-            for (y = [d_back + 4.0 : pitch : d_front - 4.0]) {
-                z_bot = 16.0 + (y - d_back); // follows 45° corbel slope
-                translate([x_pos - 15.5, y, z_bot])
-                    cylinder(r=rib_r, h=h_fork - z_bot);
-                translate([x_pos + 15.5, y, z_bot])
-                    cylinder(r=rib_r, h=h_fork - z_bot);
-            }
-        }
+        // The front shelf and 45° corbel retain a silky, smooth polished rim
+        // which creates a luxurious visual contrast with the classical reeded backdrop.
     }
 }
 
@@ -389,8 +371,8 @@ module luxury_holder(style_type="fluted") {
         // Twin Oversized Toothpaste Wells in Rear Tier (Left & Right)
         twin_toothpaste_cavities();
         
-        // 4 Front-Release Cantilevered Fork Slots
-        four_front_release_slots();
+        // 4 Precision Toothbrush Apertures & Anti-Drop Berths
+        four_precision_berths();
         
         // Clean cut at Z=0 ensuring 100% planar bed adhesion
         translate([0, 0, -50.0]) cube([400.0, 400.0, 100.0], center=true);
@@ -402,46 +384,46 @@ module luxury_holder(style_type="fluted") {
 // 6. COLOR ASSEMBLED PREVIEW MODULES
 // =============================================================================
 
-// High-fidelity Electric Toothbrush Prop (Hanging by the upper neck)
+// High-fidelity Electric Toothbrush Prop (Hanging in Berth 1 & 2 by Handle Collar)
 module electric_toothbrush_prop(color_handle=[0.95, 0.95, 0.97], color_accent=[0.88, 0.58, 0.52]) {
-    // Origin is at the resting cradle position (Z=h_fork - 3.0 = 45.0, Y=tb_saddle_y = 52.0)
-    translate([0, tb_saddle_y, h_fork - 3.0]) {
-        // 1. Hanging Handle Body (Ø29mm base, hanging down into open air)
+    // Resting position inside retention cup (Z = h_shelf - cup_depth = 41.5, Y = tb_hole_y = 52.0)
+    translate([0, tb_hole_y, h_shelf - cup_depth]) {
+        // 1. Hanging Handle Body (Ø28mm, hanging down into open air)
         color(color_handle)
             translate([0, 0, -135.0])
-                cylinder(d1=29.0, d2=27.0, h=135.0);
+                cylinder(d1=28.0, d2=26.0, h=135.0);
                 
         // 2. Base Ring / Metallic Accent
         color(color_accent)
             translate([0, 0, -133.0])
-                cylinder(d=29.2, h=4.0);
+                cylinder(d=28.2, h=4.0);
                 
         // 3. Power Button & LED Ring
         color(color_accent)
-            translate([0, 14.0, -50.0])
+            translate([0, 13.5, -45.0])
                 rotate([90, 0, 0])
                     cylinder(d=9.0, h=2.0);
                     
         // 4. Mode Indicator LED dots
         color([0.2, 0.8, 1.0])
-            for (z_led = [-85.0, -77.0, -69.0])
-                translate([0, 14.0, z_led])
+            for (z_led = [-75.0, -67.0, -59.0])
+                translate([0, 13.5, z_led])
                     rotate([90, 0, 0])
                         cylinder(d=2.0, h=2.0);
                         
-        // 5. Metal Shaft Top Collar (rests inside the cradle saddle)
+        // 5. Metal Shaft Top Collar (rests inside the Ø18.5mm retention cup)
         color([0.8, 0.8, 0.85])
             translate([0, 0, 0])
-                cylinder(d1=16.0, d2=11.5, h=8.0);
+                cylinder(d1=16.0, d2=11.5, h=7.0);
                 
-        // 6. Brush Head Neck (extends upwards)
+        // 6. Brush Head Neck (extends upwards through cup)
         color(color_handle)
-            translate([0, 0, 8.0])
-                cylinder(d1=10.5, d2=7.0, h=55.0);
+            translate([0, 0, 7.0])
+                cylinder(d1=10.0, d2=7.0, h=55.0);
                 
         // 7. Brush Head & Bristles
         color(color_handle)
-            translate([0, 0, 63.0]) {
+            translate([0, 0, 62.0]) {
                 hull() {
                     cylinder(d=11.0, h=16.0);
                     translate([0, 3.0, 8.0]) cylinder(d=8.0, h=8.0);
@@ -449,28 +431,29 @@ module electric_toothbrush_prop(color_handle=[0.95, 0.95, 0.97], color_accent=[0
             }
         // Bristles (Blue + White)
         color([0.3, 0.6, 0.9])
-            translate([0, 8.0, 71.0])
+            translate([0, 7.5, 70.0])
                 rotate([90, 0, 0])
                     cylinder(d=10.0, h=6.0);
     }
 }
 
-// Manual Toothbrush Prop (Hanging by the neck below the head)
+// Ergonomic Manual Toothbrush Prop (Hanging in Berth 3 & 4 by Brush Head Neck)
 module manual_toothbrush_prop(color_grip=[0.2, 0.7, 0.8]) {
-    translate([0, tb_saddle_y, h_fork - 3.0]) {
-        // Handle hanging down
+    // Resting position: Brush head transition inside the Ø13.5mm cup at Z = h_shelf - cup_depth
+    translate([0, tb_hole_y, h_shelf - cup_depth]) {
+        // 1. Handle hanging down (Ø12mm down to Ø14mm grip)
         color(color_grip)
             translate([0, 0, -115.0]) {
                 cylinder(d1=11.0, d2=13.0, h=115.0);
                 sphere(d=11.0);
             }
-        // Slender Neck inside cradle
+        // 2. Slender Neck inside hole (Ø5.5mm, fits through 7.0mm throat)
         color(color_grip)
             translate([0, 0, 0])
-                cylinder(d=6.5, h=25.0);
-        // Head & Bristles above
+                cylinder(d=5.5, h=12.0);
+        // 3. Widened Brush Head resting safely in cup (12mm wide, CANNOT pass 7.0mm throat!)
         color([0.95, 0.95, 0.95])
-            translate([0, 0, 25.0]) {
+            translate([0, 0, 12.0]) {
                 hull() {
                     cylinder(d=12.0, h=4.0);
                     translate([0, -8.0, 0]) cylinder(d=10.0, h=4.0);
@@ -518,10 +501,10 @@ module preview_assembled(style_type="fluted") {
     translate([-54.0, 0, 0]) electric_toothbrush_prop([0.96, 0.96, 0.96], rose_gold_base);
     // Station 2: Matte Black Electric Toothbrush (e.g. Oral-B iO)
     translate([-18.0, 0, 0]) electric_toothbrush_prop([0.22, 0.22, 0.25], accent_brass);
-    // Station 3: Pastel Pink Electric Toothbrush
-    translate([ 18.0, 0, 0]) electric_toothbrush_prop([0.94, 0.82, 0.84], rose_gold_base);
-    // Station 4: Ergonomic Manual Toothbrush
-    translate([ 54.0, 0, 0]) manual_toothbrush_prop([0.25, 0.70, 0.85]);
+    // Station 3: Turquoise Ergonomic Manual Toothbrush
+    translate([ 18.0, 0, 0]) manual_toothbrush_prop([0.20, 0.72, 0.82]);
+    // Station 4: Coral Pink Ergonomic Manual Toothbrush
+    translate([ 54.0, 0, 0]) manual_toothbrush_prop([0.92, 0.45, 0.50]);
     
     // 5. Two Toothpaste Tubes in Rear Tier
     translate([-tp_x, tp_y, tp_floor_z]) toothpaste_prop([0.20, 0.55, 0.85]); // Tube 1 (Blue)
