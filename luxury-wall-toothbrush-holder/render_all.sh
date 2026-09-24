@@ -48,3 +48,18 @@ openscad --render --csglimit=1000000 --camera=0,65,45,60,0,205,420 --imgsize=160
     -D 'style="faceted"' -D 'mode="plate"' -o "$RENDERS/print_bed_layout.png" "$SCAD"
 
 echo "All renders completed successfully!"
+
+echo "7. Rendering Close-Up Side Profile of Toothbrush Retention Cradle (Fluted & Faceted)..."
+openscad --render --csglimit=1000000 --camera=75,65,15,90,0,90,140 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_retention_closeup_side.png" "$SCAD"
+
+openscad --render --csglimit=1000000 --camera=75,65,15,90,0,90,140 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'style="faceted"' -D 'mode="holder"' -o "$RENDERS/faceted_retention_closeup_side.png" "$SCAD"
+
+openscad --render --csglimit=1000000 --camera=-25,65,15,55,0,215,160 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_retention_closeup_iso.png" "$SCAD"
+
+openscad --render --csglimit=1000000 --camera=-25,65,15,55,0,215,160 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'style="faceted"' -D 'mode="holder"' -o "$RENDERS/faceted_retention_closeup_iso.png" "$SCAD"
+
+echo "Close-up retention views added successfully!"
