@@ -14,21 +14,21 @@ m1 = manifold3d.Manifold(manifold3d.Mesh(vert_properties=vp1, tri_verts=tv1))
 
 y_c = -70.0 # Center of lid along Y
 
-# Step 1: Cleanly trim away any old catch teeth/hooks (X < 48.60, Z in [1.0, 5.5])
+# Step 1: Cleanly trim away any old catch teeth/hooks at bottom (X < 48.60, Z in [0.0, 5.5])
+# User: "我們不需要卡筍... 你那凸出的卡筍是多餘的" -> 100% removed!
 trim_w = 26.0
 trim_h = 5.0
 trim_box_p = manifold3d.Manifold.cube([5.0, trim_w, trim_h], center=True).translate([48.6 - 2.5, y_c, 1.0 + trim_h/2.0])
 trim_box_n = manifold3d.Manifold.cube([5.0, trim_w, trim_h], center=True).translate([-(48.6 - 2.5), y_c, 1.0 + trim_h/2.0])
 m1_clean = m1 - (trim_box_p + trim_box_n)
 
-# Step 2: Parametric Spring Cutters
-# Spring tab on side wall:
-# Tab width = 12.0 mm, slit width = 1.0 mm
-# Slit extends only 1.6mm past inner wall into the floor (x_inner = 47.0),
-# keeping >91% of bottom plate completely solid and rigid!
+# Step 2: Spring Tab on Lateral Wall (將彈片維持在側面就好)
+# Width = 12.0 mm, slit width = 1.0 mm
+# Slit cuts through vertical wall thickness (X in [47.5, 56.0])
+# Bottom plate (X < 47.5) remains solid (>91% continuous rigid frame)
 tab_w = 12.0
 slot_w = 1.0
-x_inner = 47.0
+x_inner = 47.5
 x_outer = 56.0
 x_len = x_outer - x_inner
 x_center = (x_outer + x_inner) / 2.0
@@ -52,31 +52,33 @@ cyl_n2 = manifold3d.Manifold.cylinder(z_cut_h, relief_r, relief_r, 20).translate
 all_cutters = slit_p1 + slit_p2 + slit_n1 + slit_n2 + cyl_p1 + cyl_p2 + cyl_n1 + cyl_n2
 m_slotted = m1_clean - all_cutters
 
-# Step 3: Inner Wall Friction Gripping Ribs (咬合摩擦橫紋)
-# Protrusion: 0.30mm inward (apex at X = 48.30 mm, net interference with 48.50mm base wall is 0.20mm)
-# NO catch teeth! Inner wall below Z=1.8 is straight at X=48.60.
-# 4 horizontal gripping ridges + smooth lead-in ramp up to Z=8.0
-pts_ribs = [
-    [48.60, 1.60],  # Bottom root on inner wall (NO under-cut hook!)
-    [48.60, 8.00],  # Top of lead-in ramp on inner wall
-    [48.30, 5.80],  # Apex of lead-in ramp
-    # Rib 4
-    [48.30, 5.50],
-    [48.55, 5.10],  # Valley
-    # Rib 3
-    [48.30, 4.50],
-    [48.30, 4.30],
-    [48.55, 3.90],  # Valley
-    # Rib 2
-    [48.30, 3.30],
-    [48.30, 3.10],
-    [48.55, 2.70],  # Valley
-    # Rib 1
-    [48.30, 2.10],
-    [48.30, 1.80]
+# Step 3: Inner Wall Biting Teeth at Base Contact Zone (Z in [12.2, 16.5])
+# User: "底版的六角柱是面向一個有凹槽的牆面。底版安裝到牆面後。蓋子蓋上。最多齊平而已... 咬合的齒位子太低"
+# The base plate is at the open rim of the lid (Z in [12.5, 16.5] mm)!
+# Biting teeth are positioned right where the base plate outer wall sits (Z in [12.5, 16.5] mm)!
+# Protrusion: 0.30mm (apex at X = 48.30 mm, net interference with 48.50mm base wall = 0.20mm)
+# 4 horizontal biting ridges + 45° entry lead-in ramp
+pts_ribs_top = [
+    [48.60, 12.20], # Bottom root on flat inner wall
+    [48.60, 16.48], # Open rim
+    [48.30, 16.20], # Top lead-in ramp apex
+    # Tooth 4
+    [48.30, 16.00],
+    [48.55, 15.60], # Valley 3
+    # Tooth 3
+    [48.30, 15.20],
+    [48.30, 15.00],
+    [48.55, 14.50], # Valley 2
+    # Tooth 2
+    [48.30, 14.10],
+    [48.30, 13.90],
+    [48.55, 13.40], # Valley 1
+    # Tooth 1
+    [48.30, 13.00],
+    [48.30, 12.80]
 ]
 
-cs_ribs = manifold3d.CrossSection([pts_ribs])
+cs_ribs = manifold3d.CrossSection([pts_ribs_top])
 m_ribs_raw = manifold3d.Manifold.extrude(cs_ribs, tab_w)
 
 transform_ribs_p = [
@@ -93,17 +95,17 @@ transform_ribs_n = [
 ]
 ribs_n = m_ribs_raw.transform(transform_ribs_n)
 
-# Model 1: Flush spring tab version (Height = 16.5 mm)
+# Flush Model (Height = 16.5 mm)
 m_flush = m_slotted + ribs_p + ribs_n
 
-# Model 2: Raised thumb tab version (+2.5mm extension with ergonomic bevel)
+# Raised Thumb Tab Version (+2.5mm extension with ergonomic bevel)
 pts_thumb = [
-    [48.6, 16.5],
-    [50.1, 16.5],
-    [50.1, 18.5],
-    [49.7, 19.0],
-    [49.0, 19.0],
-    [48.6, 18.5]
+    [48.55, 16.45],
+    [50.15, 16.45],
+    [50.10, 18.50],
+    [49.70, 19.00],
+    [49.00, 19.00],
+    [48.60, 18.50]
 ]
 cs_thumb = manifold3d.CrossSection([pts_thumb])
 m_thumb_raw = manifold3d.Manifold.extrude(cs_thumb, tab_w)
@@ -123,13 +125,13 @@ def to_trimesh(m):
 mesh_flush = to_trimesh(m_flush)
 mesh_raised = to_trimesh(m_raised)
 
-print("\n--- Model Verification ---")
-print("Flush Tab Version (with Inner Friction Ribs, No Catch Tooth):")
+print("\n--- Final Model Verification ---")
+print("Flush Tab Version:")
 print("  Watertight:", mesh_flush.is_watertight)
 print("  Bounds:", np.round(mesh_flush.bounds, 2))
 print("  Volume:", round(mesh_flush.volume, 2))
 
-print("Raised Thumb Tab Version (User Preferred, with Inner Friction Ribs, No Catch Tooth):")
+print("Raised Thumb Tab Version:")
 print("  Watertight:", mesh_raised.is_watertight)
 print("  Bounds:", np.round(mesh_raised.bounds, 2))
 print("  Volume:", round(mesh_raised.volume, 2))
@@ -150,4 +152,4 @@ mesh_flush.export('蓋子_彈片齊平版_單件.stl')
 kit_raised.export('蓋子9_彈片加高版_含底座完整套件.stl')
 kit_flush.export('蓋子9_彈片齊平版_含底座完整套件.stl')
 
-print("\nSuccessfully generated all friction-grip lid models!")
+print("\nSuccessfully generated all refined models!")
