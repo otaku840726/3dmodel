@@ -23,12 +23,13 @@ y_front     = d_wall + d_pod; // 58.0mm: Front vertical wall of storage gallery
 
 // Toothbrush Hanging Parameters (Precision reverse-engineered from 621-01.stp)
 tb_pitch    = 25.0; // 6 slots, 7 teeth across 150mm span (Matches 621-01 layout)
-foot_w      = 16.0; // 16.0mm foot -> exactly 9.00mm neck cradle slot
-shank_w     = 5.6;  // 5.6mm upper shank -> 19.40mm wide entry bay
+foot_w      = 16.0; // 16.0mm foot with front retaining wings -> 9.00mm neck slot
+shank_w     = 5.5;  // 5.5mm upper shank -> 19.50mm wide entry bay
 tooth_d     = 16.0; // forward protrusion from front wall (total depth = 74.0mm)
-h_foot      = 6.5;  // bottom parallel slot depth
-h_saddle    = 16.0; // 45° self-centering saddle height
-h_tooth     = 42.0; // tooth reaches top cornice
+h_foot      = 7.0;  // bottom foot & front retaining wings height
+h_saddle    = 13.0; // 45° self-centering saddle height
+h_tooth     = 24.0; // compact tooth column height (Point 3: reduced from 42mm)
+h_apex      = 26.5; // finial apex height
 
 // Dovetail Bracket Parameters
 bracket_w  = 44.0;
@@ -164,95 +165,120 @@ module arch_backplate() {
 // =============================================================================
 module single_hanging_tooth(style_type="faceted") {
     if (style_type == "faceted") {
-        // Art Deco Diamond Faceted Tooth (★ User Selected)
-        // Layer 0: Z = 0 to 2.5 (Plinth with 45° chamfers)
+        // Art Deco Diamond Faceted Tooth (★ User Selection)
+        // Point 1: 45° Saddle cradles lower brush head
+        // Point 2: Front wings extend to both sides to stop brush sliding forward
+        // Point 3: Compact height (h_tooth = 24mm, h_apex = 26.5mm)
+        
+        // Layer 0: Z = 0 to 2.0 (Bottom Chamfer Plinth)
         hull() {
-            translate([-foot_w/2 - 0.5, 0, 0]) cube([foot_w + 1.0, 0.1, 2.5]);
-            translate([-foot_w/2 + 1.5, tooth_d - 2, 0]) cube([foot_w - 3, 0.1, 2.5]);
-            translate([-1.8, tooth_d + 0.5, 0]) cube([3.6, 0.1, 2.5]);
+            translate([-foot_w/2 + 2.0, 0, 0]) cube([foot_w - 4.0, 0.1, 0.1]);
+            translate([-foot_w/2 + 1.0, tooth_d - 4.5, 0]) cube([foot_w - 2.0, 0.1, 0.1]);
+            translate([0, tooth_d - 1.5, 0]) cylinder(r=0.5, h=0.1);
+            
+            translate([-foot_w/2, 0, 2.0]) cube([foot_w, 0.1, 0.1]);
+            translate([-foot_w/2, tooth_d - 4.5, 2.0]) cube([foot_w, 0.1, 0.1]);
+            translate([-foot_w/2 + 1.5, tooth_d - 1.5, 2.0]) cube([foot_w - 3.0, 0.1, 0.1]);
+            translate([0, tooth_d, 2.0]) cylinder(r=0.5, h=0.1);
         }
         
-        // Layer 1: Z = 2.5 to h_foot (Main Foot, Width 16.0mm for 9.0mm slot)
+        // Layer 1: Z = 2.0 to h_foot (7.0mm) - Main Foot & Front Retaining Wings
         hull() {
-            translate([-foot_w/2, 0, 2.5]) cube([foot_w, 0.1, h_foot - 2.5]);
-            translate([-foot_w/2, tooth_d - 5.5, 2.5]) cube([foot_w, 0.1, h_foot - 2.5]);
-            translate([-2.5, tooth_d, 2.5]) cube([5.0, 0.1, h_foot - 2.5]);
+            translate([-foot_w/2, 0, 2.0]) cube([foot_w, 0.1, h_foot - 2.0]);
+            translate([-foot_w/2, tooth_d - 4.5, 2.0]) cube([foot_w, 0.1, h_foot - 2.0]);
+            translate([-foot_w/2 + 1.5, tooth_d - 1.5, 2.0]) cube([foot_w - 3.0, 0.1, h_foot - 2.0]);
+            translate([0, tooth_d, 2.0]) cylinder(r=0.5, h=h_foot - 2.0);
         }
         
-        // Layer 2: Z = h_foot to h_saddle (45° Faceted Saddle Ramp)
+        // Layer 2: Z = h_foot (7.0mm) to h_saddle (13.0mm) - 45° Self-Centering Saddle Ramp
         hull() {
             translate([-foot_w/2, 0, h_foot]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, tooth_d - 5.5, h_foot]) cube([foot_w, 0.1, 0.1]);
-            translate([-2.5, tooth_d, h_foot]) cube([5.0, 0.1, 0.1]);
+            translate([-foot_w/2, tooth_d - 4.5, h_foot]) cube([foot_w, 0.1, 0.1]);
+            translate([-foot_w/2 + 1.5, tooth_d - 1.5, h_foot]) cube([foot_w - 3.0, 0.1, 0.1]);
+            translate([0, tooth_d, h_foot]) cylinder(r=0.5, h=0.1);
             
             translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2, tooth_d - 4.5, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([-1.0, tooth_d - 2.5, h_saddle]) cube([2.0, 0.1, 0.1]);
+            translate([-shank_w/2, 5.5, h_saddle]) cube([shank_w, 0.1, 0.1]);
+            translate([0, 7.5, h_saddle]) cylinder(r=0.5, h=0.1);
         }
         
-        // Layer 3: Z = h_saddle to h_tooth (Upper Faceted Shank)
+        // Layer 3: Z = h_saddle (13.0mm) to h_tooth (24.0mm) - Compact Faceted Upper Column
         hull() {
             translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2, tooth_d - 4.5, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([-1.0, tooth_d - 2.5, h_saddle]) cube([2.0, 0.1, 0.1]);
+            translate([-shank_w/2, 5.5, h_saddle]) cube([shank_w, 0.1, 0.1]);
+            translate([0, 7.5, h_saddle]) cylinder(r=0.5, h=0.1);
             
             translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2, 2.0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([-0.8, 3.2, h_tooth]) cube([1.6, 0.1, 0.1]);
+            translate([-shank_w/2, 3.5, h_tooth]) cube([shank_w, 0.1, 0.1]);
+            translate([0, 5.0, h_tooth]) cylinder(r=0.5, h=0.1);
         }
         
-        // Layer 4: Z = h_tooth to h_tooth + 3.0 (Art Deco Diamond Pyramid Finial)
+        // Layer 4: Z = h_tooth (24.0mm) to h_apex (26.5mm) - Diamond Pyramid Finial Apex
         hull() {
             translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2, 2.0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([-0.8, 3.2, h_tooth]) cube([1.6, 0.1, 0.1]);
+            translate([-shank_w/2, 3.5, h_tooth]) cube([shank_w, 0.1, 0.1]);
+            translate([0, 5.0, h_tooth]) cylinder(r=0.5, h=0.1);
             
-            translate([0, 1.5, h_tooth + 3.0]) cylinder(r=0.2, h=0.1);
+            translate([0, 1.5, h_apex]) cylinder(r=0.2, h=0.1);
         }
     } else if (style_type == "fluted") {
         // Roman Palazzo Fluted Pilaster Tooth
         hull() {
-            translate([-foot_w/2 - 0.5, 0, 0]) cube([foot_w + 1.0, 0.1, 2.5]);
-            translate([-foot_w/2 + 1.5, tooth_d - 2, 0]) cube([foot_w - 3, 0.1, 2.5]);
-            translate([-1.8, tooth_d + 0.5, 0]) cube([3.6, 0.1, 2.5]);
+            translate([-foot_w/2, 0, 0]) cube([foot_w, 0.1, 2.0]);
+            translate([-foot_w/2, tooth_d - 3.0, 0]) cube([foot_w, 0.1, 2.0]);
+            translate([0, tooth_d, 0]) cylinder(r=shank_w/2, h=2.0);
         }
         hull() {
-            translate([-foot_w/2, 0, 2.5]) cube([foot_w, 0.1, h_foot - 2.5]);
-            translate([-foot_w/2 + 2, tooth_d - 3, 2.5]) cube([foot_w - 4, 0.1, h_foot - 2.5]);
-            translate([-1.5, tooth_d, 2.5]) cube([3, 0.1, h_foot - 2.5]);
+            translate([-foot_w/2, 0, 2.0]) cube([foot_w, 0.1, h_foot - 2.0]);
+            translate([-foot_w/2, tooth_d - 3.0, 2.0]) cube([foot_w, 0.1, h_foot - 2.0]);
+            translate([0, tooth_d, 2.0]) cylinder(r=shank_w/2, h=h_foot - 2.0);
         }
         hull() {
             translate([-foot_w/2, 0, h_foot]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2 + 2, tooth_d - 3, h_foot]) cube([foot_w - 4, 0.1, 0.1]);
-            translate([-1.5, tooth_d, h_foot]) cube([3, 0.1, 0.1]);
+            translate([-foot_w/2, tooth_d - 3.0, h_foot]) cube([foot_w, 0.1, 0.1]);
+            translate([0, tooth_d, h_foot]) cylinder(r=shank_w/2, h=0.1);
             
             translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2 + 1, tooth_d - 4.5, h_saddle]) cube([shank_w - 2, 0.1, 0.1]);
-            translate([-1.0, tooth_d - 3.5, h_saddle]) cube([2.0, 0.1, 0.1]);
+            translate([0, 6.0, h_saddle]) cylinder(r=shank_w/2, h=0.1);
         }
         hull() {
             translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([-1.0, tooth_d - 3.5, h_saddle]) cube([2.0, 0.1, 0.1]);
+            translate([0, 6.0, h_saddle]) cylinder(r=shank_w/2, h=0.1);
             
             translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([-0.8, 3.0, h_tooth]) cube([1.6, 0.1, 0.1]);
+            translate([0, 4.0, h_tooth]) cylinder(r=shank_w/2, h=0.1);
         }
         hull() {
-            translate([-shank_w/2 - 0.8, 0, h_tooth]) cube([shank_w + 1.6, 0.1, 2.0]);
-            translate([-0.8, 3.2, h_tooth]) cube([1.6, 0.1, 2.0]);
-            translate([0, 1.5, h_tooth + 2.5]) cylinder(r=0.2, h=0.1);
+            translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
+            translate([0, 4.0, h_tooth]) cylinder(r=shank_w/2, h=0.1);
+            translate([0, 1.5, h_apex]) cylinder(r=0.2, h=0.1);
         }
     } else {
         // Minimalist Satin Curve
         hull() {
-            translate([-foot_w/2, 0, 0]) cylinder(r=2, h=h_foot);
-            translate([ foot_w/2, 0, 0]) cylinder(r=2, h=h_foot);
+            translate([-foot_w/2 + 2, 0, 0]) cylinder(r=2, h=h_foot);
+            translate([ foot_w/2 - 2, 0, 0]) cylinder(r=2, h=h_foot);
             translate([0, tooth_d - 2, 0]) cylinder(r=2, h=h_foot);
         }
         hull() {
-            translate([0, tooth_d - 2, 0]) cylinder(r=2, h=h_foot);
-            translate([0, 3, h_tooth]) cylinder(r=shank_w/2, h=2);
-            translate([-shank_w/2, 0, 0]) cube([shank_w, 0.1, h_tooth]);
+            translate([-foot_w/2 + 2, 0, h_foot]) cylinder(r=2, h=0.1);
+            translate([ foot_w/2 - 2, 0, h_foot]) cylinder(r=2, h=0.1);
+            translate([0, tooth_d - 2, h_foot]) cylinder(r=2, h=0.1);
+            
+            translate([0, 5.0, h_saddle]) cylinder(r=shank_w/2, h=0.1);
+            translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
+        }
+        hull() {
+            translate([0, 5.0, h_saddle]) cylinder(r=shank_w/2, h=0.1);
+            translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
+            
+            translate([0, 3.5, h_tooth]) cylinder(r=shank_w/2, h=0.1);
+            translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
+        }
+        hull() {
+            translate([0, 3.5, h_tooth]) cylinder(r=shank_w/2, h=0.1);
+            translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
+            translate([0, 1.5, h_apex]) cylinder(r=0.2, h=0.1);
         }
     }
 }
@@ -398,16 +424,16 @@ module standalone_toothbrush_rack(style_type="faceted") {
         union() {
             // Slender backing plate
             w_rack = 166.0;
-            h_rack = 46.0;
+            h_rack = 34.0; // Compact matching lower column height
             th_back = 4.0;
             translate([0, th_back, 0])
                 rotate([90, 0, 0])
                     linear_extrude(height=th_back)
                         hull() {
-                            translate([-w_rack/2 + 6, 6]) circle(r=6);
-                            translate([ w_rack/2 - 6, 6]) circle(r=6);
-                            translate([-w_rack/2 + 6, h_rack - 6]) circle(r=6);
-                            translate([ w_rack/2 - 6, h_rack - 6]) circle(r=6);
+                            translate([-w_rack/2 + 5, 5]) circle(r=5);
+                            translate([ w_rack/2 - 5, 5]) circle(r=5);
+                            translate([-w_rack/2 + 5, h_rack - 5]) circle(r=5);
+                            translate([ w_rack/2 - 5, h_rack - 5]) circle(r=5);
                         }
             // Hanging teeth on front
             translate([0, th_back, 0]) {
@@ -429,53 +455,75 @@ module standalone_toothbrush_rack(style_type="faceted") {
 // 8. REALISTIC PROPS MATCHING USER SETUP
 // =============================================================================
 module mijia_electric_brush_prop() {
-    translate([0, y_front + 6.0, h_saddle]) {
-        color([0.96, 0.96, 0.97])
-            translate([0, 0, -135.0])
-                cylinder(d1=27.0, d2=26.0, h=135.0);
-        color([0.90, 0.85, 0.82])
-            translate([0, 0, -133.0])
-                cylinder(d=27.2, h=4.0);
-        color([0.88, 0.58, 0.52])
-            translate([0, 13.0, -50.0])
-                rotate([90, 0, 0]) cylinder(d=8.0, h=2.0);
+    // Point 1: caught directly at the lower end of the brush head!
+    // Lower end of brush head rests on saddle at Z = h_foot (7.0mm)
+    y_brush = y_front + 5.5;
+    translate([0, y_brush, h_foot]) {
+        // Brush head backing & oval body (facing front)
         color([0.96, 0.96, 0.97]) {
-            cylinder(d1=12.0, d2=7.5, h=20.0);
-            translate([0, 0, 20.0]) cylinder(d=7.5, h=30.0);
-            translate([0, 0, 50.0])
-                hull() {
-                    cylinder(d=10.0, h=22.0);
-                    translate([0, 2.0, 10.0]) cylinder(d=8.0, h=12.0);
-                }
+            translate([0, 0, 11.0])
+                scale([1.0, 0.65, 1.8])
+                    sphere(r=5.8);
+            // Slender neck passing down through 9mm slot
+            translate([0, 0, -28.0])
+                cylinder(d=5.6, h=28.0);
+            // Text "mijia Regular" indicator
+            translate([0, 2.5, -18.0])
+                cube([3.5, 0.6, 12.0], center=true);
+            // Flared transition to electric body
+            translate([0, 0, -43.0])
+                cylinder(d1=27.0, d2=11.5, h=15.0);
+            // Main electric handle body
+            translate([0, 0, -155.0])
+                cylinder(d=27.0, h=112.0);
+            translate([0, 0, -155.0])
+                sphere(d=27.0);
         }
-        color([0.92, 0.92, 0.95])
-            translate([0, 5.0, 60.0])
-                cube([7.0, 6.0, 18.0], center=true);
+        // Bristles facing front (+Y)
+        color([0.82, 0.85, 0.90])
+            translate([0, 2.8, 11.0])
+                cube([8.0, 4.2, 16.0], center=true);
+        // Accent ring
+        color([0.90, 0.85, 0.82])
+            translate([0, 0, -42.5])
+                cylinder(d=27.2, h=3.0);
+        // Power button
+        color([0.88, 0.58, 0.52])
+            translate([0, 13.0, -70.0])
+                rotate([90, 0, 0])
+                    cylinder(d=8.0, h=2.0);
     }
 }
 
 module manual_brush_prop(color_handle=[0.92, 0.80, 0.20], color_bristle=[0.95, 0.85, 0.10]) {
-    translate([0, y_front + 5.5, h_saddle - 2.0]) {
-        color(color_handle)
-            translate([0, 0, -120.0]) {
-                cylinder(d1=11.0, d2=13.0, h=120.0);
-                sphere(d=11.0);
-            }
-        color([0.85, 0.95, 0.30])
-            translate([0, 0, -80.0])
-                cylinder(d=13.5, h=40.0);
-        color(color_handle) {
-            cylinder(d1=11.0, d2=6.0, h=15.0);
-            translate([0, 0, 15.0]) cylinder(d=6.0, h=25.0);
-            translate([0, 0, 40.0])
-                hull() {
-                    cylinder(d=11.0, h=24.0);
-                    translate([0, 1.5, 10.0]) cylinder(d=8.0, h=14.0);
-                }
+    // Point 1: caught directly at the lower end of the brush head!
+    // Lower end of brush head rests on saddle at Z = h_foot (7.0mm)
+    y_brush = y_front + 5.5;
+    translate([0, y_brush, h_foot]) {
+        // Brush head backing & body
+        color([0.96, 0.96, 0.97]) {
+            translate([0, 0, 11.5])
+                scale([1.0, 0.65, 1.9])
+                    sphere(r=5.5);
+            // Slender neck passing down through 9mm slot
+            translate([0, 0, -28.0])
+                cylinder(d=4.8, h=28.0);
         }
+        // Handle below
+        color(color_handle) {
+            translate([0, 0, -120.0]) {
+                cylinder(d1=10.5, d2=8.0, h=92.0);
+                sphere(d=10.5);
+            }
+        }
+        // Grip accent
+        color([0.85, 0.95, 0.30])
+            translate([0, 0, -75.0])
+                cylinder(d=11.2, h=35.0);
+        // Bristles facing front (+Y)
         color(color_bristle)
-            translate([0, 4.5, 52.0])
-                cube([7.5, 5.5, 20.0], center=true);
+            translate([0, 2.8, 11.5])
+                cube([8.5, 4.2, 17.0], center=true);
     }
 }
 
@@ -522,17 +570,18 @@ module preview_assembled(style_type="faceted") {
     translate([ 22.0, y_cav, 9.0]) toothpaste_tube_prop([0.88, 0.30, 0.35]);
     translate([-22.0, y_cav, 9.0]) toothpaste_tube_prop([0.20, 0.58, 0.85]);
     
-    // Front Hanging Toothbrushes (Matching user photo)
-    // Slot 1 (X = -62.5): Empty / spare
-    // Slot 2 (X = -37.5): Xiaomi Mijia White Electric Toothbrush
-    translate([-37.5, 0, 0]) mijia_electric_brush_prop();
-    // Slot 3 (X = -12.5): Empty buffer slot
-    // Slot 4 (X = +12.5): Yellow Manual Toothbrush
-    translate([ 12.5, 0, 0]) manual_brush_prop([0.95, 0.85, 0.15], [0.95, 0.80, 0.05]);
-    // Slot 5 (X = +37.5): Black Manual Toothbrush
-    translate([ 37.5, 0, 0]) manual_brush_prop([0.15, 0.15, 0.18], [0.18, 0.18, 0.20]);
-    // Slot 6 (X = +62.5): Green Manual Toothbrush
-    translate([ 62.5, 0, 0]) manual_brush_prop([0.15, 0.75, 0.35], [0.20, 0.85, 0.40]);
+    // Front Hanging Toothbrushes (Matching user photo 1:1)
+    // Looking at front wall: +X is on viewer's left, -X is on viewer's right
+    // Slot 1 (X = +62.5): Empty / spare
+    // Slot 2 (X = +37.5): Xiaomi Mijia White Electric Toothbrush
+    translate([ 37.5, 0, 0]) mijia_electric_brush_prop();
+    // Slot 3 (X = +12.5): Empty buffer slot
+    // Slot 4 (X = -12.5): Yellow Manual Toothbrush
+    translate([-12.5, 0, 0]) manual_brush_prop([0.95, 0.85, 0.15], [0.95, 0.80, 0.05]);
+    // Slot 5 (X = -37.5): Black Manual Toothbrush
+    translate([-37.5, 0, 0]) manual_brush_prop([0.15, 0.15, 0.18], [0.18, 0.18, 0.20]);
+    // Slot 6 (X = -62.5): Green Manual Toothbrush
+    translate([-62.5, 0, 0]) manual_brush_prop([0.15, 0.75, 0.35], [0.20, 0.85, 0.40]);
 }
 
 
