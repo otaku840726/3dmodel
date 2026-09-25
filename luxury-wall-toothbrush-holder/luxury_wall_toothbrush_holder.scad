@@ -13,6 +13,8 @@ tooth_style  = "animals";        // "animals" (7 sculpted 3D animal faces: 🐱 
 wall_style   = "fluted";         // "fluted" (Classical Roman Fluting + Horizontal Beltline, Diamonds Removed)
 mode         = "holder";         // "holder", "plate", "bracket", "standalone_toothbrush", "assembled", "holder_monochrome"
 color_export = 0;                // 0: Full Colored Object, 1: Color 1 (Body), 2: Color 2 (Black), 3: Color 3 (Warm Pink), 4: Color 4 (Gold Trim)
+side_hooks   = "both";           // "both" (左右兩側雙掛勾), "left" (僅左側), "right" (僅右側), "none" (不加掛勾)
+side_hook_color = "body";        // "body" (C1 暖象牙白 - 結構一體無耗材最高強度), "gold" (C4 香檳金輕奢金屬掛勾)
 
 // Master Dimensions
 w_total     = 204.0;
@@ -362,22 +364,50 @@ module architectural_trim_c4() {
         }
     }
     
-    // 3. Side flank flutes on curved corners
-    for (s = [-1, 1]) {
-        for (ang = [15 : 20 : 75]) {
-            cx = s * (w_pod/2 - 16.0);
-            cy = d_wall + d_pod - 16.0;
-            px = cx + s * 16.0 * cos(ang);
-            py = cy + 16.0 * sin(ang);
-            translate([px, py, 26.0])
-                rotate([0, 0, s * (90 - ang)])
-                    rotate([-90, 0, 0])
-                        cylinder(d=2.4, h=1.0, center=true);
+    // (Note: Side flank flute dots on curved corners removed per user request for smooth clean flanks)
+    
+    // 3. Backplate Molding Frame
+    arch_backplate_frame_trim();
+}
+
+// =============================================================================
+// 4b. SUPPORT-FREE SIDE UTILITY HOOKS (側面免支撐多功能置物掛勾)
+// =============================================================================
+// Designed for hanging hair ties, loofah sponges, shower caps, razors, or washcloths.
+// Underside draft angle >= 48° from horizontal (100% self-supporting FDM 3D printing, zero supports required).
+module single_side_utility_hook(side=1) {
+    x_base = side * (w_pod/2); // ±94.0mm
+    y_center = d_wall + d_pod/2; // 33.0mm
+    
+    translate([x_base, y_center, 0]) {
+        // Sculpted, organic support-free hook arm
+        hull() {
+            // Root anchor deeply fused into main body wall (4mm penetration)
+            translate([-side * 2.0, 0, 12.0]) rotate([0, 90, 0]) cylinder(d=9.0, h=4.0, center=true, $fn=32);
+            translate([-side * 2.0, 0, 24.0]) rotate([0, 90, 0]) cylinder(d=9.0, h=4.0, center=true, $fn=32);
+            
+            // Mid-span arm extending outward with >= 48° draft angle
+            translate([side * 6.0, 0, 19.5]) sphere(d=7.5, $fn=32);
+            
+            // Hook saddle elbow (10.5mm extension from wall)
+            translate([side * 10.5, 0, 24.5]) sphere(d=6.8, $fn=32);
+        }
+        
+        // Upward retention prow / finial (6.0mm retention lip preventing items from slipping off)
+        hull() {
+            translate([side * 10.5, 0, 24.5]) sphere(d=6.8, $fn=32);
+            translate([side * 11.2, 0, 30.5]) sphere(d=5.8, $fn=32);
         }
     }
-    
-    // 4. Backplate Molding Frame
-    arch_backplate_frame_trim();
+}
+
+module side_utility_hooks() {
+    if (side_hooks == "both" || side_hooks == "right") {
+        single_side_utility_hook(1);
+    }
+    if (side_hooks == "both" || side_hooks == "left") {
+        single_side_utility_hook(-1);
+    }
 }
 
 
@@ -454,10 +484,16 @@ module luxury_holder_c1() {
                         single_hanging_tooth("fluted", -1);
                 }
             }
+            if (side_hook_color == "body") {
+                side_utility_hooks();
+            }
         }
         
         // Subtract C4 trim grooves for seamless puzzle fit
         architectural_trim_c4();
+        if (side_hook_color == "gold") {
+            side_utility_hooks();
+        }
         
         female_dovetail_cavity();
         rear_storage_cavities_and_drains();
@@ -478,6 +514,9 @@ module luxury_holder_c3() {
 // Solid 4: Champagne Gold Architectural Trim (Fluting inlays, Beltline, Molding frame)
 module luxury_holder_c4() {
     architectural_trim_c4();
+    if (side_hook_color == "gold") {
+        side_utility_hooks();
+    }
 }
 
 // Complete 4-Color Assembly with Full OpenSCAD Palette Preview

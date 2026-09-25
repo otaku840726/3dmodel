@@ -64,13 +64,21 @@
 - 雙牙膏大艙：**$\varnothing 12.0\text{ mm}$** 直通排水孔（相容 $\varnothing 36\text{ mm}$ 大圓蓋）。
 - 底面十字防密閉立體風道（$4.0\text{mm} \times 2.0\text{mm}$），排空水氣絕不積水發霉。
 
+### 4. 側面免支撐多功能掛勾 & 純淨極簡側壁 (Side Utility Hooks & Clean Flanks)
+- **移除側面小凸點**：側邊轉角圓弧改為極致平滑的純淨曲面，徹底去除多餘小圓點，展現洗鍊的現代建築美學。
+- **兩側免支撐多功能掛勾**：
+  - 完美座落於兩側平坦側壁（$X = \pm 94\text{ mm}, Y = 33\text{ mm}$），對稱雙掛勾配置。
+  - **100% 免支撐（Support-Free）**：底部傾角嚴格控制於 $\ge 48^\circ$（拔模角度 $\le 42^\circ$），懸空處無需任何支撐即可完美成型。
+  - **超強防滑落鞍座**：外伸 $10.5\text{ mm}$，末端垂直立柱高度達 $6.0\text{ mm}$（頂點 $Z = 30.5\text{ mm}$），弧面圓角導正，方便懸掛沐浴球、髮圈、刮鬍刀或擦手小毛巾。
+  - **主體一體成型最高結構強度**：預設融入 C1 暖白主體結構，切片時由外壁連續層線一體擠出，抗拉強度高且不增加換料耗損。
+
 ---
 
 ## 📸 4 色視覺渲染畫廊 (Render Gallery)
 
 ### 1. 浴室真實牙刷與收納配置安裝視角 (4-Color In-Situ Real Setup)
 ![Fluted 4-Color Assembled](renders/fluted_assembled_perspective.png)
-*(後艙：2 支大蓋洗面乳 + 2 支牙膏；前排：小米電動牙刷 + 3 支手動牙刷 + 2 處緩衝位)*
+*(後艙：2 支大蓋洗面乳 + 2 支牙膏；前排：小米電動牙刷 + 3 支手動牙刷 + 2 處緩衝位；兩側：多功能掛勾)*
 
 ### 2. 正視圖·7 大萌寵多色托爪與羅馬金柱外牆 (Front Elevation)
 ![Fluted 4-Color Front](renders/fluted_crystalline_front.png)
@@ -81,6 +89,12 @@
 | :---: | :---: | :---: |
 | <img src="renders/fluted_crystalline_iso_front.png" width="300" alt="Iso Front View"> | <img src="renders/fluted_animal_prongs_closeup.png" width="300" alt="Animals Closeup"> | <img src="renders/fluted_crystalline_side.png" width="300" alt="Side View"> |
 | 長虹金柱 + 金色背板框 + 白底瓷光 | 7 款動物獨立分色五官，立體生動 | 越往外越厚 (5.5mm 升至 11.0mm) |
+
+### 4. 側面多功能掛勾與光滑側壁特寫 (Side Utility Hook & Smooth Flank)
+| 側面掛勾特寫 (Side Hook Closeup) | 側面視角全景 (Side Hook Isometric) |
+| :---: | :---: |
+| <img src="renders/fluted_side_hook_closeup.png" width="450" alt="Side Hook Closeup"> | <img src="renders/fluted_side_hook_iso.png" width="450" alt="Side Hook Iso"> |
+| 徹底移除側面小凸點，純淨平滑側曲面 | 免支撐 48° 仰角 + 6mm 防滑鞍座，掛置沐浴球/髮圈超便利 |
 
 ---
 

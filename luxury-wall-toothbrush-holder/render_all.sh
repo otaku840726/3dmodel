@@ -30,6 +30,14 @@ echo "  - Side view showing 5.5mm -> 11.0mm thickness expansion..."
 openscad --camera=75,50,45,90,0,90,260 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_side.png" "$SCAD"
 
+echo "  - Side hook & smooth flank close-up (bumps removed, utility hook integrated)..."
+openscad --camera=90,35,24,70,0,100,160 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'mode="holder"' -o "$RENDERS/fluted_side_hook_closeup.png" "$SCAD"
+
+echo "  - Side hook isometric perspective..."
+openscad --camera=70,55,30,60,0,135,260 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'mode="holder"' -o "$RENDERS/fluted_side_hook_iso.png" "$SCAD"
+
 echo "  - Top view showing storage wells..."
 openscad --camera=0,65,65,45,0,205,320 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_top.png" "$SCAD"
