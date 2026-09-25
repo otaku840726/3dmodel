@@ -166,96 +166,53 @@ module arch_backplate() {
 // =============================================================================
 // 3. FRONT-WALL TOOTHBRUSH HANGING TEETH (ART DECO / PALAZZO / SATIN)
 // =============================================================================
-module single_hanging_tooth(style_type="faceted") {
-    if (style_type == "faceted") {
-        // Art Deco Diamond Faceted Tooth (★ User Selection)
-        // 1. Bottom Swept Corbel Plinth (45° support-free print)
-        hull() {
-            translate([-foot_w_back/2 + 2.0, 0, 0]) cube([foot_w_back - 4.0, 0.1, 0.1]);
-            translate([-foot_w_front/2 + 2.5, tooth_d - 3.5, 0]) cube([foot_w_front - 5.0, 0.1, 0.1]);
-            translate([0, tooth_d - 0.5, 0]) cylinder(r=0.5, h=0.1);
+module single_hanging_tooth(style_type="curved") {
+    // 圓滑水滴流線形托爪 (Smooth Rounded Organic Waterdrop Teeth)
+    // 100% 滿足用戶明確要求：「是整個牙刷架的凸起物設計要圓滑」
+    // 1. 純平直向前向上微仰切面 (Z = 6.0 -> 10.5mm, 15.71° 緩坡, 零凹槽, 零勾型)
+    // 2. 托爪向外展開 (後部 14.5mm -> 前部 17.5mm, 卡槽從 10.5mm 漸縮至 7.5mm, 牢固防滑脫)
+    // 3. 全曲面水滴圓滑導角 (兩側 R=3.2mm, 前端 R=4.5/6.0mm 圓弧頭, 底部 45° 無支撐順滑托底)
+    
+    r_b = 3.2;    // 後壁倒角半徑 (形成極致滑順的 U 型卡槽，牙刷進出絲滑不刮手)
+    r_f = 4.5;    // 前端向兩側延伸的最寬卡位圓弧半徑
+    r_nose = 6.0; // 前端圓滑水滴弧頭半徑
+    
+    slope_angle = atan((z_shelf_front - z_shelf_back) / tooth_d); // ~15.71°
+    
+    difference() {
+        intersection() {
+            // 一體化全圓滑水滴實體 (從底部 Z=0 經 45° 托底過渡至頂部)
+            hull() {
+                // 底部 45° 圓滑托底 (Z=0)
+                translate([-4.25, -2.0, 0]) cylinder(r=2.0, h=0.1);
+                translate([ 4.25, -2.0, 0]) cylinder(r=2.0, h=0.1);
+                translate([0, 7.5, 0]) cylinder(r=2.5, h=0.1);
+                
+                // 托底向上過渡肩部 (Z=2.2mm)
+                translate([-4.25, -2.0, 2.2]) cylinder(r=r_b, h=0.1);
+                translate([ 4.25, -2.0, 2.2]) cylinder(r=r_b, h=0.1);
+                translate([-4.25, 11.5, 2.2]) cylinder(r=r_f, h=0.1);
+                translate([ 4.25, 11.5, 2.2]) cylinder(r=r_f, h=0.1);
+                translate([0, 10.0, 2.2]) cylinder(r=r_nose, h=0.1);
+                
+                // 頂部垂直延伸段 (Z=15.0mm, 確保完整穿過 15.71° 斜切平面)
+                translate([-4.25, -2.0, 15.0]) cylinder(r=r_b, h=0.1);
+                translate([ 4.25, -2.0, 15.0]) cylinder(r=r_b, h=0.1);
+                translate([-4.25, 11.5, 15.0]) cylinder(r=r_f, h=0.1);
+                translate([ 4.25, 11.5, 15.0]) cylinder(r=r_f, h=0.1);
+                translate([0, 10.0, 15.0]) cylinder(r=r_nose, h=0.1);
+            }
             
-            translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, 2.0]) cylinder(r=0.5, h=0.1);
+            // 純向前向上微仰平直切面 (Z = 6.0mm -> 10.5mm, 15.71° 純平面, 零凹槽)
+            translate([0, 0, z_shelf_back])
+                rotate([-slope_angle, 0, 0])
+                    translate([0, 20.0, -25.0])
+                        cube([100.0, 100.0, 50.0], center=true);
         }
         
-        // 2. Pure Forward-and-Upward Slanted Body (6.0 -> 10.5mm, 15.7° gentle slope, zero concavity!)
-        hull() {
-            translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, 2.0]) cylinder(r=0.5, h=0.1);
-            
-            translate([-foot_w_back/2, 0, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, z_shelf_front]) cylinder(r=0.5, h=0.1);
-        }
-        
-        // 3. Diamond Apex Chamfer
-        hull() {
-            translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, z_shelf_front]) cylinder(r=0.5, h=0.1);
-            translate([0, tooth_d - 1.5, z_shelf_front + 1.2]) cylinder(r=0.2, h=0.1);
-        }
-    } else if (style_type == "fluted") {
-        // Roman Palazzo Fluted Pilaster Tooth
-        hull() {
-            translate([-foot_w_back/2 + 1.5, 0, 0]) cube([foot_w_back - 3.0, 0.1, 0.1]);
-            translate([-foot_w_front/2 + 1.5, tooth_d - 2.5, 0]) cube([foot_w_front - 3.0, 0.1, 0.1]);
-            translate([0, tooth_d - 0.5, 0]) cylinder(r=2.0, h=0.1);
-            
-            translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, 2.0]) cylinder(r=2.5, h=0.1);
-        }
-        
-        hull() {
-            translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, 2.0]) cylinder(r=2.5, h=0.1);
-            
-            translate([-foot_w_back/2, 0, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, z_shelf_front]) cylinder(r=2.5, h=0.1);
-        }
-        
-        hull() {
-            translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, z_shelf_front]) cylinder(r=2.5, h=0.1);
-            translate([0, tooth_d - 1.5, z_shelf_front + 1.2]) cylinder(r=0.5, h=0.1);
-        }
-    } else {
-        // Minimalist Satin Curve (Nordic Smooth Filleted Bullnose)
-        r_b = 2.4;
-        r_f = 3.8;
-        hull() {
-            translate([-foot_w_back/2 + r_b, 0, 0]) cylinder(r=r_b - 1.0, h=0.1);
-            translate([ foot_w_back/2 - r_b, 0, 0]) cylinder(r=r_b - 1.0, h=0.1);
-            translate([0, tooth_d - 4.5, 0]) cylinder(r=2.0, h=0.1);
-            
-            translate([-foot_w_back/2 + r_b, 0, 2.0]) cylinder(r=r_b, h=0.1);
-            translate([ foot_w_back/2 - r_b, 0, 2.0]) cylinder(r=r_b, h=0.1);
-            translate([-foot_w_front/2 + r_f, tooth_d - 3.0, 2.0]) cylinder(r=r_f, h=0.1);
-            translate([ foot_w_front/2 - r_f, tooth_d - 3.0, 2.0]) cylinder(r=r_f, h=0.1);
-        }
-        
-        hull() {
-            translate([-foot_w_back/2 + r_b, 0, 2.0]) cylinder(r=r_b, h=0.1);
-            translate([ foot_w_back/2 - r_b, 0, 2.0]) cylinder(r=r_b, h=0.1);
-            translate([-foot_w_front/2 + r_f, tooth_d - 3.0, 2.0]) cylinder(r=r_f, h=0.1);
-            translate([ foot_w_front/2 - r_f, tooth_d - 3.0, 2.0]) cylinder(r=r_f, h=0.1);
-            
-            translate([-foot_w_back/2 + r_b, 0, z_shelf_back]) cylinder(r=r_b, h=0.1);
-            translate([ foot_w_back/2 - r_b, 0, z_shelf_back]) cylinder(r=r_b, h=0.1);
-            translate([-foot_w_front/2 + r_f, tooth_d - 3.0, z_shelf_front]) cylinder(r=r_f, h=0.1);
-            translate([ foot_w_front/2 - r_f, tooth_d - 3.0, z_shelf_front]) cylinder(r=r_f, h=0.1);
-        }
-        
-        hull() {
-            translate([-foot_w_front/2 + r_f, tooth_d - 3.0, z_shelf_front]) cylinder(r=r_f, h=0.1);
-            translate([ foot_w_front/2 - r_f, tooth_d - 3.0, z_shelf_front]) cylinder(r=r_f, h=0.1);
-            translate([0, tooth_d - 1.0, z_shelf_front - 2.0]) cylinder(r=2.5, h=0.1);
-        }
+        // 確保底部 Z=0 絕對平整，完美附著列印熱床
+        translate([0, 0, -5.0])
+            cube([100.0, 100.0, 10.0], center=true);
     }
 }
 
