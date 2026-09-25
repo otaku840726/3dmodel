@@ -21,10 +21,10 @@ w_total     = 204.0;
 d_wall      = 8.0;
 h_total     = 88.0;
 
-w_pod       = 188.0;
-d_pod       = 50.0;
+w_pod       = 194.0;
+d_pod       = 52.0;
 h_pod       = 44.0; 
-y_front     = d_wall + d_pod; // 58.0mm: Front vertical wall of storage gallery
+y_front     = d_wall + d_pod; // 60.0mm: Front vertical wall of storage gallery
 
 // Toothbrush Hanging Parameters (Pure Forward-and-Upward Slanted Cutting Plane: Zero Concavity)
 tb_pitch      = 25.0; // 6 slots, 7 teeth across 150mm span (Matches 621-01 layout)
@@ -439,7 +439,7 @@ module front_hanging_teeth_array(style_type="fluted") {
 // =============================================================================
 // 4. STORAGE GALLERY SOLID & CLASSICAL ARCHITECTURAL FLUTING
 // =============================================================================
-module squircle_body(w, d, r, h, ch=4.0) {
+module squircle_body(w, d, r, h, ch=3.5) {
     hull() {
         translate([-w/2 + r, d_wall + r, 0]) cylinder(r=r, h=0.1);
         translate([ w/2 - r, d_wall + r, 0]) cylinder(r=r, h=0.1);
@@ -462,7 +462,7 @@ module squircle_body(w, d, r, h, ch=4.0) {
 module supportfree_beltline() {
     translate([0, y_front + 0.1, 28.0])
         rotate([0, 90, 0])
-            linear_extrude(height=152.0, center=true)
+            linear_extrude(height=158.0, center=true)
                 polygon([
                     [-0.8, -0.6],  // back bottom inside wall
                     [-0.8, -0.1],  // front wall contact bottom (Z=27.2)
@@ -550,23 +550,23 @@ module squircle_cavity(w, d, r, h) {
 }
 
 module rear_storage_cavities_and_drains() {
-    y_cav = d_wall + d_pod/2; // 33.0mm
+    y_cav = d_wall + d_pod/2; // 34.0mm
     z_floor = 9.0;           // Cavity floor
     h = h_pod;               // 44.0mm
     
-    // 1. Cleanser Chambers (X = -66, +66) - Compatible with Ø44mm Thick Caps
-    // Sized 46mm x 40mm with 5.0mm uniform surrounding walls
+    // 1. Cleanser Chambers (X = -66.5, +66.5) - Compatible with Ø44mm Thick Caps
+    // Sized 44mm x 39mm with uniform surrounding flat top landing (1.8mm ~ 3.8mm)
     for (side = [-1, 1]) {
-        cx = side * 66.0;
+        cx = side * 66.5;
         translate([cx, y_cav, 0]) {
             translate([0, 0, z_floor])
-                squircle_cavity(46.0, 40.0, 11.0, h_total);
-            // 4-sided chamfer mouth at top (2.5mm bevel on all 4 sides)
+                squircle_cavity(44.0, 39.0, 10.5, h_total);
+            // 4-sided chamfer mouth at top (2.0mm depth, 1.2mm bevel on all 4 sides)
             hull() {
-                translate([0, 0, h - 2.5])
-                    squircle_cavity(46.0, 40.0, 11.0, 0.1);
+                translate([0, 0, h - 2.0])
+                    squircle_cavity(44.0, 39.0, 10.5, 0.1);
                 translate([0, 0, h + 0.5])
-                    squircle_cavity(46.0 + 3.5, 40.0 + 3.5, 11.0 + 1.75, 0.1);
+                    squircle_cavity(44.0 + 2.4, 39.0 + 2.4, 10.5 + 1.2, 0.1);
             }
             // Floor conical guidance funnel
             translate([0, 0, z_floor - 4.0])
@@ -575,25 +575,25 @@ module rear_storage_cavities_and_drains() {
             translate([0, 0, -5.0])
                 cylinder(d=14.0, h=z_floor + 20.0);
             translate([0, 0, z_floor]) {
-                cube([46.0, 4.0, 2.0], center=true);
-                cube([4.0, 40.0, 2.0], center=true);
+                cube([44.0, 4.0, 2.0], center=true);
+                cube([4.0, 39.0, 2.0], center=true);
             }
         }
     }
     
     // 2. Toothpaste Chambers (X = -22, +22) - Compatible with Ø36mm Thick Caps
-    // Sized 36mm x 38mm with 5.0mm front/rear walls
+    // Sized 36mm x 38mm with uniform surrounding flat top landing (2.3mm)
     for (side = [-1, 1]) {
         cx = side * 22.0;
         translate([cx, y_cav, 0]) {
             translate([0, 0, z_floor])
                 squircle_cavity(36.0, 38.0, 10.0, h_total);
-            // 4-sided chamfer mouth at top (2.5mm bevel on all 4 sides)
+            // 4-sided chamfer mouth at top (2.0mm depth, 1.2mm bevel on all 4 sides)
             hull() {
-                translate([0, 0, h - 2.5])
+                translate([0, 0, h - 2.0])
                     squircle_cavity(36.0, 38.0, 10.0, 0.1);
                 translate([0, 0, h + 0.5])
-                    squircle_cavity(36.0 + 3.5, 38.0 + 3.5, 10.0 + 1.75, 0.1);
+                    squircle_cavity(36.0 + 2.4, 38.0 + 2.4, 10.0 + 1.2, 0.1);
             }
             // Floor conical guidance funnel
             translate([0, 0, z_floor - 4.0])
@@ -619,7 +619,7 @@ module luxury_holder_c1() {
     difference() {
         union() {
             arch_backplate_solid();
-            squircle_body(w_pod, d_pod, 16.0, h_pod, 4.0);
+            squircle_body(w_pod, d_pod, 16.0, h_pod, 3.5);
             translate([0, y_front, 0]) {
                 for (i = [-3 : 3]) {
                     translate([i * tb_pitch, 0, 0])
@@ -809,8 +809,8 @@ module preview_assembled(style_type="fluted") {
     
     // Rear Cleansers & Toothpastes
     y_cav = d_wall + d_pod/2;
-    translate([ 66.0, y_cav, 9.0]) cleanser_tube_prop([0.22, 0.40, 0.72]);
-    translate([-66.0, y_cav, 9.0]) cleanser_tube_prop([0.92, 0.92, 0.95]);
+    translate([ 66.5, y_cav, 9.0]) cleanser_tube_prop([0.22, 0.40, 0.72]);
+    translate([-66.5, y_cav, 9.0]) cleanser_tube_prop([0.92, 0.92, 0.95]);
     translate([ 22.0, y_cav, 9.0]) toothpaste_tube_prop([0.88, 0.30, 0.35]);
     translate([-22.0, y_cav, 9.0]) toothpaste_tube_prop([0.20, 0.58, 0.85]);
     
