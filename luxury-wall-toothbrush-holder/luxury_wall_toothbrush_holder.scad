@@ -158,23 +158,36 @@ module female_dovetail_cavity() {
 // =============================================================================
 // 2. ARCHITECTURAL TABLET BACKPLATE
 // =============================================================================
+function backplate_bottom_polygon(w, r, min_ang=42.0, N=8) = 
+    let(
+        alpha_max = 90.0 - min_ang,
+        z_end = r * (1.0 - sin(alpha_max)),
+        x_end = -w/2 + r * (1.0 - cos(alpha_max)),
+        dx = z_end / tan(min_ang),
+        x_bed = x_end + dx,
+        pts_left = concat(
+            [[x_bed, 0]],
+            [for (i = [1 : N-1]) 
+                let(a = alpha_max * (1.0 - i/N))
+                [-w/2 + r * (1.0 - cos(a)), r * (1.0 - sin(a))]
+            ],
+            [[-w/2, r]]
+        ),
+        pts_right = [for (i = [len(pts_left)-1 : -1 : 0]) [-pts_left[i][0], pts_left[i][1]]]
+    )
+    concat(pts_left, pts_right);
+
 module arch_backplate_solid() {
     w = w_total;
     th_back = d_wall;
     r = 10.0;
-    ch_bot = 4.0; // 4.0mm 45° self-supporting corner chamfers (zero sharp corners, zero supports)
     
     translate([0, th_back, 0])
         rotate([90, 0, 0])
             linear_extrude(height = th_back) {
                 hull() {
-                    // 45° self-supporting bottom corner chamfers avoiding sharp right angles
-                    polygon([
-                        [-w/2 + ch_bot, 0],
-                        [ w/2 - ch_bot, 0],
-                        [ w/2, ch_bot],
-                        [-w/2, ch_bot]
-                    ]);
+                    // Multi-faceted smooth rounded corner bevels (zero sharp corners, 100% self-supporting)
+                    polygon(backplate_bottom_polygon(w, r, 42.0, 8));
                     translate([-w/2 + r, r]) circle(r=r);
                     translate([ w/2 - r, r]) circle(r=r);
                     translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);
@@ -188,19 +201,13 @@ module arch_backplate_frame_trim() {
     w = w_total;
     th_back = d_wall;
     r = 10.0;
-    ch_bot = 4.0;
     
     translate([0, th_back, 0])
         rotate([90, 0, 0])
             difference() {
                 linear_extrude(height = 1.0)
                     hull() {
-                        polygon([
-                            [-w/2 + ch_bot, 0],
-                            [ w/2 - ch_bot, 0],
-                            [ w/2, ch_bot],
-                            [-w/2, ch_bot]
-                        ]);
+                        polygon(backplate_bottom_polygon(w, r, 42.0, 8));
                         translate([-w/2 + r, r]) circle(r=r);
                         translate([ w/2 - r, r]) circle(r=r);
                         translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);

@@ -50,6 +50,14 @@ echo "  - Bottom view showing 4 straight-through drainage holes..."
 openscad --camera=0,65,-10,125,0,210,480 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_bottom.png" "$SCAD"
 
+echo "  - Backplate bottom corner rear ortho view..."
+openscad --camera=-100,-10,10,90,0,0,100 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'mode="holder"' -o "$RENDERS/fluted_backplate_corner_rear_ortho.png" "$SCAD"
+
+echo "  - Backplate bottom corner isometric close-up..."
+openscad --camera=-100,-15,10,75,0,320,160 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'mode="holder"' -o "$RENDERS/fluted_backplate_corner_closeup.png" "$SCAD"
+
 echo "3. Rendering Standalone Fluted Toothbrush Rack (with Animal Heads)..."
 openscad --camera=-40,65,35,60,0,225,280 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'mode="standalone_toothbrush"' -o "$RENDERS/standalone_toothbrush_rack.png" "$SCAD"
