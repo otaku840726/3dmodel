@@ -17,7 +17,7 @@ side_hooks   = "both";           // "both" (左右兩側雙掛勾), "left" (僅�
 side_hook_color = "body";        // "body" (C1 暖象牙白 - 結構一體無耗材最高強度), "gold" (C4 香檳金輕奢金屬掛勾)
 
 // Master Dimensions
-w_total     = 204.0;
+w_total     = 194.0; // Reduced from 204.0 to 194.0 to form a true rectangle aligned with storage pod
 d_wall      = 8.0;
 h_total     = 88.0;
 
@@ -190,8 +190,8 @@ module arch_backplate_solid() {
                     polygon(backplate_bottom_polygon(w, r, 42.0, 8));
                     translate([-w/2 + r, r]) circle(r=r);
                     translate([ w/2 - r, r]) circle(r=r);
-                    translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);
-                    translate([ w/2 - r - 3.0, h_total - r]) circle(r=r - 3.0);
+                    translate([-w/2 + r, h_total - r]) circle(r=r);
+                    translate([ w/2 - r, h_total - r]) circle(r=r);
                 }
             }
 }
@@ -210,16 +210,16 @@ module arch_backplate_frame_trim() {
                         polygon(backplate_bottom_polygon(w, r, 42.0, 8));
                         translate([-w/2 + r, r]) circle(r=r);
                         translate([ w/2 - r, r]) circle(r=r);
-                        translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);
-                        translate([ w/2 - r - 3.0, h_total - r]) circle(r=r - 3.0);
+                        translate([-w/2 + r, h_total - r]) circle(r=r);
+                        translate([ w/2 - r, h_total - r]) circle(r=r);
                     }
                 translate([0, 0, -1.0])
                     linear_extrude(height = 3.0)
                         hull() {
-                            translate([-w/2 + r + 4.0, r + 4.0]) circle(r=r - 3.0);
-                            translate([ w/2 - r - 4.0, r + 4.0]) circle(r=r - 3.0);
-                            translate([-w/2 + r + 6.0, h_total - r - 4.0]) circle(r=r - 5.0);
-                            translate([ w/2 - r - 6.0, h_total - r - 4.0]) circle(r=r - 5.0);
+                            translate([-w/2 + r, r + 4.0]) circle(r=6.0);
+                            translate([ w/2 - r, r + 4.0]) circle(r=6.0);
+                            translate([-w/2 + r, h_total - r]) circle(r=6.0);
+                            translate([ w/2 - r, h_total - r]) circle(r=6.0);
                         }
             }
 }

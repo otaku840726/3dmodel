@@ -58,6 +58,10 @@ echo "  - Backplate bottom corner isometric close-up..."
 openscad --camera=-100,-15,10,75,0,320,160 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'mode="holder"' -o "$RENDERS/fluted_backplate_corner_closeup.png" "$SCAD"
 
+echo "  - Full rear view (rectangular backplate symmetry)..."
+openscad --camera=0,-100,44,90,0,0,300 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'mode="holder"' -o "$RENDERS/rear_full_view.png" "$SCAD"
+
 echo "3. Rendering Standalone Fluted Toothbrush Rack (with Animal Heads)..."
 openscad --camera=-40,65,35,60,0,225,280 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'mode="standalone_toothbrush"' -o "$RENDERS/standalone_toothbrush_rack.png" "$SCAD"
