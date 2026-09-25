@@ -7,9 +7,11 @@
 $fn = 40;
 
 // Configuration Parameters
-edition = "grand";    // "grand" (2 Facial Cleansers + 2 Toothpastes + 6 Toothbrushes)
-style   = "faceted";  // "faceted" (Art Deco Diamond - User Selection), "fluted" (Palazzo), "curved" (Satin)
-mode    = "holder";   // "holder", "plate", "bracket", "standalone_toothbrush", "assembled", "all_styles"
+edition     = "grand";          // "grand" (2 Facial Cleansers + 2 Toothpastes + 6 Toothbrushes)
+style       = "fluted";         // Primary & Canonical Edition: "fluted" (Palazzo Fluting + Diamond Wall + 7 Animal Faces)
+tooth_style = "animals";        // "animals" (7 sculpted 3D animal faces: 🐱 Cat, 🐻 Bear, 🐰 Bunny, 🐼 Panda, 🐶 Puppy, 🦊 Fox, 🐨 Koala), "plain"
+wall_style  = "diamond_fluted"; // "diamond_fluted" (Organic irregular diamond crystalline facet relief + flank fluting)
+mode        = "holder";         // "holder", "plate", "bracket", "standalone_toothbrush", "assembled"
 
 // Master Dimensions
 w_total     = 204.0;
@@ -166,9 +168,98 @@ module arch_backplate() {
 
 
 // =============================================================================
-// 3. FRONT-WALL TOOTHBRUSH HANGING TEETH (ART DECO / PALAZZO / SATIN)
+// 3. FRONT-WALL TOOTHBRUSH HANGING TEETH & SCULPTED 3D ANIMAL FACES
 // =============================================================================
-module single_hanging_tooth(style_type="curved") {
+// Organic Pseudo-random hash function for crystalline facet distribution
+function phash(a, b, seed=1) =
+    let (v = sin(a * 127.1 + b * 311.7 + seed * 113.5) * 43758.5453)
+    v - floor(v);
+
+// 7 Adorable 3D Animal Face Sculptures integrated seamlessly into the waterdrop prongs:
+// Tooth 0 (X = -75): 🐱 Cat   (`cat`)
+// Tooth 1 (X = -50): 🐻 Bear  (`bear`)
+// Tooth 2 (X = -25): 🐰 Bunny (`bunny`)
+// Tooth 3 (X =   0): 🐼 Panda (`panda`)
+// Tooth 4 (X = +25): 🐶 Puppy (`puppy`)
+// Tooth 5 (X = +50): 🦊 Fox   (`fox`)
+// Tooth 6 (X = +75): 🐨 Koala (`koala`)
+animals_list = ["cat", "bear", "bunny", "panda", "puppy", "fox", "koala"];
+
+module animal_features(animal) {
+    y_center = tooth_d - foot_w_front / 2; // 7.25mm
+    
+    if (animal == "bear") {
+        for (s = [-1, 1]) {
+            translate([s * 5.2, y_center + 1.2, 10.2]) scale([1.0, 0.8, 1.0]) sphere(r=2.2);
+        }
+        translate([0, y_center + 6.8, 4.8]) scale([1.2, 0.8, 0.9]) sphere(r=2.5);
+        translate([0, y_center + 8.5, 5.6]) sphere(r=1.0);
+        for (s = [-1, 1]) translate([s * 3.4, y_center + 6.6, 7.5]) sphere(r=0.85);
+    } else if (animal == "cat") {
+        for (s = [-1, 1]) {
+            hull() {
+                translate([s * 4.5, y_center + 0.8, 9.2]) sphere(r=1.6);
+                translate([s * 5.8, y_center + 1.2, 13.0]) sphere(r=0.8);
+            }
+        }
+        translate([0, y_center + 8.2, 5.2]) scale([1.2, 0.7, 0.9]) sphere(r=0.9);
+        for (s = [-1, 1]) translate([s * 3.5, y_center + 6.8, 7.2]) rotate([0, s * 15, 0]) scale([1.2, 0.8, 0.9]) sphere(r=0.95);
+        for (s = [-1, 1]) {
+            for (w = [-1, 1]) {
+                translate([s * 5.0, y_center + 7.2, 4.8 + w * 1.2])
+                    rotate([0, 90, s * (25 + w * 8)])
+                        cylinder(r=0.4, h=2.8, center=true);
+            }
+        }
+    } else if (animal == "bunny") {
+        for (s = [-1, 1]) {
+            hull() {
+                translate([s * 3.6, y_center + 0.5, 9.5]) sphere(r=1.6);
+                translate([s * 4.2, y_center + 0.2, 14.5]) sphere(r=1.2);
+            }
+        }
+        translate([0, y_center + 8.2, 5.0]) sphere(r=0.9);
+        for (s = [-1, 1]) {
+            translate([s * 1.5, y_center + 7.4, 4.4]) sphere(r=1.5);
+            translate([s * 3.2, y_center + 6.8, 7.2]) sphere(r=0.9);
+        }
+    } else if (animal == "panda") {
+        for (s = [-1, 1]) {
+            translate([s * 5.8, y_center + 1.0, 10.0]) sphere(r=2.1);
+            translate([s * 3.5, y_center + 6.6, 7.2]) rotate([0, s * -25, 0]) scale([1.3, 0.8, 1.0]) sphere(r=1.4);
+        }
+        translate([0, y_center + 7.2, 4.6]) scale([1.1, 0.8, 0.9]) sphere(r=2.3);
+        translate([0, y_center + 8.6, 5.4]) sphere(r=1.05);
+    } else if (animal == "puppy") {
+        for (s = [-1, 1]) {
+            hull() {
+                translate([s * 6.0, y_center + 1.5, 9.5]) sphere(r=1.8);
+                translate([s * 7.2, y_center + 4.2, 6.2]) sphere(r=2.0);
+            }
+            translate([s * 3.4, y_center + 6.8, 7.4]) sphere(r=0.95);
+        }
+        translate([0, y_center + 7.0, 4.6]) scale([1.3, 0.8, 1.0]) sphere(r=2.5);
+        translate([0, y_center + 8.6, 5.6]) scale([1.2, 0.8, 0.9]) sphere(r=1.2);
+    } else if (animal == "fox") {
+        for (s = [-1, 1]) {
+            hull() {
+                translate([s * 4.8, y_center + 0.8, 9.2]) sphere(r=1.6);
+                translate([s * 6.5, y_center + 0.8, 13.5]) sphere(r=0.8);
+            }
+            translate([s * 3.5, y_center + 6.8, 7.2]) rotate([0, s * 25, 0]) scale([1.3, 0.7, 0.8]) sphere(r=0.95);
+        }
+        translate([0, y_center + 7.6, 4.8]) scale([1.0, 1.1, 0.9]) sphere(r=2.0);
+        translate([0, y_center + 9.2, 5.2]) sphere(r=0.85);
+    } else if (animal == "koala") {
+        for (s = [-1, 1]) {
+            translate([s * 6.4, y_center + 1.2, 9.5]) scale([1.1, 0.8, 1.1]) sphere(r=2.8);
+            translate([s * 3.4, y_center + 6.6, 7.4]) sphere(r=0.85);
+        }
+        translate([0, y_center + 8.2, 5.4]) scale([0.9, 0.8, 1.4]) sphere(r=1.8);
+    }
+}
+
+module single_hanging_tooth(style_type="fluted", animal_idx=-1) {
     // 圓滑 3D 有機水滴托爪 (Pure 3D Organic Teardrop / Waterdrop Teeth)
     // 100% 滿足用戶明確要求：「前端改為一個圓弧，整體類似水滴狀，越往外越厚」
     // 1. 整體為完美雙圓心 3D 水滴造型：
@@ -178,6 +269,7 @@ module single_hanging_tooth(style_type="curved") {
     //    - 俯視為 R=8.75mm 圓滑水滴凸弧，側視為 3D 凸半橢球穹頂，從頂部圓滑過渡至底部
     //    - 零平截斷崖、零生硬稜角、零積水凹陷
     // 3. 熱床附著：底部平整貼床 (Z=0)，免支撐、高強度
+    // 4. 精緻 3D 動物雕刻面容 (當 tooth_style == "animals" 時自動無縫融合)
     
     r1 = foot_w_back / 2;  // 7.25mm
     r2 = foot_w_front / 2; // 8.75mm
@@ -186,36 +278,44 @@ module single_hanging_tooth(style_type="curved") {
     h1 = z_shelf_back;     // 5.5mm
     h2 = z_shelf_front;    // 11.0mm
     
-    difference() {
-        hull() {
-            // 後方半橢球實體 (貼近前壁處，平順過渡)
-            translate([0, y1, 0])
-                scale([1.0, 1.0, h1/r1])
-                    sphere(r=r1);
-                    
-            // 前方半橢球水滴頭 (前端純圓弧，全 3D 凸面，越往外越厚)
-            translate([0, y2, 0])
-                scale([1.0, 1.0, h2/r2])
-                    sphere(r=r2);
+    union() {
+        difference() {
+            hull() {
+                // 後方半橢球實體 (貼近前壁處，平順過渡)
+                translate([0, y1, 0])
+                    scale([1.0, 1.0, h1/r1])
+                        sphere(r=r1);
+                        
+                // 前方半橢球水滴頭 (前端純圓弧，全 3D 凸面，越往外越厚)
+                translate([0, y2, 0])
+                    scale([1.0, 1.0, h2/r2])
+                        sphere(r=r2);
+            }
+            
+            // 確保熱床貼合面 Z=0 絕對平整
+            translate([0, 0, -10.0])
+                cube([100.0, 100.0, 20.0], center=true);
+                
+            // 確保後方不突出壁面 (Y < -3.0mm 切除，確保壁掛背部 100% 絕對平整)
+            translate([0, -53.0, 0])
+                cube([100.0, 100.0, 100.0], center=true);
         }
         
-        // 確保熱床貼合面 Z=0 絕對平整
-        translate([0, 0, -10.0])
-            cube([100.0, 100.0, 20.0], center=true);
-            
-        // 確保後方不突出壁面 (Y < -3.0mm 切除，確保壁掛背部 100% 絕對平整)
-        translate([0, -53.0, 0])
-            cube([100.0, 100.0, 100.0], center=true);
+        // 疊加可愛 3D 動物五官雕刻
+        if (tooth_style == "animals" && animal_idx >= 0) {
+            animal = animals_list[animal_idx % 7];
+            animal_features(animal);
+        }
     }
 }
 
 // 7 Teeth Array across front wall
-module front_hanging_teeth_array(style_type="faceted") {
+module front_hanging_teeth_array(style_type="fluted") {
     translate([0, y_front, 0]) {
         for (i = [-3 : 3]) {
             x_pos = i * tb_pitch;
             translate([x_pos, 0, 0])
-                single_hanging_tooth(style_type);
+                single_hanging_tooth(style_type, i + 3);
         }
     }
 }
@@ -246,13 +346,63 @@ module squircle_body(w, d, r, h, ch=3.0) {
     }
 }
 
-module storage_gallery_solid(style_type="faceted") {
+// Framed Diamond Crystalline Facet Panel (Front Wall Exterior Z=13~38mm)
+module diamond_crystalline_facade_panel() {
+    pitch_x = 9.0;
+    pitch_z = 7.0;
+    nx = floor(74.0 / pitch_x);
+    
+    // Embed 0.3mm into front wall at Y = y_front - 0.3 to ensure seamless manifold
+    translate([0, y_front - 0.3, 0]) {
+        for (ix = [-nx : nx]) {
+            for (iz = [0 : 3]) {
+                z_pos = 14.5 + iz * pitch_z;
+                jx = (phash(ix, iz, 101) - 0.5) * pitch_x * 0.5;
+                jz = (phash(iz, ix, 102) - 0.5) * pitch_z * 0.5;
+                fn_c = (phash(ix, iz, 103) < 0.35) ? 3 : 4;
+                base_r = 5.8 + phash(ix, iz, 104) * 2.2;
+                pyr_h = 1.3 + phash(ix, iz, 105) * 0.9;
+                rot = phash(ix, iz, 106) * 360;
+                
+                x_pos = ix * pitch_x + jx;
+                if (abs(x_pos) <= 72.0) {
+                    translate([x_pos, 0, z_pos + jz])
+                        rotate([-90, 0, rot])
+                            cylinder(r1=base_r, r2=0, h=pyr_h + 0.3, $fn=fn_c);
+                }
+            }
+        }
+    }
+}
+
+// Architectural Vertical Fluting on Rounded Flanks (Left & Right wraps)
+module side_fluting_flanks() {
+    for (s = [-1, 1]) {
+        for (ang = [15 : 20 : 75]) {
+            cx = s * (w_pod/2 - 16.0);
+            cy = d_wall + d_pod - 16.0;
+            px = cx + s * 16.0 * cos(ang);
+            py = cy + 16.0 * sin(ang);
+            translate([px, py, 26.0])
+                rotate([0, 0, s * (90 - ang)])
+                    rotate([-90, 0, 0])
+                        cylinder(d=2.6, h=1.4, center=true);
+        }
+    }
+}
+
+module storage_gallery_solid(style_type="fluted") {
     w = w_pod;
     d = d_pod;
     h = h_pod;
     
     squircle_body(w, d, 16.0, h, 3.0);
     front_hanging_teeth_array(style_type);
+    
+    // Artistic Diamond Crystalline Faceted Facade
+    if (wall_style == "diamond_fluted" || style_type == "fluted") {
+        diamond_crystalline_facade_panel();
+    }
 }
 
 
@@ -336,25 +486,20 @@ module rear_storage_cavities_and_drains() {
 // =============================================================================
 // 6. MASTER INTEGRATED ORGANIZER (二合一旗艦主體)
 // =============================================================================
-module luxury_holder(style_type="faceted") {
+module luxury_holder(style_type="fluted") {
     difference() {
         union() {
             arch_backplate();
             storage_gallery_solid(style_type);
         }
         
-        // Architectural Horizontal Accent Shadow Beltline at Z=28mm (Golden Ratio facade break)
+        // Architectural Horizontal Accent Shadow Beltline at Z=28mm (Golden Ratio facade break across front facade)
         translate([0, y_front, 28.0])
-            cube([w_pod - 12.0, 1.8, 1.4], center=true);
+            cube([152.0, 1.8, 1.4], center=true);
             
-        // Refined Vertical Fluting for fluted edition
-        if (style_type == "fluted") {
-            for (fx = [-w_pod/2 + 22 : 6.0 : w_pod/2 - 22]) {
-                hull() {
-                    translate([fx, y_front, 12.0]) rotate([-90, 0, 0]) cylinder(d=2.6, h=1.4);
-                    translate([fx, y_front, 25.0]) rotate([-90, 0, 0]) cylinder(d=2.6, h=1.4);
-                }
-            }
+        // Refined Vertical Fluting on rounded flanks
+        if (wall_style == "diamond_fluted" || style_type == "fluted") {
+            side_fluting_flanks();
         }
         
         // Dovetail slide receiver on rear
@@ -372,7 +517,7 @@ module luxury_holder(style_type="faceted") {
 // =============================================================================
 // 7. STANDALONE TOOTHBRUSH RACK (獨立美化壁掛牙刷架版)
 // =============================================================================
-module standalone_toothbrush_rack(style_type="faceted") {
+module standalone_toothbrush_rack(style_type="fluted") {
     difference() {
         union() {
             // Slender backing plate
@@ -388,11 +533,11 @@ module standalone_toothbrush_rack(style_type="faceted") {
                             translate([-w_rack/2 + 8, h_rack - 4]) circle(r=3);
                             translate([ w_rack/2 - 8, h_rack - 4]) circle(r=3);
                         }
-            // Hanging teeth on front
+            // Hanging teeth on front with 7 animal heads
             translate([0, th_back, 0]) {
                 for (i = [-3 : 3]) {
                     translate([i * tb_pitch, 0, 0])
-                        single_hanging_tooth(style_type);
+                        single_hanging_tooth(style_type, i + 3);
                 }
             }
         }
@@ -500,7 +645,7 @@ module cleanser_tube_prop(color_tube=[0.85, 0.90, 0.95]) {
     }
 }
 
-module preview_assembled(style_type="faceted") {
+module preview_assembled(style_type="fluted") {
     // Wall
     color(wall_tile_color)
         translate([0, -2.0, 50.0])
@@ -512,7 +657,7 @@ module preview_assembled(style_type="faceted") {
             rotate([90, 0, 0])
                 wall_bracket();
                 
-    // Main Holder
+    // Main Holder (Fluted Grand with Diamond Crystalline Wall + 7 Animal Faces)
     color(rose_gold_base)
         luxury_holder(style_type);
         
@@ -553,9 +698,4 @@ if (mode == "holder") {
     color(rose_gold_base) standalone_toothbrush_rack(style);
 } else if (mode == "assembled") {
     preview_assembled(style);
-} else if (mode == "all_styles") {
-    spacing = w_total + 25.0;
-    translate([ spacing, 0, 0]) preview_assembled("faceted");
-    translate([     0.0, 0, 0]) preview_assembled("fluted");
-    translate([-spacing, 0, 0]) preview_assembled("curved");
 }

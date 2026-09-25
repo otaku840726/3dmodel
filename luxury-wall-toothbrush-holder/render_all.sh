@@ -5,61 +5,51 @@ SCAD="$DIR/luxury_wall_toothbrush_holder.scad"
 RENDERS="$DIR/renders"
 mkdir -p "$RENDERS"
 
-echo "1. Rendering 3 Styles Side-by-Side Comparison..."
-openscad --csglimit=1000000 --camera=0,45,40,58,0,195,1200 --imgsize=1600,900 --colorscheme=Cornfield \
-    -D 'mode="all_styles"' -o "$RENDERS/rose_gold_3styles_comparison.png" "$SCAD"
+echo "================================================================="
+echo "Rendering Luxury Grand Fluted Showcase Images"
+echo "================================================================="
 
-echo "2. Rendering Assembled Perspectives with User's Real Toothbrush Setup..."
-openscad --csglimit=1000000 --camera=0,65,30,62,0,210,480 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="faceted"' -D 'mode="assembled"' -o "$RENDERS/faceted_assembled_perspective.png" "$SCAD"
-
+echo "1. Rendering Assembled Perspective with User's Real Toothbrush Setup..."
 openscad --csglimit=1000000 --camera=0,65,30,62,0,210,480 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'style="fluted"' -D 'mode="assembled"' -o "$RENDERS/fluted_assembled_perspective.png" "$SCAD"
 
-openscad --csglimit=1000000 --camera=0,65,30,62,0,210,480 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="curved"' -D 'mode="assembled"' -o "$RENDERS/curved_assembled_perspective.png" "$SCAD"
+echo "2. Rendering Multi-Angle Clean Architectural Views (Grand Fluted)..."
+echo "  - Front view showing all 7 animal heads & diamond crystalline facade..."
+openscad --render --csglimit=1000000 --camera=0,65,22,90,0,180,260 --imgsize=1600,900 --colorscheme=Cornfield \
+    -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_front.png" "$SCAD"
 
-echo "3. Rendering Multi-Angle Clean Architectural Views (Art Deco Faceted)..."
-openscad --render --csglimit=1000000 --camera=0,65,65,45,0,205,320 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="faceted"' -D 'mode="holder"' -o "$RENDERS/faceted_crystalline_top.png" "$SCAD"
+echo "  - Isometric front view..."
+openscad --render --csglimit=1000000 --camera=-50,75,48,60,0,225,380 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_iso_front.png" "$SCAD"
 
-openscad --render --csglimit=1000000 --camera=0,65,-10,125,0,210,480 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="faceted"' -D 'mode="holder"' -o "$RENDERS/faceted_crystalline_bottom.png" "$SCAD"
-
+echo "  - Side view showing 5.5mm -> 11.0mm thickness expansion..."
 openscad --render --csglimit=1000000 --camera=75,50,45,90,0,90,260 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="faceted"' -D 'mode="holder"' -o "$RENDERS/faceted_crystalline_side.png" "$SCAD"
+    -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_side.png" "$SCAD"
 
-openscad --render --csglimit=1000000 --camera=0,65,40,90,0,180,300 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="faceted"' -D 'mode="holder"' -o "$RENDERS/faceted_crystalline_front.png" "$SCAD"
+echo "  - Top view showing storage wells..."
+openscad --render --csglimit=1000000 --camera=0,65,65,45,0,205,320 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_top.png" "$SCAD"
 
-openscad --render --csglimit=1000000 --camera=-60,75,55,60,0,225,400 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="faceted"' -D 'mode="holder"' -o "$RENDERS/faceted_crystalline_iso_front.png" "$SCAD"
+echo "  - Bottom view showing 4 straight-through drainage holes..."
+openscad --render --csglimit=1000000 --camera=0,65,-10,125,0,210,480 --imgsize=1600,1000 --colorscheme=Cornfield \
+    -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_bottom.png" "$SCAD"
 
-echo "4. Rendering Standalone Toothbrush Rack..."
+echo "3. Rendering Close-Up of Animal Waterdrop Prongs..."
+openscad --render --csglimit=1000000 --camera=0,75,10,70,0,180,180 --imgsize=1600,900 --colorscheme=Cornfield \
+    -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_animal_prongs_closeup.png" "$SCAD"
+
+echo "4. Rendering Standalone Fluted Toothbrush Rack (with Animal Heads)..."
 openscad --render --csglimit=1000000 --camera=-40,65,35,60,0,225,280 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="faceted"' -D 'mode="standalone_toothbrush"' -o "$RENDERS/standalone_toothbrush_rack.png" "$SCAD"
+    -D 'style="fluted"' -D 'mode="standalone_toothbrush"' -o "$RENDERS/standalone_toothbrush_rack.png" "$SCAD"
 
-echo "5. Rendering Wall Bracket Detail..."
+echo "5. Rendering Universal Wall Bracket..."
 openscad --render --csglimit=1000000 --camera=0,22,5,55,0,45,150 --imgsize=1600,1000 --colorscheme=Cornfield \
     -D 'mode="bracket"' -o "$RENDERS/wall_bracket_mounting.png" "$SCAD"
 
-echo "6. Rendering 1-Plate Combo Print Bed Layout (Faceted Edition)..."
+echo "6. Rendering 1-Plate Combo Print Bed Layout (Fluted Grand + Bracket)..."
 openscad --render --csglimit=1000000 --camera=0,65,45,60,0,205,420 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="faceted"' -D 'mode="plate"' -o "$RENDERS/print_bed_layout.png" "$SCAD"
+    -D 'style="fluted"' -D 'mode="plate"' -o "$RENDERS/print_bed_layout.png" "$SCAD"
 
-echo "All renders completed successfully!"
-
-echo "7. Rendering Close-Up Side Profile of Toothbrush Retention Cradle (Fluted & Faceted)..."
-openscad --render --csglimit=1000000 --camera=75,65,15,90,0,90,140 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_retention_closeup_side.png" "$SCAD"
-
-openscad --render --csglimit=1000000 --camera=75,65,15,90,0,90,140 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="faceted"' -D 'mode="holder"' -o "$RENDERS/faceted_retention_closeup_side.png" "$SCAD"
-
-openscad --render --csglimit=1000000 --camera=-25,65,15,55,0,215,160 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="fluted"' -D 'mode="holder"' -o "$RENDERS/fluted_retention_closeup_iso.png" "$SCAD"
-
-openscad --render --csglimit=1000000 --camera=-25,65,15,55,0,215,160 --imgsize=1600,1000 --colorscheme=Cornfield \
-    -D 'style="faceted"' -D 'mode="holder"' -o "$RENDERS/faceted_retention_closeup_iso.png" "$SCAD"
-
-echo "Close-up retention views added successfully!"
+echo "================================================================="
+echo "All Renders completed successfully!"
+echo "================================================================="

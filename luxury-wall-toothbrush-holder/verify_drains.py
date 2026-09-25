@@ -55,12 +55,9 @@ def main():
     dir_path = sys.argv[1] if len(sys.argv) > 1 else "."
     
     files = [
-        ("luxury_holder_grand_faceted.stl", 4),
-        ("combo_plate_grand_faceted.stl", 4),
-        ("standalone_toothbrush_faceted.stl", 0),
         ("luxury_holder_grand_fluted.stl", 4),
         ("combo_plate_grand_fluted.stl", 4),
-        ("luxury_holder_grand_curved.stl", 4),
+        ("standalone_toothbrush_fluted.stl", 0),
         ("wall_bracket.stl", 0)
     ]
     
