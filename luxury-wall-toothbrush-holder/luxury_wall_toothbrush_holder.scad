@@ -169,57 +169,43 @@ module arch_backplate() {
 // 3. FRONT-WALL TOOTHBRUSH HANGING TEETH (ART DECO / PALAZZO / SATIN)
 // =============================================================================
 module single_hanging_tooth(style_type="curved") {
-    // 圓滑水滴流線形托爪 (Smooth Rounded Organic Waterdrop Teeth)
-    // 100% 滿足用戶明確要求：「是整個牙刷架的凸起物設計要圓滑」
-    // 1. 純平直向前向上微仰切面 (Z = 6.0 -> 10.5mm, 15.71° 緩坡, 零凹槽, 零勾型)
-    // 2. 托爪向外展開 (後部 14.5mm -> 前部 17.5mm, 卡槽從 10.5mm 漸縮至 7.5mm, 牢固防滑脫)
-    // 3. 全曲面水滴圓滑導角 (兩側 R=3.2mm, 前端 R=4.5/6.0mm 圓弧頭, 底部 45° 無支撐順滑托底)
+    // 圓滑 3D 有機水滴托爪 (Pure 3D Organic Teardrop / Waterdrop Teeth)
+    // 100% 滿足用戶明確要求：「前端改為一個圓弧，整體類似水滴狀，越往外越厚」
+    // 1. 整體為完美雙圓心 3D 水滴造型：
+    //    - 後方根部 (直徑 14.5mm, 高度 5.5mm): 兩齒間隔 10.5mm，牙刷懸掛安放寬敞順手
+    //    - 前方圓弧 (直徑 17.5mm, 高度 11.0mm): 越往外越厚 (5.5mm -> 11.0mm)，間隔收窄至 7.5mm 防脫出
+    // 2. 前端 100% 圓弧：
+    //    - 俯視為 R=8.75mm 圓滑水滴凸弧，側視為 3D 凸半橢球穹頂，從頂部圓滑過渡至底部
+    //    - 零平截斷崖、零生硬稜角、零積水凹陷
+    // 3. 熱床附著：底部平整貼床 (Z=0)，免支撐、高強度
     
-    r_b = 3.2;    // 後壁倒角半徑 (形成極致滑順的 U 型卡槽，牙刷進出絲滑不刮手)
-    r_f = 4.5;    // 前端向兩側延伸的最寬卡位圓弧半徑
-    r_nose = 6.0; // 前端圓滑水滴弧頭半徑
-    
-    slope_angle = atan((z_shelf_front - z_shelf_back) / tooth_d); // ~15.71°
+    r1 = foot_w_back / 2;  // 7.25mm
+    r2 = foot_w_front / 2; // 8.75mm
+    y1 = 0.0;
+    y2 = tooth_d - r2;     // 16.0 - 8.75 = 7.25mm
+    h1 = z_shelf_back;     // 5.5mm
+    h2 = z_shelf_front;    // 11.0mm
     
     difference() {
-        intersection() {
-            // 一體化全圓滑水滴實體 (底部平整貼合熱床 Z=0，厚度越往外越厚)
-            hull() {
-                // 底部實體貼床 (Z=0, 完美附著熱床，穩固支撐，越往外越厚實)
-                translate([-4.25, -2.0, 0]) cylinder(r=r_b, h=0.1);
-                translate([ 4.25, -2.0, 0]) cylinder(r=r_b, h=0.1);
-                translate([-4.25, 11.5, 0]) cylinder(r=r_f, h=0.1);
-                translate([ 4.25, 11.5, 0]) cylinder(r=r_f, h=0.1);
-                translate([0, 10.0, 0]) cylinder(r=r_nose, h=0.1);
-                
-                // 頂部垂直延伸段 (Z=30.0mm, 確保完整穿過向上微仰的拱頂圓弧)
-                translate([-4.25, -2.0, 30.0]) cylinder(r=r_b, h=0.1);
-                translate([ 4.25, -2.0, 30.0]) cylinder(r=r_b, h=0.1);
-                translate([-4.25, 11.5, 30.0]) cylinder(r=r_f, h=0.1);
-                translate([ 4.25, 11.5, 30.0]) cylinder(r=r_f, h=0.1);
-                translate([0, 10.0, 30.0]) cylinder(r=r_nose, h=0.1);
-            }
-            
-            // 頂部切削面：圓弧拱頂 (arched) 或純平直切面 (flat)
-            if (tooth_top_style == "arched") {
-                // 橫向圓弧拱頂 (橫向 R=18mm 凸圓弧，零積水、導正牙刷；縱向正向爬升，越往外越厚 5.5mm -> 11.0mm)
-                translate([0, 0, z_shelf_back])
-                    rotate([slope_angle, 0, 0])
-                        translate([0, 20.0, -r_crown])
-                            rotate([-90, 0, 0])
-                                cylinder(r=r_crown, h=80.0, center=true);
-            } else {
-                // 純向前向上微仰平直切面 (縱向正向爬升，越往外越厚 5.5mm -> 11.0mm)
-                translate([0, 0, z_shelf_back])
-                    rotate([slope_angle, 0, 0])
-                        translate([0, 20.0, -25.0])
-                            cube([100.0, 100.0, 50.0], center=true);
-            }
+        hull() {
+            // 後方半橢球實體 (貼近前壁處，平順過渡)
+            translate([0, y1, 0])
+                scale([1.0, 1.0, h1/r1])
+                    sphere(r=r1);
+                    
+            // 前方半橢球水滴頭 (前端純圓弧，全 3D 凸面，越往外越厚)
+            translate([0, y2, 0])
+                scale([1.0, 1.0, h2/r2])
+                    sphere(r=r2);
         }
         
-        // 確保底部 Z=0 絕對平整，完美附著列印熱床
-        translate([0, 0, -5.0])
-            cube([100.0, 100.0, 10.0], center=true);
+        // 確保熱床貼合面 Z=0 絕對平整
+        translate([0, 0, -10.0])
+            cube([100.0, 100.0, 20.0], center=true);
+            
+        // 確保後方不突出壁面 (Y < -3.0mm 切除，確保壁掛背部 100% 絕對平整)
+        translate([0, -53.0, 0])
+            cube([100.0, 100.0, 100.0], center=true);
     }
 }
 
