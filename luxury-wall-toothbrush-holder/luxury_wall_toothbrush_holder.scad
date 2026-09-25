@@ -134,8 +134,8 @@ module arch_backplate() {
                     hull() {
                         translate([-w/2 + r, r]) circle(r=r);
                         translate([ w/2 - r, r]) circle(r=r);
-                        translate([-w/2 + r, h_total - r]) circle(r=r);
-                        translate([ w/2 - r, h_total - r]) circle(r=r);
+                        translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);
+                        translate([ w/2 - r - 3.0, h_total - r]) circle(r=r - 3.0);
                     }
                 }
                 
@@ -147,16 +147,16 @@ module arch_backplate() {
                         hull() {
                             translate([-w/2 + r, r]) circle(r=r + 1.0);
                             translate([ w/2 - r, r]) circle(r=r + 1.0);
-                            translate([-w/2 + r, h_total - r]) circle(r=r + 1.0);
-                            translate([ w/2 - r, h_total - r]) circle(r=r + 1.0);
+                            translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 2.0);
+                            translate([ w/2 - r - 3.0, h_total - r]) circle(r=r - 2.0);
                         }
                     translate([0, 0, -1.0])
                         linear_extrude(height = 4.0)
                             hull() {
                                 translate([-w/2 + r + 4.0, r + 4.0]) circle(r=r - 3.0);
                                 translate([ w/2 - r - 4.0, r + 4.0]) circle(r=r - 3.0);
-                                translate([-w/2 + r + 4.0, h_total - r - 4.0]) circle(r=r - 3.0);
-                                translate([ w/2 - r - 4.0, h_total - r - 4.0]) circle(r=r - 3.0);
+                                translate([-w/2 + r + 6.0, h_total - r - 4.0]) circle(r=r - 5.0);
+                                translate([ w/2 - r - 6.0, h_total - r - 4.0]) circle(r=r - 5.0);
                             }
                 }
     }
@@ -169,22 +169,18 @@ module arch_backplate() {
 module single_hanging_tooth(style_type="faceted") {
     if (style_type == "faceted") {
         // Art Deco Diamond Faceted Tooth (★ User Selection)
-        // Pure Forward-and-Upward Slanted Cutting Plane (向前向上斜線的切割面，零凹槽):
-        // 1. 側向切面微調展角: 寬度從後壁 14.5mm 漸展至前緣 17.5mm (槽位開口自 10.5mm 漸縮為 7.5mm，水平卡住牙刷)
-        // 2. 托盤表面純斜線仰角: 自後壁 Z=6.0mm 一路筆直向前向上仰升至前緣 Z=16.0mm (+10mm 爬坡仰升，徹底零凹槽)
-        
-        // Layer 0: Z = 0 to 2.0 (Bottom Chamfer Plinth, 45° overhang for 100% support-free print)
+        // 1. Bottom Swept Corbel Plinth (45° support-free print)
         hull() {
             translate([-foot_w_back/2 + 2.0, 0, 0]) cube([foot_w_back - 4.0, 0.1, 0.1]);
-            translate([-foot_w_front/2 + 2.0, tooth_d - 2.5, 0]) cube([foot_w_front - 4.0, 0.1, 0.1]);
-            translate([0, tooth_d, 0]) cylinder(r=0.5, h=0.1);
+            translate([-foot_w_front/2 + 2.5, tooth_d - 3.5, 0]) cube([foot_w_front - 5.0, 0.1, 0.1]);
+            translate([0, tooth_d - 0.5, 0]) cylinder(r=0.5, h=0.1);
             
             translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
             translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
             translate([0, tooth_d, 2.0]) cylinder(r=0.5, h=0.1);
         }
         
-        // Layer 1: Pure Forward-and-Upward Slanted Body
+        // 2. Pure Forward-and-Upward Slanted Body (6.0 -> 10.5mm, 15.7° gentle slope, zero concavity!)
         hull() {
             translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
             translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
@@ -195,15 +191,14 @@ module single_hanging_tooth(style_type="faceted") {
             translate([0, tooth_d, z_shelf_front]) cylinder(r=0.5, h=0.1);
         }
         
-        // Layer 2: Diamond Apex Chamfer
+        // 3. Diamond Apex Chamfer
         hull() {
             translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
             translate([0, tooth_d, z_shelf_front]) cylinder(r=0.5, h=0.1);
-            translate([0, tooth_d - 2.0, z_shelf_front + 1.2]) cylinder(r=0.2, h=0.1);
+            translate([0, tooth_d - 1.5, z_shelf_front + 1.2]) cylinder(r=0.2, h=0.1);
         }
     } else if (style_type == "fluted") {
         // Roman Palazzo Fluted Pilaster Tooth
-        // Layer 0: Plinth Base
         hull() {
             translate([-foot_w_back/2 + 1.5, 0, 0]) cube([foot_w_back - 3.0, 0.1, 0.1]);
             translate([-foot_w_front/2 + 1.5, tooth_d - 2.5, 0]) cube([foot_w_front - 3.0, 0.1, 0.1]);
@@ -214,7 +209,6 @@ module single_hanging_tooth(style_type="faceted") {
             translate([0, tooth_d, 2.0]) cylinder(r=2.5, h=0.1);
         }
         
-        // Layer 1: Pure Forward-and-Upward Slanted Body
         hull() {
             translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
             translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
@@ -225,38 +219,42 @@ module single_hanging_tooth(style_type="faceted") {
             translate([0, tooth_d, z_shelf_front]) cylinder(r=2.5, h=0.1);
         }
         
-        // Layer 2: Classical Chamfer
         hull() {
             translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
             translate([0, tooth_d, z_shelf_front]) cylinder(r=2.5, h=0.1);
             translate([0, tooth_d - 1.5, z_shelf_front + 1.2]) cylinder(r=0.5, h=0.1);
         }
     } else {
-        // Minimalist Satin Curve
-        // Layer 0: Plinth Base
+        // Minimalist Satin Curve (Nordic Smooth Filleted Bullnose)
+        r_b = 2.4;
+        r_f = 3.8;
         hull() {
-            translate([-foot_w_back/2 + 2, 0, 0]) cylinder(r=2, h=0.1);
-            translate([ foot_w_back/2 - 2, 0, 0]) cylinder(r=2, h=0.1);
-            translate([-foot_w_front/2 + 2, tooth_d - 2, 0]) cylinder(r=2, h=0.1);
-            translate([ foot_w_front/2 - 2, tooth_d - 2, 0]) cylinder(r=2, h=0.1);
+            translate([-foot_w_back/2 + r_b, 0, 0]) cylinder(r=r_b - 1.0, h=0.1);
+            translate([ foot_w_back/2 - r_b, 0, 0]) cylinder(r=r_b - 1.0, h=0.1);
+            translate([0, tooth_d - 4.5, 0]) cylinder(r=2.0, h=0.1);
             
-            translate([-foot_w_back/2 + 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w_back/2 - 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([-foot_w_front/2 + 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w_front/2 - 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_back/2 + r_b, 0, 2.0]) cylinder(r=r_b, h=0.1);
+            translate([ foot_w_back/2 - r_b, 0, 2.0]) cylinder(r=r_b, h=0.1);
+            translate([-foot_w_front/2 + r_f, tooth_d - 3.0, 2.0]) cylinder(r=r_f, h=0.1);
+            translate([ foot_w_front/2 - r_f, tooth_d - 3.0, 2.0]) cylinder(r=r_f, h=0.1);
         }
         
-        // Layer 1: Pure Forward-and-Upward Slanted Body
         hull() {
-            translate([-foot_w_back/2 + 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w_back/2 - 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([-foot_w_front/2 + 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w_front/2 - 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_back/2 + r_b, 0, 2.0]) cylinder(r=r_b, h=0.1);
+            translate([ foot_w_back/2 - r_b, 0, 2.0]) cylinder(r=r_b, h=0.1);
+            translate([-foot_w_front/2 + r_f, tooth_d - 3.0, 2.0]) cylinder(r=r_f, h=0.1);
+            translate([ foot_w_front/2 - r_f, tooth_d - 3.0, 2.0]) cylinder(r=r_f, h=0.1);
             
-            translate([-foot_w_back/2 + 1.5, 0, z_shelf_back]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w_back/2 - 1.5, 0, z_shelf_back]) cylinder(r=1.5, h=0.1);
-            translate([-foot_w_front/2 + 1.5, tooth_d - 2, z_shelf_front]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w_front/2 - 1.5, tooth_d - 2, z_shelf_front]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_back/2 + r_b, 0, z_shelf_back]) cylinder(r=r_b, h=0.1);
+            translate([ foot_w_back/2 - r_b, 0, z_shelf_back]) cylinder(r=r_b, h=0.1);
+            translate([-foot_w_front/2 + r_f, tooth_d - 3.0, z_shelf_front]) cylinder(r=r_f, h=0.1);
+            translate([ foot_w_front/2 - r_f, tooth_d - 3.0, z_shelf_front]) cylinder(r=r_f, h=0.1);
+        }
+        
+        hull() {
+            translate([-foot_w_front/2 + r_f, tooth_d - 3.0, z_shelf_front]) cylinder(r=r_f, h=0.1);
+            translate([ foot_w_front/2 - r_f, tooth_d - 3.0, z_shelf_front]) cylinder(r=r_f, h=0.1);
+            translate([0, tooth_d - 1.0, z_shelf_front - 2.0]) cylinder(r=2.5, h=0.1);
         }
     }
 }
@@ -276,12 +274,25 @@ module front_hanging_teeth_array(style_type="faceted") {
 // =============================================================================
 // 4. STORAGE GALLERY SOLID (外觀實體)
 // =============================================================================
-module squircle_body(w, d, r, h) {
+module squircle_body(w, d, r, h, ch=3.0) {
     hull() {
-        translate([-w/2 + r, d_wall + r, 0]) cylinder(r=r, h=h);
-        translate([ w/2 - r, d_wall + r, 0]) cylinder(r=r, h=h);
-        translate([-w/2 + r, d_wall + d - r, 0]) cylinder(r=r, h=h);
-        translate([ w/2 - r, d_wall + d - r, 0]) cylinder(r=r, h=h);
+        // Bottom at Z=0
+        translate([-w/2 + r, d_wall + r, 0]) cylinder(r=r, h=0.1);
+        translate([ w/2 - r, d_wall + r, 0]) cylinder(r=r, h=0.1);
+        translate([-w/2 + r, d_wall + d - r, 0]) cylinder(r=r, h=0.1);
+        translate([ w/2 - r, d_wall + d - r, 0]) cylinder(r=r, h=0.1);
+        
+        // Shoulder at Z = h - ch
+        translate([-w/2 + r, d_wall + r, h - ch]) cylinder(r=r, h=0.1);
+        translate([ w/2 - r, d_wall + r, h - ch]) cylinder(r=r, h=0.1);
+        translate([-w/2 + r, d_wall + d - r, h - ch]) cylinder(r=r, h=0.1);
+        translate([ w/2 - r, d_wall + d - r, h - ch]) cylinder(r=r, h=0.1);
+        
+        // Top Crest at Z = h (45° waterfall perimeter chamfer)
+        translate([-w/2 + r, d_wall + r, h]) cylinder(r=r - ch, h=0.1);
+        translate([ w/2 - r, d_wall + r, h]) cylinder(r=r - ch, h=0.1);
+        translate([-w/2 + r, d_wall + d - r, h]) cylinder(r=r - ch, h=0.1);
+        translate([ w/2 - r, d_wall + d - r, h]) cylinder(r=r - ch, h=0.1);
     }
 }
 
@@ -290,7 +301,7 @@ module storage_gallery_solid(style_type="faceted") {
     d = d_pod;
     h = h_pod;
     
-    squircle_body(w, d, 16.0, h);
+    squircle_body(w, d, 16.0, h, 3.0);
     front_hanging_teeth_array(style_type);
 }
 
@@ -382,6 +393,20 @@ module luxury_holder(style_type="faceted") {
             storage_gallery_solid(style_type);
         }
         
+        // Architectural Horizontal Accent Shadow Beltline at Z=28mm (Golden Ratio facade break)
+        translate([0, y_front, 28.0])
+            cube([w_pod - 12.0, 1.8, 1.4], center=true);
+            
+        // Refined Vertical Fluting for fluted edition
+        if (style_type == "fluted") {
+            for (fx = [-w_pod/2 + 22 : 6.0 : w_pod/2 - 22]) {
+                hull() {
+                    translate([fx, y_front, 12.0]) rotate([-90, 0, 0]) cylinder(d=2.6, h=1.4);
+                    translate([fx, y_front, 25.0]) rotate([-90, 0, 0]) cylinder(d=2.6, h=1.4);
+                }
+            }
+        }
+        
         // Dovetail slide receiver on rear
         female_dovetail_cavity();
         
@@ -410,8 +435,8 @@ module standalone_toothbrush_rack(style_type="faceted") {
                         hull() {
                             translate([-w_rack/2 + 5, 5]) circle(r=5);
                             translate([ w_rack/2 - 5, 5]) circle(r=5);
-                            translate([-w_rack/2 + 5, h_rack - 5]) circle(r=5);
-                            translate([ w_rack/2 - 5, h_rack - 5]) circle(r=5);
+                            translate([-w_rack/2 + 8, h_rack - 4]) circle(r=3);
+                            translate([ w_rack/2 - 8, h_rack - 4]) circle(r=3);
                         }
             // Hanging teeth on front
             translate([0, th_back, 0]) {
