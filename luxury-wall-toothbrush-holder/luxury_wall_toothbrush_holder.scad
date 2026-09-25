@@ -439,7 +439,7 @@ module front_hanging_teeth_array(style_type="fluted") {
 // =============================================================================
 // 4. STORAGE GALLERY SOLID & CLASSICAL ARCHITECTURAL FLUTING
 // =============================================================================
-module squircle_body(w, d, r, h, ch=3.0) {
+module squircle_body(w, d, r, h, ch=4.0) {
     hull() {
         translate([-w/2 + r, d_wall + r, 0]) cylinder(r=r, h=0.1);
         translate([ w/2 - r, d_wall + r, 0]) cylinder(r=r, h=0.1);
@@ -451,10 +451,10 @@ module squircle_body(w, d, r, h, ch=3.0) {
         translate([-w/2 + r, d_wall + d - r, h - ch]) cylinder(r=r, h=0.1);
         translate([ w/2 - r, d_wall + d - r, h - ch]) cylinder(r=r, h=0.1);
         
-        translate([-w/2 + r, d_wall + r, h]) cylinder(r=r - ch, h=0.1);
-        translate([ w/2 - r, d_wall + r, h]) cylinder(r=r - ch, h=0.1);
-        translate([-w/2 + r, d_wall + d - r, h]) cylinder(r=r - ch, h=0.1);
-        translate([ w/2 - r, d_wall + d - r, h]) cylinder(r=r - ch, h=0.1);
+        translate([-w/2 + r, d_wall + r, h]) cylinder(r=max(1, r - ch), h=0.1);
+        translate([ w/2 - r, d_wall + r, h]) cylinder(r=max(1, r - ch), h=0.1);
+        translate([-w/2 + r, d_wall + d - r, h]) cylinder(r=max(1, r - ch), h=0.1);
+        translate([ w/2 - r, d_wall + d - r, h]) cylinder(r=max(1, r - ch), h=0.1);
     }
 }
 
@@ -555,36 +555,52 @@ module rear_storage_cavities_and_drains() {
     h = h_pod;               // 44.0mm
     
     // 1. Cleanser Chambers (X = -66, +66) - Compatible with Ø44mm Thick Caps
+    // Sized 46mm x 40mm with 5.0mm uniform surrounding walls
     for (side = [-1, 1]) {
         cx = side * 66.0;
         translate([cx, y_cav, 0]) {
             translate([0, 0, z_floor])
-                squircle_cavity(46.0, 44.0, 12.0, h_total);
-            translate([0, 0, h - 2.5])
-                cylinder(r1=44.0/2 - 2.0, r2=44.0/2 + 2.0, h=3.0);
-            translate([0, 0, z_floor - 5.0])
-                cylinder(r1=7.0, r2=11.5, h=5.01);
+                squircle_cavity(46.0, 40.0, 11.0, h_total);
+            // 4-sided chamfer mouth at top (2.5mm bevel on all 4 sides)
+            hull() {
+                translate([0, 0, h - 2.5])
+                    squircle_cavity(46.0, 40.0, 11.0, 0.1);
+                translate([0, 0, h + 0.5])
+                    squircle_cavity(46.0 + 3.5, 40.0 + 3.5, 11.0 + 1.75, 0.1);
+            }
+            // Floor conical guidance funnel
+            translate([0, 0, z_floor - 4.0])
+                cylinder(r1=14.0/2, r2=11.5, h=4.01);
+            // 100% continuous straight-through drainage hole (Z=-5 to Z=z_floor+20)
             translate([0, 0, -5.0])
-                cylinder(d=14.0, h=z_floor - 3.0);
+                cylinder(d=14.0, h=z_floor + 20.0);
             translate([0, 0, z_floor]) {
                 cube([46.0, 4.0, 2.0], center=true);
-                cube([4.0, 44.0, 2.0], center=true);
+                cube([4.0, 40.0, 2.0], center=true);
             }
         }
     }
     
     // 2. Toothpaste Chambers (X = -22, +22) - Compatible with Ø36mm Thick Caps
+    // Sized 36mm x 38mm with 5.0mm front/rear walls
     for (side = [-1, 1]) {
         cx = side * 22.0;
         translate([cx, y_cav, 0]) {
             translate([0, 0, z_floor])
                 squircle_cavity(36.0, 38.0, 10.0, h_total);
-            translate([0, 0, h - 2.5])
-                cylinder(r1=36.0/2 - 2.0, r2=36.0/2 + 2.0, h=3.0);
-            translate([0, 0, z_floor - 5.0])
-                cylinder(r1=6.0, r2=9.5, h=5.01);
+            // 4-sided chamfer mouth at top (2.5mm bevel on all 4 sides)
+            hull() {
+                translate([0, 0, h - 2.5])
+                    squircle_cavity(36.0, 38.0, 10.0, 0.1);
+                translate([0, 0, h + 0.5])
+                    squircle_cavity(36.0 + 3.5, 38.0 + 3.5, 10.0 + 1.75, 0.1);
+            }
+            // Floor conical guidance funnel
+            translate([0, 0, z_floor - 4.0])
+                cylinder(r1=12.0/2, r2=9.5, h=4.01);
+            // 100% continuous straight-through drainage hole (Z=-5 to Z=z_floor+20)
             translate([0, 0, -5.0])
-                cylinder(d=12.0, h=z_floor - 3.0);
+                cylinder(d=12.0, h=z_floor + 20.0);
             translate([0, 0, z_floor]) {
                 cube([36.0, 4.0, 2.0], center=true);
                 cube([4.0, 38.0, 2.0], center=true);
@@ -603,7 +619,7 @@ module luxury_holder_c1() {
     difference() {
         union() {
             arch_backplate_solid();
-            squircle_body(w_pod, d_pod, 16.0, h_pod, 3.0);
+            squircle_body(w_pod, d_pod, 16.0, h_pod, 4.0);
             translate([0, y_front, 0]) {
                 for (i = [-3 : 3]) {
                     translate([i * tb_pitch, 0, 0])

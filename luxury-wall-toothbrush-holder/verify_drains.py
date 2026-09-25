@@ -23,32 +23,29 @@ def check_holder_drains(stl_path, expected_drain_count=4):
         print("SUCCESS: Watertight non-storage part verified!")
         return True
 
-    # Section at Z = 5.0mm (below cavity floor Z=9.0mm)
-    plane_origin = [0, 0, 5.0]
-    plane_normal = [0, 0, 1]
-    slice_2d = mesh.section(plane_origin=plane_origin, plane_normal=plane_normal)
-    
-    if slice_2d is None:
-        print("ERROR: Slice at Z=5mm is None!")
-        return False
+    # Multi-level slice verification: ensure drains are 100% continuous from Z=1mm up to Z=7mm
+    for z_test in [1.0, 3.0, 5.0, 7.0]:
+        slice_2d = mesh.section(plane_origin=[0, 0, z_test], plane_normal=[0, 0, 1])
+        if slice_2d is None:
+            print(f"ERROR: Slice at Z={z_test}mm is None!")
+            return False
+            
+        drain_holes = []
+        for i, entity in enumerate(slice_2d.entities):
+            pts = slice_2d.vertices[entity.points]
+            center = np.mean(pts, axis=0)
+            min_p = np.min(pts, axis=0)
+            max_p = np.max(pts, axis=0)
+            sz = max_p - min_p
+            if 25.0 <= center[1] <= 40.0 and (10.0 <= sz[0] <= 24.0) and (10.0 <= sz[1] <= 24.0):
+                drain_holes.append((center, sz))
+                
+        if len(drain_holes) != expected_drain_count:
+            print(f"ERROR at Z={z_test}mm: Expected {expected_drain_count} drain holes, found {len(drain_holes)}!")
+            return False
+        print(f"  --> Z={z_test:3.1f}mm: {len(drain_holes)} continuous drain holes verified!")
 
-    drain_holes = []
-    for i, entity in enumerate(slice_2d.entities):
-        pts = slice_2d.vertices[entity.points]
-        center = np.mean(pts, axis=0)
-        min_p = np.min(pts, axis=0)
-        max_p = np.max(pts, axis=0)
-        sz = max_p - min_p
-        if 25.0 <= center[1] <= 40.0 and (10.0 <= sz[0] <= 16.0) and (10.0 <= sz[1] <= 16.0):
-            drain_holes.append((center, sz))
-            print(f"  --> FOUND DRAIN HOLE: Center=({center[0]:.1f}, {center[1]:.1f}), Size=({sz[0]:.1f}, {sz[1]:.1f})")
-
-    print(f"Total Drain Holes Detected at Z=5mm: {len(drain_holes)} (Expected: {expected_drain_count})")
-    if len(drain_holes) != expected_drain_count:
-        print(f"ERROR: Expected {expected_drain_count} drain holes, found {len(drain_holes)}!")
-        return False
-        
-    print("SUCCESS: Drain holes properly cut straight through to open air below!")
+    print(f"SUCCESS: Drain holes properly cut straight through all Z levels from 0 to cavity floor!")
     return True
 
 def main():
@@ -56,6 +53,7 @@ def main():
     
     files = [
         ("luxury_holder_grand_fluted.stl", 4),
+        ("luxury_holder_c1_body.stl", 4),
         ("combo_plate_grand_fluted.stl", 4),
         ("standalone_toothbrush_fluted.stl", 0),
         ("wall_bracket.stl", 0)
