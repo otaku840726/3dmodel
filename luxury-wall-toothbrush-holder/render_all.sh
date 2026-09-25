@@ -23,8 +23,12 @@ openscad --camera=-50,75,48,60,0,225,380 --imgsize=1600,1000 --colorscheme=Cornf
     -D 'mode="holder"' -o "$RENDERS/fluted_crystalline_iso_front.png" "$SCAD"
 
 echo "  - Close-up of 7 adorable animal waterdrop prongs..."
-openscad --camera=0,75,10,70,0,180,180 --imgsize=1600,900 --colorscheme=Cornfield \
+openscad --camera=0,75,10,70,0,180,220 --imgsize=1600,900 --colorscheme=Cornfield \
     -D 'mode="holder"' -o "$RENDERS/fluted_animal_prongs_closeup.png" "$SCAD"
+
+echo "  - Close-up of rightmost cat face with refined 3D-printable conformal whiskers..."
+openscad --camera=-75,65,7,60,0,215,70 --imgsize=1600,1200 --colorscheme=Cornfield \
+    -D 'mode="holder"' -o "$RENDERS/fluted_cat_whisker_closeup.png" "$SCAD"
 
 echo "  - Side view showing 5.5mm -> 11.0mm thickness expansion..."
 openscad --camera=75,50,45,90,0,90,260 --imgsize=1600,1000 --colorscheme=Cornfield \

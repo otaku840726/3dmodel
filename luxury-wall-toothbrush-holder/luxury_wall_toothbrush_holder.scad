@@ -183,6 +183,41 @@ module arch_backplate_frame_trim() {
 // =============================================================================
 animals_list = ["cat", "bear", "bunny", "panda", "puppy", "fox", "koala"];
 
+// Conformal Whisker Helper for Cat (Surface relief tightly hugging the spherical cheek)
+// 100% printable without overhangs; zero cantilever floating geometry
+module cat_conformal_whisker_stroke(s, x1, z1, x2, z2, r_inner=0.45, r_outer=0.35) {
+    r2_cheek = foot_w_front / 2;   // 8.75mm
+    h2_cheek = z_shelf_front;      // 11.0mm
+    y2_cheek = tooth_d - r2_cheek; // 7.25mm
+    
+    xm = (x1 + x2) / 2;
+    zm = (z1 + z2) / 2;
+    rm = (r_inner + r_outer) / 2;
+    p_offset = 0.12; // anchors ~0.3mm into white body, protrudes ~0.45mm
+    
+    y_p1 = y2_cheek + sqrt(max(0, r2_cheek*r2_cheek * (1 - (z1/h2_cheek)*(z1/h2_cheek)) - x1*x1)) - p_offset;
+    y_pm = y2_cheek + sqrt(max(0, r2_cheek*r2_cheek * (1 - (zm/h2_cheek)*(zm/h2_cheek)) - xm*xm)) - p_offset;
+    y_p2 = y2_cheek + sqrt(max(0, r2_cheek*r2_cheek * (1 - (z2/h2_cheek)*(z2/h2_cheek)) - x2*x2)) - p_offset;
+    
+    hull() {
+        translate([s * x1, y_p1, z1]) sphere(r=r_inner, $fn=16);
+        translate([s * xm, y_pm, zm]) sphere(r=rm, $fn=16);
+    }
+    hull() {
+        translate([s * xm, y_pm, zm]) sphere(r=rm, $fn=16);
+        translate([s * x2, y_p2, z2]) sphere(r=r_outer, $fn=16);
+    }
+}
+
+module cat_conformal_whiskers() {
+    for (s = [-1, 1]) {
+        // Upper whisker: radiating outward and slightly downward along cheek
+        cat_conformal_whisker_stroke(s, 3.2, 4.6, 6.5, 4.2, r_inner=0.45, r_outer=0.35);
+        // Lower whisker: angled downward in harmony
+        cat_conformal_whisker_stroke(s, 3.0, 3.4, 6.2, 2.8, r_inner=0.45, r_outer=0.35);
+    }
+}
+
 // Color 2: Black Accents (Eyes, Noses, Panda ears, Cat Whiskers)
 module animal_features_c2(animal) {
     y_center = tooth_d - foot_w_front / 2; // 7.25mm
@@ -192,14 +227,8 @@ module animal_features_c2(animal) {
         for (s = [-1, 1]) translate([s * 3.4, y_center + 6.6, 7.5]) sphere(r=0.85); // eyes
     } else if (animal == "cat") {
         translate([0, y_center + 8.2, 5.2]) scale([1.2, 0.7, 0.9]) sphere(r=0.9); // nose
-        for (s = [-1, 1]) translate([s * 3.5, y_center + 6.8, 7.2]) rotate([0, s * 15, 0]) scale([1.2, 0.8, 0.9]) sphere(r=0.95);
-        for (s = [-1, 1]) {
-            for (w = [-1, 1]) {
-                translate([s * 5.0, y_center + 7.2, 4.8 + w * 1.2])
-                    rotate([0, 90, s * (25 + w * 8)])
-                        cylinder(r=0.45, h=3.0, center=true);
-            }
-        }
+        for (s = [-1, 1]) translate([s * 3.5, y_center + 6.8, 7.2]) rotate([0, s * 15, 0]) scale([1.2, 0.8, 0.9]) sphere(r=0.95); // eyes
+        cat_conformal_whiskers();
     } else if (animal == "bunny") {
         translate([0, y_center + 8.2, 5.0]) sphere(r=0.9); // nose
         for (s = [-1, 1]) translate([s * 3.2, y_center + 6.8, 7.2]) sphere(r=0.9); // eyes
