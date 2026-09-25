@@ -21,20 +21,18 @@ d_pod       = 50.0;
 h_pod       = 44.0; 
 y_front     = d_wall + d_pod; // 58.0mm: Front vertical wall of storage gallery
 
-// Toothbrush Hanging Parameters (Clean Angled Cutting Planes: Rising Floor + Narrowing Slot)
+// Toothbrush Hanging Parameters (Pure Forward-and-Upward Slanted Cutting Plane: Zero Concavity)
 tb_pitch      = 25.0; // 6 slots, 7 teeth across 150mm span (Matches 621-01 layout)
 foot_w_back   = 14.5; // tooth width at rear wall (inner slot gap = 25 - 14.5 = 10.5mm)
-foot_w_front  = 17.5; // tooth width at front tip (angled cut narrows slot to 7.5mm!)
+foot_w_front  = 17.5; // tooth width at front tip (slot narrows to 25 - 17.5 = 7.5mm!)
 foot_w        = foot_w_back; // backward compatibility
-shank_w       = 5.5;  // 5.5mm upper shank -> 19.50mm wide top entry bay
+shank_w       = 5.5;  // backward compatibility
 tooth_d       = 16.0; // forward protrusion from front wall (total depth = 74.0mm)
-y_saddle      = 5.0;  // depth where column joins the resting shelf
-z_shelf_back  = 6.5;  // resting shelf height at rear wall
-z_shelf_front = 10.0; // angled shelf height at front tip (gentle +3.5mm uphill ramp)
+z_shelf_back  = 6.0;  // shelf height at rear wall (where toothbrush rests)
+z_shelf_front = 16.0; // forward-and-upward slanted plane at front tip (zero concavity!)
 h_foot        = z_shelf_front; // backward compatibility
-h_saddle      = 13.5; // 45° self-centering saddle junction
-h_tooth       = 24.0; // compact tooth column height (Point 3: reduced from 42mm)
-h_apex        = 26.5; // finial apex height
+h_tooth       = z_shelf_front; // backward compatibility
+h_apex        = 17.5; // subtle finial apex
 
 // Dovetail Bracket Parameters
 bracket_w  = 44.0;
@@ -171,9 +169,9 @@ module arch_backplate() {
 module single_hanging_tooth(style_type="faceted") {
     if (style_type == "faceted") {
         // Art Deco Diamond Faceted Tooth (★ User Selection)
-        // Clean Angled Cutting Planes (原本幾何切面微調角度，非複雜勾型):
+        // Pure Forward-and-Upward Slanted Cutting Plane (向前向上斜線的切割面，零凹槽):
         // 1. 側向切面微調展角: 寬度從後壁 14.5mm 漸展至前緣 17.5mm (槽位開口自 10.5mm 漸縮為 7.5mm，水平卡住牙刷)
-        // 2. 托盤表面微調仰角: 高度自後壁 Z=6.5mm 微幅平滑仰升至前緣 Z=10.0mm (+3.5mm 自然重力防滑傾角)
+        // 2. 托盤表面純斜線仰角: 自後壁 Z=6.0mm 一路筆直向前向上仰升至前緣 Z=16.0mm (+10mm 爬坡仰升，徹底零凹槽)
         
         // Layer 0: Z = 0 to 2.0 (Bottom Chamfer Plinth, 45° overhang for 100% support-free print)
         hull() {
@@ -186,102 +184,56 @@ module single_hanging_tooth(style_type="faceted") {
             translate([0, tooth_d, 2.0]) cylinder(r=0.5, h=0.1);
         }
         
-        // Layer 1: The Rising Foot Shelf (Z = 2.0 to shelf surface)
+        // Layer 1: Pure Forward-and-Upward Slanted Body
         hull() {
             translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_back/2, y_saddle, 2.0]) cube([foot_w_back, 0.1, 0.1]);
             translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
             translate([0, tooth_d, 2.0]) cylinder(r=0.5, h=0.1);
             
             translate([-foot_w_back/2, 0, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_back/2, y_saddle, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
             translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
             translate([0, tooth_d, z_shelf_front]) cylinder(r=0.5, h=0.1);
         }
         
-        // Layer 2: 45° Saddle Transition (STAYS AT REAR Y <= y_saddle!)
+        // Layer 2: Diamond Apex Chamfer
         hull() {
-            translate([-foot_w_back/2, 0, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_back/2, y_saddle, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
-            
-            translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2, y_saddle, h_saddle]) cube([shank_w, 0.1, 0.1]);
-        }
-        
-        // Layer 3: Upper Faceted Column (Z = h_saddle to h_tooth)
-        hull() {
-            translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2, y_saddle, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            
-            translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2, 3.5, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 5.0, h_tooth]) cylinder(r=0.5, h=0.1);
-        }
-        
-        // Layer 4: Diamond Pyramid Finial Apex (Z = h_tooth to h_apex)
-        hull() {
-            translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2, 3.5, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 5.0, h_tooth]) cylinder(r=0.5, h=0.1);
-            
-            translate([0, 1.5, h_apex]) cylinder(r=0.2, h=0.1);
+            translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
+            translate([0, tooth_d, z_shelf_front]) cylinder(r=0.5, h=0.1);
+            translate([0, tooth_d - 2.0, z_shelf_front + 1.5]) cylinder(r=0.2, h=0.1);
         }
     } else if (style_type == "fluted") {
         // Roman Palazzo Fluted Pilaster Tooth
-        // Clean Angled Cutting Planes:
-        
         // Layer 0: Plinth Base
         hull() {
             translate([-foot_w_back/2 + 1.5, 0, 0]) cube([foot_w_back - 3.0, 0.1, 0.1]);
             translate([-foot_w_front/2 + 1.5, tooth_d - 2.5, 0]) cube([foot_w_front - 3.0, 0.1, 0.1]);
-            translate([0, tooth_d - 0.5, 0]) cylinder(r=shank_w/2 - 0.5, h=0.1);
+            translate([0, tooth_d - 0.5, 0]) cylinder(r=2.0, h=0.1);
             
             translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
             translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, 2.0]) cylinder(r=shank_w/2, h=0.1);
+            translate([0, tooth_d, 2.0]) cylinder(r=2.5, h=0.1);
         }
         
-        // Layer 1: The Rising Foot Shelf (Z = 2.0 to shelf surface)
+        // Layer 1: Pure Forward-and-Upward Slanted Body
         hull() {
             translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_back/2, y_saddle, 2.0]) cube([foot_w_back, 0.1, 0.1]);
             translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, 2.0]) cylinder(r=shank_w/2, h=0.1);
+            translate([0, tooth_d, 2.0]) cylinder(r=2.5, h=0.1);
             
             translate([-foot_w_back/2, 0, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_back/2, y_saddle, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
             translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
-            translate([0, tooth_d, z_shelf_front]) cylinder(r=shank_w/2, h=0.1);
+            translate([0, tooth_d, z_shelf_front]) cylinder(r=2.5, h=0.1);
         }
         
-        // Layer 2: Scotia Saddle Transition (STAYS AT REAR Y <= y_saddle!)
+        // Layer 2: Classical Chamfer
         hull() {
-            translate([-foot_w_back/2, 0, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
-            translate([-foot_w_back/2, y_saddle, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
-            
-            translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([0, y_saddle, h_saddle]) cylinder(r=shank_w/2, h=0.1);
-        }
-        
-        // Layer 3: Fluted Pilaster Column (Z = h_saddle to h_tooth)
-        hull() {
-            translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([0, y_saddle, h_saddle]) cylinder(r=shank_w/2, h=0.1);
-            
-            translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 4.0, h_tooth]) cylinder(r=shank_w/2, h=0.1);
-        }
-        
-        // Layer 4: Pediment Apex
-        hull() {
-            translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 4.0, h_tooth]) cylinder(r=shank_w/2, h=0.1);
-            
-            translate([0, 1.5, h_apex]) cylinder(r=0.2, h=0.1);
+            translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
+            translate([0, tooth_d, z_shelf_front]) cylinder(r=2.5, h=0.1);
+            translate([0, tooth_d - 1.5, z_shelf_front + 1.2]) cylinder(r=0.5, h=0.1);
         }
     } else {
         // Minimalist Satin Curve
-        // Layer 0: Plinth
+        // Layer 0: Plinth Base
         hull() {
             translate([-foot_w_back/2 + 2, 0, 0]) cylinder(r=2, h=0.1);
             translate([ foot_w_back/2 - 2, 0, 0]) cylinder(r=2, h=0.1);
@@ -294,49 +246,17 @@ module single_hanging_tooth(style_type="faceted") {
             translate([ foot_w_front/2 - 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
         }
         
-        // Layer 1: Angled Foot Shelf
+        // Layer 1: Pure Forward-and-Upward Slanted Body
         hull() {
             translate([-foot_w_back/2 + 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
             translate([ foot_w_back/2 - 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([-foot_w_back/2 + 1.5, y_saddle, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w_back/2 - 1.5, y_saddle, 2.0]) cylinder(r=1.5, h=0.1);
             translate([-foot_w_front/2 + 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
             translate([ foot_w_front/2 - 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
             
             translate([-foot_w_back/2 + 1.5, 0, z_shelf_back]) cylinder(r=1.5, h=0.1);
             translate([ foot_w_back/2 - 1.5, 0, z_shelf_back]) cylinder(r=1.5, h=0.1);
-            translate([-foot_w_back/2 + 1.5, y_saddle, z_shelf_back]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w_back/2 - 1.5, y_saddle, z_shelf_back]) cylinder(r=1.5, h=0.1);
             translate([-foot_w_front/2 + 1.5, tooth_d - 2, z_shelf_front]) cylinder(r=1.5, h=0.1);
             translate([ foot_w_front/2 - 1.5, tooth_d - 2, z_shelf_front]) cylinder(r=1.5, h=0.1);
-        }
-        
-        // Layer 2: Saddle (Y <= y_saddle)
-        hull() {
-            translate([-foot_w_back/2 + 1.5, 0, z_shelf_back]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w_back/2 - 1.5, 0, z_shelf_back]) cylinder(r=1.5, h=0.1);
-            translate([-foot_w_back/2 + 1.5, y_saddle, z_shelf_back]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w_back/2 - 1.5, y_saddle, z_shelf_back]) cylinder(r=1.5, h=0.1);
-            
-            translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([0, y_saddle, h_saddle]) cylinder(r=shank_w/2, h=0.1);
-        }
-        
-        // Layer 3: Column
-        hull() {
-            translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([0, y_saddle, h_saddle]) cylinder(r=shank_w/2, h=0.1);
-            
-            translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 3.5, h_tooth]) cylinder(r=shank_w/2, h=0.1);
-        }
-        
-        // Layer 4: Apex
-        hull() {
-            translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 3.5, h_tooth]) cylinder(r=shank_w/2, h=0.1);
-            
-            translate([0, 1.5, h_apex]) cylinder(r=0.2, h=0.1);
         }
     }
 }
@@ -514,9 +434,9 @@ module standalone_toothbrush_rack(style_type="faceted") {
 // =============================================================================
 module mijia_electric_brush_prop() {
     // Point 1: caught directly at the lower end of the brush head!
-    // Lower end of brush head rests on saddle at Z = h_foot (7.0mm)
+    // Lower end of brush head rests on forward-and-upward slanted plane at Z ~ 9.5mm
     y_brush = y_front + 5.5;
-    translate([0, y_brush, h_foot]) {
+    translate([0, y_brush, 9.5]) {
         // Brush head backing & oval body (facing front)
         color([0.96, 0.96, 0.97]) {
             translate([0, 0, 11.0])
@@ -555,9 +475,9 @@ module mijia_electric_brush_prop() {
 
 module manual_brush_prop(color_handle=[0.92, 0.80, 0.20], color_bristle=[0.95, 0.85, 0.10]) {
     // Point 1: caught directly at the lower end of the brush head!
-    // Lower end of brush head rests on saddle at Z = h_foot (7.0mm)
+    // Lower end of brush head rests on slanted plane at Z ~ 9.5mm
     y_brush = y_front + 5.5;
-    translate([0, y_brush, h_foot]) {
+    translate([0, y_brush, 9.5]) {
         // Brush head backing & body
         color([0.96, 0.96, 0.97]) {
             translate([0, 0, 11.5])
