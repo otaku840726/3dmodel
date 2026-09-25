@@ -29,10 +29,10 @@ foot_w        = foot_w_back; // backward compatibility
 shank_w       = 5.5;  // backward compatibility
 tooth_d       = 16.0; // forward protrusion from front wall (total depth = 74.0mm)
 z_shelf_back  = 6.0;  // shelf height at rear wall (where toothbrush rests)
-z_shelf_front = 16.0; // forward-and-upward slanted plane at front tip (zero concavity!)
+z_shelf_front = 10.5; // gentle forward-and-upward slanted plane (~15.7° slope, zero concavity!)
 h_foot        = z_shelf_front; // backward compatibility
 h_tooth       = z_shelf_front; // backward compatibility
-h_apex        = 17.5; // subtle finial apex
+h_apex        = 11.7; // subtle finial apex
 
 // Dovetail Bracket Parameters
 bracket_w  = 44.0;
@@ -199,7 +199,7 @@ module single_hanging_tooth(style_type="faceted") {
         hull() {
             translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
             translate([0, tooth_d, z_shelf_front]) cylinder(r=0.5, h=0.1);
-            translate([0, tooth_d - 2.0, z_shelf_front + 1.5]) cylinder(r=0.2, h=0.1);
+            translate([0, tooth_d - 2.0, z_shelf_front + 1.2]) cylinder(r=0.2, h=0.1);
         }
     } else if (style_type == "fluted") {
         // Roman Palazzo Fluted Pilaster Tooth
@@ -434,9 +434,9 @@ module standalone_toothbrush_rack(style_type="faceted") {
 // =============================================================================
 module mijia_electric_brush_prop() {
     // Point 1: caught directly at the lower end of the brush head!
-    // Lower end of brush head rests on forward-and-upward slanted plane at Z ~ 9.5mm
+    // Lower end of brush head rests on forward-and-upward slanted plane at Z ~ 7.5mm
     y_brush = y_front + 5.5;
-    translate([0, y_brush, 9.5]) {
+    translate([0, y_brush, 7.5]) {
         // Brush head backing & oval body (facing front)
         color([0.96, 0.96, 0.97]) {
             translate([0, 0, 11.0])
@@ -475,9 +475,9 @@ module mijia_electric_brush_prop() {
 
 module manual_brush_prop(color_handle=[0.92, 0.80, 0.20], color_bristle=[0.95, 0.85, 0.10]) {
     // Point 1: caught directly at the lower end of the brush head!
-    // Lower end of brush head rests on slanted plane at Z ~ 9.5mm
+    // Lower end of brush head rests on slanted plane at Z ~ 7.5mm
     y_brush = y_front + 5.5;
-    translate([0, y_brush, 9.5]) {
+    translate([0, y_brush, 7.5]) {
         // Brush head backing & body
         color([0.96, 0.96, 0.97]) {
             translate([0, 0, 11.5])
