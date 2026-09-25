@@ -33,6 +33,8 @@ z_shelf_front = 10.5; // gentle forward-and-upward slanted plane (~15.7° slope,
 h_foot        = z_shelf_front; // backward compatibility
 h_tooth       = z_shelf_front; // backward compatibility
 h_apex        = 11.7; // subtle finial apex
+tooth_top_style = "arched"; // "arched" (全新圓弧拱頂，零積水自導正 - 用戶建議) 或 "flat" (純平直切面)
+r_crown         = 18.0;     // 圓弧拱頂半徑 (mm)
 
 // Dovetail Bracket Parameters
 bracket_w  = 44.0;
@@ -195,19 +197,29 @@ module single_hanging_tooth(style_type="curved") {
                 translate([ 4.25, 11.5, 2.2]) cylinder(r=r_f, h=0.1);
                 translate([0, 10.0, 2.2]) cylinder(r=r_nose, h=0.1);
                 
-                // 頂部垂直延伸段 (Z=15.0mm, 確保完整穿過 15.71° 斜切平面)
-                translate([-4.25, -2.0, 15.0]) cylinder(r=r_b, h=0.1);
-                translate([ 4.25, -2.0, 15.0]) cylinder(r=r_b, h=0.1);
-                translate([-4.25, 11.5, 15.0]) cylinder(r=r_f, h=0.1);
-                translate([ 4.25, 11.5, 15.0]) cylinder(r=r_f, h=0.1);
-                translate([0, 10.0, 15.0]) cylinder(r=r_nose, h=0.1);
+                // 頂部垂直延伸段 (Z=18.0mm, 確保完整穿過拱頂圓弧)
+                translate([-4.25, -2.0, 18.0]) cylinder(r=r_b, h=0.1);
+                translate([ 4.25, -2.0, 18.0]) cylinder(r=r_b, h=0.1);
+                translate([-4.25, 11.5, 18.0]) cylinder(r=r_f, h=0.1);
+                translate([ 4.25, 11.5, 18.0]) cylinder(r=r_f, h=0.1);
+                translate([0, 10.0, 18.0]) cylinder(r=r_nose, h=0.1);
             }
             
-            // 純向前向上微仰平直切面 (Z = 6.0mm -> 10.5mm, 15.71° 純平面, 零凹槽)
-            translate([0, 0, z_shelf_back])
-                rotate([-slope_angle, 0, 0])
-                    translate([0, 20.0, -25.0])
-                        cube([100.0, 100.0, 50.0], center=true);
+            // 頂部切削面：圓弧拱頂 (arched) 或純平直切面 (flat)
+            if (tooth_top_style == "arched") {
+                // 橫向圓弧拱頂 (橫向 R=18mm 凸圓弧，零積水、導正牙刷；縱向沿 15.71° 平緩爬升防滑脫)
+                translate([0, 0, z_shelf_back])
+                    rotate([-slope_angle, 0, 0])
+                        translate([0, 20.0, -r_crown + 1.8])
+                            rotate([-90, 0, 0])
+                                cylinder(r=r_crown, h=80.0, center=true);
+            } else {
+                // 純向前向上微仰平直切面 (Z = 6.0mm -> 10.5mm, 15.71° 純平面, 零凹槽)
+                translate([0, 0, z_shelf_back])
+                    rotate([-slope_angle, 0, 0])
+                        translate([0, 20.0, -25.0])
+                            cube([100.0, 100.0, 50.0], center=true);
+            }
         }
         
         // 確保底部 Z=0 絕對平整，完美附著列印熱床
