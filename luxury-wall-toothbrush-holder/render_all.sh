@@ -30,9 +30,13 @@ echo "  - Close-up of rightmost cat face with refined 3D-printable conformal whi
 openscad --camera=-75,65,7,60,0,215,70 --imgsize=1600,1200 --colorscheme=Cornfield \
     -D 'mode="holder"' -o "$RENDERS/fluted_cat_whisker_closeup.png" "$SCAD"
 
-echo "  - Close-up of adorable 3D sculpted piggy face..."
+echo "  - Close-up of adorable 3D sculpted piggy face (enlarged nostrils & conformal blush)..."
 openscad --camera=50,65,7,60,0,180,70 --imgsize=1600,1200 --colorscheme=Cornfield \
     -D 'mode="holder"' -o "$RENDERS/fluted_pig_closeup.png" "$SCAD"
+
+echo "  - Close-up of adorable 3D sculpted bear face (enlarged cute button nose)..."
+openscad --camera=-50,65,7,60,0,180,70 --imgsize=1600,1200 --colorscheme=Cornfield \
+    -D 'mode="holder"' -o "$RENDERS/fluted_bear_closeup.png" "$SCAD"
 
 echo "  - Side view showing 5.5mm -> 11.0mm thickness expansion..."
 openscad --camera=75,50,45,90,0,90,260 --imgsize=1600,1000 --colorscheme=Cornfield \

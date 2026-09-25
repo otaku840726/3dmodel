@@ -325,11 +325,11 @@ module pig_snout_c3(z=4.8, rx=2.3, rz=1.5, relief=0.85) {
     }
 }
 
-// Pig Nostril in C2 (Black) - Sits on front face of snout
-module pig_nostril_c2(x, z, rx=0.42, rz=0.7) {
-    y_s = tooth_surf_y(0, z) + 0.85;
+// Pig Nostril in C2 (Black) - Sits on front face of snout (enlarged & distinct)
+module pig_nostril_c2(x, z, rx=0.62, rz=0.92) {
+    y_s = tooth_surf_y(0, z) + 0.9;
     hull() {
-        translate([x, y_s + 0.2, z])
+        translate([x, y_s + 0.25, z])
             scale([rx, 0.4, rz]) sphere(r=1.0, $fn=16);
         translate([x, y_s - 0.6, z])
             scale([rx, 0.6, rz]) sphere(r=1.0, $fn=16);
@@ -352,12 +352,40 @@ module pig_ears_c3() {
     }
 }
 
+// Pig Conformal Blush in C3 (Peach/Pink) - Perfectly aligned with cheek normal & surface curvature
+module pig_conformal_blush_c3() {
+    x_b = 4.4;
+    z_b = 4.6;
+    y_b = tooth_surf_y(x_b, z_b);
+    phi = 33.6;   // yaw around Z
+    theta = 20.1; // pitch around X
+    
+    for (s = [-1, 1]) {
+        translate([s * x_b, y_b, z_b])
+            rotate([0, 0, -s * phi])
+                rotate([-theta, 0, 0])
+                    rotate([0, 0, -s * 10]) {
+                        hull() {
+                            // Subtle, smooth conformal dome (protruding only 0.28mm from cheek)
+                            translate([0, 0.15, 0])
+                                scale([1.3, 0.15, 0.85]) sphere(r=1.0, $fn=24);
+                            // Deep anchor into cheek flesh
+                            translate([0, -0.6, 0])
+                                scale([1.4, 0.5, 0.95]) sphere(r=1.0, $fn=24);
+                            // Self-supporting draft taper
+                            translate([0, -0.2, -0.85])
+                                scale([0.9, 0.2, 0.5]) sphere(r=1.0, $fn=16);
+                        }
+                    }
+    }
+}
+
 // Color 2: Black Accents (Eyes, Noses, Panda ears, Cat Whiskers)
 module animal_features_c2(animal) {
     y_center = tooth_d - foot_w_front / 2; // 7.25mm
     
     if (animal == "bear") {
-        supportfree_nose(5.6, 1.0, 0.8, 0.8, relief=0.55);
+        supportfree_nose(5.6, rx=1.45, ry=1.1, rz=1.15, relief=1.05);
         for (s = [-1, 1]) supportfree_eye(s * 3.4, 7.5, 0.85);
     } else if (animal == "cat") {
         supportfree_nose(5.2, rx=1.1, ry=0.7, rz=0.7, relief=0.45);
@@ -380,8 +408,8 @@ module animal_features_c2(animal) {
         for (s = [-1, 1]) supportfree_eye(s * 3.4, 7.4, 0.9);
     } else if (animal == "pig") {
         for (s = [-1, 1]) supportfree_eye(s * 3.2, 7.2, 0.85);
-        pig_nostril_c2(-1.0, 4.8);
-        pig_nostril_c2( 1.0, 4.8);
+        pig_nostril_c2(-1.1, 4.8);
+        pig_nostril_c2( 1.1, 4.8);
     } else if (animal == "fox") {
         supportfree_nose(5.2, rx=0.85, ry=0.7, rz=0.7, relief=0.45);
         for (s = [-1, 1]) supportfree_eye(s * 3.5, 7.2, 0.9, tilt=s * 25, scale_xy=[1.3, 0.8]);
@@ -434,10 +462,7 @@ module animal_features_c3(animal) {
     } else if (animal == "pig") {
         pig_ears_c3();
         pig_snout_c3();
-        for (s = [-1, 1]) {
-            translate([s * 4.6, tooth_surf_y(s * 4.6, 4.6) + 0.1, 4.6])
-                scale([1.1, 0.3, 0.8]) sphere(r=1.0, $fn=16);
-        }
+        pig_conformal_blush_c3();
     } else if (animal == "fox") {
         for (s = [-1, 1]) {
             hull() {
