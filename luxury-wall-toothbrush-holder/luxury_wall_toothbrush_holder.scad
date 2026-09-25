@@ -97,35 +97,45 @@ module wall_bracket() {
 }
 
 module female_dovetail_cavity() {
-    tol = 0.30;
+    tol = 0.35;
     h_slot = bracket_h;
     w_t = dove_w_top + tol*2;
     w_b = dove_w_bot + tol*2;
     d_s = dove_th + tol;
-    w_max = w_b + 2 * d_s * tan(dove_angle);
-    apex_h = w_max / 2;
-
-    translate([0, -0.01, -0.5]) {
-        linear_extrude(height=h_slot, scale=[w_b/w_t, 1.0])
-            polygon([
-                [-w_t/2, 0],
-                [-w_t/2 - d_s*tan(dove_angle), d_s],
-                [ w_t/2 + d_s*tan(dove_angle), d_s],
-                [ w_t/2, 0]
-            ]);
-            
-        translate([0, 0, h_slot - 0.5])
-            hull() {
-                linear_extrude(height=0.1)
-                    polygon([
-                        [-w_b/2, 0],
-                        [-w_b/2 - d_s*tan(dove_angle), d_s],
-                        [ w_b/2 + d_s*tan(dove_angle), d_s],
-                        [ w_b/2, 0]
-                    ]);
-                translate([0, d_s/2, apex_h])
-                    cylinder(r=0.2, h=0.1);
-            }
+    
+    poly_bot = [
+        [-w_t/2, -0.1],
+        [-w_t/2 - d_s*tan(dove_angle), d_s],
+        [ w_t/2 + d_s*tan(dove_angle), d_s],
+        [ w_t/2, -0.1]
+    ];
+    poly_top = [
+        [-w_b/2, -0.1],
+        [-w_b/2 - d_s*tan(dove_angle), d_s],
+        [ w_b/2 + d_s*tan(dove_angle), d_s],
+        [ w_b/2, -0.1]
+    ];
+    
+    // Continuous matched hull for the sliding socket (zero internal ledge)
+    hull() {
+        translate([0, 0, -0.5])
+            linear_extrude(height=0.1) polygon(poly_bot);
+        translate([0, 0, h_slot])
+            linear_extrude(height=0.1) polygon(poly_top);
+    }
+    
+    // 55° Self-supporting gable ceiling sloping smoothly to back wall (zero support required)
+    hull() {
+        translate([0, 0, h_slot])
+            linear_extrude(height=0.1) polygon(poly_top);
+        translate([0, 0, h_slot + d_s * 1.5])
+            linear_extrude(height=0.1)
+                polygon([
+                    [-w_b/2, -0.1],
+                    [ w_b/2, -0.1],
+                    [ w_b/2,  0.05],
+                    [-w_b/2,  0.05]
+                ]);
     }
 }
 
@@ -142,6 +152,8 @@ module arch_backplate_solid() {
         rotate([90, 0, 0])
             linear_extrude(height = th_back) {
                 hull() {
+                    // Solid flat bottom edge resting firmly on print bed (zero bed liftoff overhang)
+                    translate([-w/2, 0]) square([w, 2.0]);
                     translate([-w/2 + r, r]) circle(r=r);
                     translate([ w/2 - r, r]) circle(r=r);
                     translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);
@@ -156,18 +168,19 @@ module arch_backplate_frame_trim() {
     th_back = d_wall;
     r = 10.0;
     
-    translate([0, th_back + 0.1, 0])
+    translate([0, th_back, 0])
         rotate([90, 0, 0])
             difference() {
-                linear_extrude(height = 1.2)
+                linear_extrude(height = 1.0)
                     hull() {
+                        translate([-w/2 + 3.0, 0]) square([w - 6.0, 2.0]);
                         translate([-w/2 + r, r]) circle(r=r);
                         translate([ w/2 - r, r]) circle(r=r);
                         translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);
                         translate([ w/2 - r - 3.0, h_total - r]) circle(r=r - 3.0);
                     }
                 translate([0, 0, -1.0])
-                    linear_extrude(height = 4.0)
+                    linear_extrude(height = 3.0)
                         hull() {
                             translate([-w/2 + r + 4.0, r + 4.0]) circle(r=r - 3.0);
                             translate([ w/2 - r - 4.0, r + 4.0]) circle(r=r - 3.0);
@@ -218,33 +231,85 @@ module cat_conformal_whiskers() {
     }
 }
 
+// Conformal Surface Y Helper on Front Tooth
+function tooth_surf_y(x, z) = 
+    let(r2 = foot_w_front / 2,
+        h2 = z_shelf_front,
+        y2 = tooth_d - r2,
+        term = 1 - pow(x/r2, 2) - pow(z/h2, 2))
+    (term > 0) ? (y2 + r2 * sqrt(term)) : y2;
+
+// Conformal Support-Free Eye: Anchored 0.6mm into tooth, protruding 0.35mm out, zero overhang
+module supportfree_eye(x, z, r=0.85, tilt=0, scale_xy=[1,1]) {
+    y_s = tooth_surf_y(x, z);
+    hull() {
+        translate([x, y_s + 0.35, z + r*0.3])
+            rotate([0, tilt, 0]) scale([scale_xy[0], 0.7, scale_xy[1]]) sphere(r=r*0.7, $fn=16);
+        translate([x, y_s - 0.6, z])
+            rotate([0, tilt, 0]) scale([scale_xy[0], 1.0, scale_xy[1]]) sphere(r=r, $fn=16);
+        translate([x, y_s - 0.2, z - r])
+            rotate([0, tilt, 0]) scale([scale_xy[0], 0.5, scale_xy[1]]) sphere(r=r*0.4, $fn=16);
+    }
+}
+
+// Conformal Support-Free Nose: 45° upward draft taper into tooth surface
+module supportfree_nose(z, rx=1.0, ry=0.8, rz=0.8, relief=0.55) {
+    y_s = tooth_surf_y(0, z);
+    hull() {
+        translate([0, y_s + relief, z + rz*0.2])
+            scale([rx, ry, rz]) sphere(r=0.6, $fn=16);
+        translate([0, y_s - 0.6, z])
+            scale([rx, ry, rz]) sphere(r=0.9, $fn=16);
+        translate([0, y_s - 0.1, z - rz*1.2])
+            scale([rx*0.7, ry*0.4, rz*0.4]) sphere(r=0.6, $fn=16);
+    }
+}
+
+// Conformal Support-Free Muzzle / Snout: 48° draft angle merging seamlessly into cheek
+module supportfree_muzzle(z, rx=2.2, ry=1.4, rz=1.6, relief=0.8) {
+    y_s = tooth_surf_y(0, z);
+    hull() {
+        translate([0, y_s + relief, z + rz*0.1])
+            scale([rx*0.8, ry*0.7, rz*0.7]) sphere(r=1.0, $fn=24);
+        translate([0, y_s - 1.0, z])
+            scale([rx, ry, rz]) sphere(r=1.0, $fn=24);
+        translate([0, y_s - 0.2, z - rz*1.1])
+            scale([rx*0.7, ry*0.4, rz*0.4]) sphere(r=1.0, $fn=24);
+    }
+}
+
 // Color 2: Black Accents (Eyes, Noses, Panda ears, Cat Whiskers)
 module animal_features_c2(animal) {
     y_center = tooth_d - foot_w_front / 2; // 7.25mm
     
     if (animal == "bear") {
-        translate([0, y_center + 8.5, 5.6]) sphere(r=1.0); // nose
-        for (s = [-1, 1]) translate([s * 3.4, y_center + 6.6, 7.5]) sphere(r=0.85); // eyes
+        supportfree_nose(5.6, 1.0, 0.8, 0.8, relief=0.55);
+        for (s = [-1, 1]) supportfree_eye(s * 3.4, 7.5, 0.85);
     } else if (animal == "cat") {
-        translate([0, y_center + 8.2, 5.2]) scale([1.2, 0.7, 0.9]) sphere(r=0.9); // nose
-        for (s = [-1, 1]) translate([s * 3.5, y_center + 6.8, 7.2]) rotate([0, s * 15, 0]) scale([1.2, 0.8, 0.9]) sphere(r=0.95); // eyes
+        supportfree_nose(5.2, rx=1.1, ry=0.7, rz=0.7, relief=0.45);
+        for (s = [-1, 1]) supportfree_eye(s * 3.5, 7.2, 0.9, tilt=s * 15, scale_xy=[1.2, 0.9]);
         cat_conformal_whiskers();
     } else if (animal == "bunny") {
-        translate([0, y_center + 8.2, 5.0]) sphere(r=0.9); // nose
-        for (s = [-1, 1]) translate([s * 3.2, y_center + 6.8, 7.2]) sphere(r=0.9); // eyes
+        supportfree_nose(5.0, rx=0.9, ry=0.7, rz=0.7, relief=0.45);
+        for (s = [-1, 1]) supportfree_eye(s * 3.2, 7.2, 0.85);
     } else if (animal == "panda") {
-        for (s = [-1, 1]) translate([s * 5.8, y_center + 1.0, 10.0]) sphere(r=2.1); // round ears
-        for (s = [-1, 1]) translate([s * 3.5, y_center + 6.6, 7.2]) rotate([0, s * -25, 0]) scale([1.3, 0.8, 1.0]) sphere(r=1.4); // eyes
-        translate([0, y_center + 8.6, 5.4]) sphere(r=1.05); // nose
+        for (s = [-1, 1]) {
+            hull() {
+                translate([s * 4.8, y_center + 1.0, 9.8]) scale([1.0, 0.8, 1.0]) sphere(r=1.9, $fn=24);
+                translate([s * 3.8, y_center - 0.4, 7.5]) scale([1.0, 0.8, 1.0]) sphere(r=1.4, $fn=16);
+            }
+        }
+        for (s = [-1, 1]) supportfree_eye(s * 3.5, 7.0, 1.35, tilt=s * -25, scale_xy=[1.3, 0.95]);
+        supportfree_nose(5.4, rx=1.0, ry=0.8, rz=0.8, relief=0.5);
     } else if (animal == "puppy") {
-        translate([0, y_center + 8.6, 5.6]) scale([1.2, 0.8, 0.9]) sphere(r=1.2); // nose
-        for (s = [-1, 1]) translate([s * 3.4, y_center + 6.8, 7.4]) sphere(r=0.95); // eyes
+        supportfree_nose(5.6, rx=1.2, ry=0.8, rz=0.8, relief=0.55);
+        for (s = [-1, 1]) supportfree_eye(s * 3.4, 7.4, 0.9);
     } else if (animal == "fox") {
-        translate([0, y_center + 9.2, 5.2]) sphere(r=0.85); // nose tip
-        for (s = [-1, 1]) translate([s * 3.5, y_center + 6.8, 7.2]) rotate([0, s * 25, 0]) scale([1.3, 0.7, 0.8]) sphere(r=0.95); // eyes
+        supportfree_nose(5.2, rx=0.85, ry=0.7, rz=0.7, relief=0.45);
+        for (s = [-1, 1]) supportfree_eye(s * 3.5, 7.2, 0.9, tilt=s * 25, scale_xy=[1.3, 0.8]);
     } else if (animal == "koala") {
-        translate([0, y_center + 8.2, 5.4]) scale([0.9, 0.8, 1.4]) sphere(r=1.8); // big oval nose
-        for (s = [-1, 1]) translate([s * 3.4, y_center + 6.6, 7.4]) sphere(r=0.85); // eyes
+        supportfree_nose(5.4, rx=1.3, ry=0.9, rz=1.6, relief=0.75);
+        for (s = [-1, 1]) supportfree_eye(s * 3.4, 7.4, 0.85);
     }
 }
 
@@ -253,43 +318,57 @@ module animal_features_c3(animal) {
     y_center = tooth_d - foot_w_front / 2; // 7.25mm
     
     if (animal == "bear") {
-        for (s = [-1, 1]) translate([s * 5.2, y_center + 1.2, 10.2]) scale([1.0, 0.8, 1.0]) sphere(r=2.2); // ears
-        translate([0, y_center + 6.8, 4.8]) scale([1.2, 0.8, 0.9]) sphere(r=2.5); // muzzle
+        for (s = [-1, 1]) {
+            hull() {
+                translate([s * 4.8, y_center + 1.2, 10.0]) scale([1.0, 0.8, 1.0]) sphere(r=2.0, $fn=24);
+                translate([s * 3.8, y_center - 0.3, 8.0]) scale([1.0, 0.8, 1.0]) sphere(r=1.6, $fn=16);
+            }
+        }
+        supportfree_muzzle(4.8, 2.2, 1.4, 1.6, relief=0.75);
     } else if (animal == "cat") {
         for (s = [-1, 1]) {
             hull() {
-                translate([s * 4.5, y_center + 0.8, 9.2]) sphere(r=1.6);
-                translate([s * 5.8, y_center + 1.2, 13.0]) sphere(r=0.8);
+                translate([s * 4.2, y_center + 0.8, 9.2]) sphere(r=1.5, $fn=16);
+                translate([s * 5.4, y_center + 1.2, 12.8]) sphere(r=0.8, $fn=16);
+                translate([s * 3.5, y_center + 0.2, 7.5]) sphere(r=1.2, $fn=16);
             }
         }
     } else if (animal == "bunny") {
         for (s = [-1, 1]) {
             hull() {
-                translate([s * 3.6, y_center + 0.5, 9.5]) sphere(r=1.6);
-                translate([s * 4.2, y_center + 0.2, 14.5]) sphere(r=1.2);
+                translate([s * 3.2, y_center + 0.5, 9.5]) sphere(r=1.5, $fn=16);
+                translate([s * 3.8, y_center + 0.2, 14.5]) sphere(r=1.1, $fn=16);
+                translate([s * 2.8, y_center - 0.2, 8.0]) sphere(r=1.4, $fn=16);
             }
         }
-        for (s = [-1, 1]) translate([s * 1.5, y_center + 7.4, 4.4]) sphere(r=1.5); // cheeks
+        for (s = [-1, 1]) supportfree_eye(s * 1.5, 4.4, 1.2, scale_xy=[1.1, 0.9]);
     } else if (animal == "panda") {
-        translate([0, y_center + 7.2, 4.6]) scale([1.1, 0.8, 0.9]) sphere(r=2.3); // snout
+        supportfree_muzzle(4.6, 2.0, 1.2, 1.4, relief=0.7);
     } else if (animal == "puppy") {
         for (s = [-1, 1]) {
             hull() {
-                translate([s * 6.0, y_center + 1.5, 9.5]) sphere(r=1.8);
-                translate([s * 7.2, y_center + 4.2, 6.2]) sphere(r=2.0);
+                translate([s * 5.2, y_center + 1.2, 9.5]) sphere(r=1.6, $fn=16);
+                translate([s * 6.2, y_center + 3.8, 6.2]) sphere(r=1.7, $fn=16);
+                translate([s * 5.2, y_center + 3.2, 4.2]) sphere(r=1.4, $fn=16);
             }
         }
-        translate([0, y_center + 7.0, 4.6]) scale([1.3, 0.8, 1.0]) sphere(r=2.5); // muzzle
+        supportfree_muzzle(4.6, 2.3, 1.3, 1.5, relief=0.75);
     } else if (animal == "fox") {
         for (s = [-1, 1]) {
             hull() {
-                translate([s * 4.8, y_center + 0.8, 9.2]) sphere(r=1.6);
-                translate([s * 6.5, y_center + 0.8, 13.5]) sphere(r=0.8);
+                translate([s * 4.4, y_center + 0.8, 9.2]) sphere(r=1.5, $fn=16);
+                translate([s * 5.8, y_center + 0.8, 13.2]) sphere(r=0.8, $fn=16);
+                translate([s * 3.6, y_center + 0.2, 7.5]) sphere(r=1.2, $fn=16);
             }
         }
-        translate([0, y_center + 7.6, 4.8]) scale([1.0, 1.1, 0.9]) sphere(r=2.0); // snout
+        supportfree_muzzle(4.8, 1.8, 1.3, 1.3, relief=0.65);
     } else if (animal == "koala") {
-        for (s = [-1, 1]) translate([s * 6.4, y_center + 1.2, 9.5]) scale([1.1, 0.8, 1.1]) sphere(r=2.8); // ears
+        for (s = [-1, 1]) {
+            hull() {
+                translate([s * 5.4, y_center + 1.0, 9.4]) scale([1.0, 0.8, 1.0]) sphere(r=2.3, $fn=24);
+                translate([s * 4.2, y_center - 0.4, 7.2]) scale([1.0, 0.8, 1.0]) sphere(r=1.6, $fn=16);
+            }
+        }
     }
 }
 
@@ -380,20 +459,38 @@ module squircle_body(w, d, r, h, ch=3.0) {
 }
 
 // Classical Architectural Fluting & Champagne Gold Trim (Color 4)
-module architectural_trim_c4() {
-    // 1. Horizontal Beltline at Z=28mm (Across flat front facade)
+module supportfree_beltline() {
     translate([0, y_front + 0.1, 28.0])
-        cube([152.0, 1.2, 1.4], center=true);
-        
-    // 2. Classical Vertical Fluting on front wall
-    for (fx = [-w_pod/2 + 22 : 6.0 : w_pod/2 - 22]) {
-        hull() {
-            translate([fx, y_front + 0.1, 12.0]) rotate([-90, 0, 0]) cylinder(d=2.2, h=1.0);
-            translate([fx, y_front + 0.1, 25.0]) rotate([-90, 0, 0]) cylinder(d=2.2, h=1.0);
-        }
+        rotate([0, 90, 0])
+            linear_extrude(height=152.0, center=true)
+                polygon([
+                    [-0.8, -0.6],  // back bottom inside wall
+                    [-0.8, -0.1],  // front wall contact bottom (Z=27.2)
+                    [ 0.0,  0.5],  // front beltline midpoint (53° upward draft! Z=28.0)
+                    [ 0.4,  0.5],  // front top vertical facet (Z=28.4)
+                    [ 0.7, -0.6]   // back top inside wall
+                ]);
+}
+
+module flute_single(fx) {
+    hull() {
+        // Top cap at Z=25
+        translate([fx, y_front + 0.1, 25.0]) rotate([-90, 0, 0]) cylinder(d=2.2, h=1.0);
+        // Mid body at Z=12.5
+        translate([fx, y_front + 0.1, 12.5]) rotate([-90, 0, 0]) cylinder(d=2.2, h=1.0);
+        // Base taper: slopes at 55 deg into wall at Z=10.2 (100% self-supporting)
+        translate([fx, y_front - 0.2, 10.2]) cube([1.8, 0.4, 0.2], center=true);
     }
-    
-    // (Note: Side flank flute dots on curved corners removed per user request for smooth clean flanks)
+}
+
+module architectural_trim_c4() {
+    // 1. Horizontal Beltline at Z=28mm (Beveled 53° self-supporting cross-section)
+    supportfree_beltline();
+        
+    // 2. Classical Vertical Fluting on front wall (55° self-supporting tapered base)
+    for (fx = [-w_pod/2 + 22 : 6.0 : w_pod/2 - 22]) {
+        flute_single(fx);
+    }
     
     // 3. Backplate Molding Frame
     arch_backplate_frame_trim();
@@ -465,10 +562,10 @@ module rear_storage_cavities_and_drains() {
                 squircle_cavity(46.0, 44.0, 12.0, h_total);
             translate([0, 0, h - 2.5])
                 cylinder(r1=44.0/2 - 2.0, r2=44.0/2 + 2.0, h=3.0);
-            translate([0, 0, z_floor - 4.0])
-                cylinder(r1=7.0, r2=12.0, h=4.01);
+            translate([0, 0, z_floor - 5.0])
+                cylinder(r1=7.0, r2=11.5, h=5.01);
             translate([0, 0, -5.0])
-                cylinder(d=14.0, h=z_floor + 2.0);
+                cylinder(d=14.0, h=z_floor - 3.0);
             translate([0, 0, z_floor]) {
                 cube([46.0, 4.0, 2.0], center=true);
                 cube([4.0, 44.0, 2.0], center=true);
@@ -484,10 +581,10 @@ module rear_storage_cavities_and_drains() {
                 squircle_cavity(36.0, 38.0, 10.0, h_total);
             translate([0, 0, h - 2.5])
                 cylinder(r1=36.0/2 - 2.0, r2=36.0/2 + 2.0, h=3.0);
-            translate([0, 0, z_floor - 4.0])
-                cylinder(r1=6.0, r2=10.0, h=4.01);
+            translate([0, 0, z_floor - 5.0])
+                cylinder(r1=6.0, r2=9.5, h=5.01);
             translate([0, 0, -5.0])
-                cylinder(d=12.0, h=z_floor + 2.0);
+                cylinder(d=12.0, h=z_floor - 3.0);
             translate([0, 0, z_floor]) {
                 cube([36.0, 4.0, 2.0], center=true);
                 cube([4.0, 38.0, 2.0], center=true);
