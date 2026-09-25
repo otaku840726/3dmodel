@@ -28,8 +28,8 @@ foot_w_front  = 17.5; // tooth width at front tip (slot narrows to 25 - 17.5 = 7
 foot_w        = foot_w_back; // backward compatibility
 shank_w       = 5.5;  // backward compatibility
 tooth_d       = 16.0; // forward protrusion from front wall (total depth = 74.0mm)
-z_shelf_back  = 6.0;  // shelf height at rear wall (where toothbrush rests)
-z_shelf_front = 10.5; // gentle forward-and-upward slanted plane (~15.7° slope, zero concavity!)
+z_shelf_back  = 5.5;  // shelf height at rear wall (where toothbrush rests comfortably)
+z_shelf_front = 11.0; // forward-and-upward retention slope (越往外越厚: 5.5mm -> 11.0mm, zero concavity!)
 h_foot        = z_shelf_front; // backward compatibility
 h_tooth       = z_shelf_front; // backward compatibility
 h_apex        = 11.7; // subtle finial apex
@@ -183,40 +183,35 @@ module single_hanging_tooth(style_type="curved") {
     
     difference() {
         intersection() {
-            // 一體化全圓滑水滴實體 (從底部 Z=0 經 45° 托底過渡至頂部)
+            // 一體化全圓滑水滴實體 (底部平整貼合熱床 Z=0，厚度越往外越厚)
             hull() {
-                // 底部 45° 圓滑托底 (Z=0)
-                translate([-4.25, -2.0, 0]) cylinder(r=2.0, h=0.1);
-                translate([ 4.25, -2.0, 0]) cylinder(r=2.0, h=0.1);
-                translate([0, 7.5, 0]) cylinder(r=2.5, h=0.1);
+                // 底部實體貼床 (Z=0, 完美附著熱床，穩固支撐，越往外越厚實)
+                translate([-4.25, -2.0, 0]) cylinder(r=r_b, h=0.1);
+                translate([ 4.25, -2.0, 0]) cylinder(r=r_b, h=0.1);
+                translate([-4.25, 11.5, 0]) cylinder(r=r_f, h=0.1);
+                translate([ 4.25, 11.5, 0]) cylinder(r=r_f, h=0.1);
+                translate([0, 10.0, 0]) cylinder(r=r_nose, h=0.1);
                 
-                // 托底向上過渡肩部 (Z=2.2mm)
-                translate([-4.25, -2.0, 2.2]) cylinder(r=r_b, h=0.1);
-                translate([ 4.25, -2.0, 2.2]) cylinder(r=r_b, h=0.1);
-                translate([-4.25, 11.5, 2.2]) cylinder(r=r_f, h=0.1);
-                translate([ 4.25, 11.5, 2.2]) cylinder(r=r_f, h=0.1);
-                translate([0, 10.0, 2.2]) cylinder(r=r_nose, h=0.1);
-                
-                // 頂部垂直延伸段 (Z=18.0mm, 確保完整穿過拱頂圓弧)
-                translate([-4.25, -2.0, 18.0]) cylinder(r=r_b, h=0.1);
-                translate([ 4.25, -2.0, 18.0]) cylinder(r=r_b, h=0.1);
-                translate([-4.25, 11.5, 18.0]) cylinder(r=r_f, h=0.1);
-                translate([ 4.25, 11.5, 18.0]) cylinder(r=r_f, h=0.1);
-                translate([0, 10.0, 18.0]) cylinder(r=r_nose, h=0.1);
+                // 頂部垂直延伸段 (Z=30.0mm, 確保完整穿過向上微仰的拱頂圓弧)
+                translate([-4.25, -2.0, 30.0]) cylinder(r=r_b, h=0.1);
+                translate([ 4.25, -2.0, 30.0]) cylinder(r=r_b, h=0.1);
+                translate([-4.25, 11.5, 30.0]) cylinder(r=r_f, h=0.1);
+                translate([ 4.25, 11.5, 30.0]) cylinder(r=r_f, h=0.1);
+                translate([0, 10.0, 30.0]) cylinder(r=r_nose, h=0.1);
             }
             
             // 頂部切削面：圓弧拱頂 (arched) 或純平直切面 (flat)
             if (tooth_top_style == "arched") {
-                // 橫向圓弧拱頂 (橫向 R=18mm 凸圓弧，零積水、導正牙刷；縱向沿 15.71° 平緩爬升防滑脫)
+                // 橫向圓弧拱頂 (橫向 R=18mm 凸圓弧，零積水、導正牙刷；縱向正向爬升，越往外越厚 5.5mm -> 11.0mm)
                 translate([0, 0, z_shelf_back])
-                    rotate([-slope_angle, 0, 0])
-                        translate([0, 20.0, -r_crown + 1.8])
+                    rotate([slope_angle, 0, 0])
+                        translate([0, 20.0, -r_crown])
                             rotate([-90, 0, 0])
                                 cylinder(r=r_crown, h=80.0, center=true);
             } else {
-                // 純向前向上微仰平直切面 (Z = 6.0mm -> 10.5mm, 15.71° 純平面, 零凹槽)
+                // 純向前向上微仰平直切面 (縱向正向爬升，越往外越厚 5.5mm -> 11.0mm)
                 translate([0, 0, z_shelf_back])
-                    rotate([-slope_angle, 0, 0])
+                    rotate([slope_angle, 0, 0])
                         translate([0, 20.0, -25.0])
                             cube([100.0, 100.0, 50.0], center=true);
             }
