@@ -21,18 +21,20 @@ d_pod       = 50.0;
 h_pod       = 44.0; 
 y_front     = d_wall + d_pod; // 58.0mm: Front vertical wall of storage gallery
 
-// Toothbrush Hanging Parameters (Dual Retention Cradle: Rising Prow + Narrowing Bottleneck)
-tb_pitch    = 25.0; // 6 slots, 7 teeth across 150mm span (Matches 621-01 layout)
-foot_w      = 15.0; // pocket tooth width -> 10.0mm neck slot
-w_wing      = 17.6; // front retaining wings -> 7.4mm narrow exit bottleneck (blocks horizontal pull-out)
-shank_w     = 5.5;  // 5.5mm upper shank -> 19.50mm wide top entry bay
-tooth_d     = 16.0; // forward protrusion from front wall (total depth = 74.0mm)
-h_rest      = 7.0;  // bottom pocket floor height (where brush head rests)
-h_foot      = 7.0;  // alias for backward compatibility
-h_prow      = 12.0; // outer tip rising prow height (+5.0mm retention lip blocks horizontal pull-out!)
-h_saddle    = 14.0; // 45° self-centering saddle junction
-h_tooth     = 24.0; // compact tooth column height (Point 3: reduced from 42mm)
-h_apex      = 26.5; // finial apex height
+// Toothbrush Hanging Parameters (Clean Angled Cutting Planes: Rising Floor + Narrowing Slot)
+tb_pitch      = 25.0; // 6 slots, 7 teeth across 150mm span (Matches 621-01 layout)
+foot_w_back   = 14.5; // tooth width at rear wall (inner slot gap = 25 - 14.5 = 10.5mm)
+foot_w_front  = 17.5; // tooth width at front tip (angled cut narrows slot to 7.5mm!)
+foot_w        = foot_w_back; // backward compatibility
+shank_w       = 5.5;  // 5.5mm upper shank -> 19.50mm wide top entry bay
+tooth_d       = 16.0; // forward protrusion from front wall (total depth = 74.0mm)
+y_saddle      = 5.0;  // depth where column joins the resting shelf
+z_shelf_back  = 6.5;  // resting shelf height at rear wall
+z_shelf_front = 10.0; // angled shelf height at front tip (gentle +3.5mm uphill ramp)
+h_foot        = z_shelf_front; // backward compatibility
+h_saddle      = 13.5; // 45° self-centering saddle junction
+h_tooth       = 24.0; // compact tooth column height (Point 3: reduced from 42mm)
+h_apex        = 26.5; // finial apex height
 
 // Dovetail Bracket Parameters
 bracket_w  = 44.0;
@@ -169,67 +171,54 @@ module arch_backplate() {
 module single_hanging_tooth(style_type="faceted") {
     if (style_type == "faceted") {
         // Art Deco Diamond Faceted Tooth (★ User Selection)
-        // Feature 1: Outer tip rising prow (Z: 7mm -> 12mm) (+5mm retaining lip blocks horizontal slide)
-        // Feature 2: Outer tip lateral wings (Width: 15mm -> 17.6mm) (gap narrows to 7.4mm)
-        // Feature 3: Compact height (h_tooth = 24mm, h_apex = 26.5mm)
+        // Clean Angled Cutting Planes (原本幾何切面微調角度，非複雜勾型):
+        // 1. 側向切面微調展角: 寬度從後壁 14.5mm 漸展至前緣 17.5mm (槽位開口自 10.5mm 漸縮為 7.5mm，水平卡住牙刷)
+        // 2. 托盤表面微調仰角: 高度自後壁 Z=6.5mm 微幅平滑仰升至前緣 Z=10.0mm (+3.5mm 自然重力防滑傾角)
         
-        // 1. Bottom 45° Chamfer Plinth (Z = 0 to 2.0mm) - 100% support-free base
+        // Layer 0: Z = 0 to 2.0 (Bottom Chamfer Plinth, 45° overhang for 100% support-free print)
         hull() {
-            translate([-foot_w/2 + 2, 0, 0]) cube([foot_w - 4, 0.1, 0.1]);
-            translate([-foot_w/2 + 2, 6.0, 0]) cube([foot_w - 4, 0.1, 0.1]);
-            translate([-w_wing/2 + 2, tooth_d - 3, 0]) cube([w_wing - 4, 0.1, 0.1]);
-            translate([0, tooth_d - 0.5, 0]) cylinder(r=0.5, h=0.1);
+            translate([-foot_w_back/2 + 2.0, 0, 0]) cube([foot_w_back - 4.0, 0.1, 0.1]);
+            translate([-foot_w_front/2 + 2.0, tooth_d - 2.5, 0]) cube([foot_w_front - 4.0, 0.1, 0.1]);
+            translate([0, tooth_d, 0]) cylinder(r=0.5, h=0.1);
             
-            translate([-foot_w/2, 0, 2.0]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, 6.0, 2.0]) cube([foot_w, 0.1, 0.1]);
-            translate([-w_wing/2, tooth_d - 3, 2.0]) cube([w_wing, 0.1, 0.1]);
+            translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
             translate([0, tooth_d, 2.0]) cylinder(r=0.5, h=0.1);
         }
         
-        // 2. Seating Pocket (Y = 0 to 6.5mm, Z = 2.0 to h_rest = 7.0mm)
+        // Layer 1: The Rising Foot Shelf (Z = 2.0 to shelf surface)
         hull() {
-            translate([-foot_w/2, 0, 2.0]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, 6.5, 2.0]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, 0, h_rest]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, 6.5, h_rest]) cube([foot_w, 0.1, 0.1]);
-        }
-        
-        // 3. Diamond Faceted Rising Retention Prow (Y = 6.5 to tooth_d = 16.0mm)
-        // Vertical: Rises from Z = 7.0mm (at Y=6.5) to Z = 12.0mm (at Y=16) -> +5.0mm retention wall!
-        // Horizontal: Flares from foot_w=15.0mm (gap=10mm) to w_wing=17.6mm (gap=7.4mm)!
-        hull() {
-            translate([-foot_w/2, 6.5, 2.0]) cube([foot_w, 0.1, 0.1]);
-            translate([-w_wing/2, tooth_d - 3.0, 2.0]) cube([w_wing, 0.1, 0.1]);
+            translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_back/2, y_saddle, 2.0]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
             translate([0, tooth_d, 2.0]) cylinder(r=0.5, h=0.1);
             
-            translate([-foot_w/2, 6.5, h_rest]) cube([foot_w, 0.1, 0.1]);
-            
-            translate([-w_wing/2, tooth_d - 3.0, h_prow]) cube([w_wing, 0.1, 0.1]);
-            translate([0, tooth_d, h_prow]) cylinder(r=0.5, h=0.1);
+            translate([-foot_w_back/2, 0, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_back/2, y_saddle, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
+            translate([0, tooth_d, z_shelf_front]) cylinder(r=0.5, h=0.1);
         }
         
-        // 4. Rear Crystalline Saddle Ramp (Y = 0 to 6.5mm, Z = h_rest = 7.0mm up to h_saddle = 14.0mm)
+        // Layer 2: 45° Saddle Transition (STAYS AT REAR Y <= y_saddle!)
         hull() {
-            translate([-foot_w/2, 0, h_rest]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, 6.5, h_rest]) cube([foot_w, 0.1, 0.1]);
+            translate([-foot_w_back/2, 0, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_back/2, y_saddle, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
             
             translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2, 4.5, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 6.0, h_saddle]) cylinder(r=0.5, h=0.1);
+            translate([-shank_w/2, y_saddle, h_saddle]) cube([shank_w, 0.1, 0.1]);
         }
         
-        // 5. Upper Faceted Column (Z = h_saddle = 14.0mm to h_tooth = 24.0mm)
+        // Layer 3: Upper Faceted Column (Z = h_saddle to h_tooth)
         hull() {
             translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([-shank_w/2, 4.5, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 6.0, h_saddle]) cylinder(r=0.5, h=0.1);
+            translate([-shank_w/2, y_saddle, h_saddle]) cube([shank_w, 0.1, 0.1]);
             
             translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
             translate([-shank_w/2, 3.5, h_tooth]) cube([shank_w, 0.1, 0.1]);
             translate([0, 5.0, h_tooth]) cylinder(r=0.5, h=0.1);
         }
         
-        // 6. Diamond Pyramid Finial Apex (Z = 24.0 to 26.5mm)
+        // Layer 4: Diamond Pyramid Finial Apex (Z = h_tooth to h_apex)
         hull() {
             translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
             translate([-shank_w/2, 3.5, h_tooth]) cube([shank_w, 0.1, 0.1]);
@@ -239,61 +228,51 @@ module single_hanging_tooth(style_type="faceted") {
         }
     } else if (style_type == "fluted") {
         // Roman Palazzo Fluted Pilaster Tooth
-        // Feature 1: Outer tip rising prow (Z: 7mm -> 12mm) (+5mm retaining lip blocks horizontal slide)
-        // Feature 2: Outer tip lateral wings (Width: 15mm -> 17.6mm) (gap narrows to 7.4mm)
+        // Clean Angled Cutting Planes:
         
-        // 1. Classical Chamfered Pedestal Plinth (Z = 0 to 2.0mm)
+        // Layer 0: Plinth Base
         hull() {
-            translate([-foot_w/2 + 1.5, 0, 0]) cube([foot_w - 3.0, 0.1, 0.1]);
-            translate([-foot_w/2 + 1.5, 6.0, 0]) cube([foot_w - 3.0, 0.1, 0.1]);
-            translate([-w_wing/2 + 1.5, tooth_d - 2.5, 0]) cube([w_wing - 3.0, 0.1, 0.1]);
+            translate([-foot_w_back/2 + 1.5, 0, 0]) cube([foot_w_back - 3.0, 0.1, 0.1]);
+            translate([-foot_w_front/2 + 1.5, tooth_d - 2.5, 0]) cube([foot_w_front - 3.0, 0.1, 0.1]);
             translate([0, tooth_d - 0.5, 0]) cylinder(r=shank_w/2 - 0.5, h=0.1);
             
-            translate([-foot_w/2, 0, 2.0]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, 6.0, 2.0]) cube([foot_w, 0.1, 0.1]);
-            translate([-w_wing/2, tooth_d - 2.5, 2.0]) cube([w_wing, 0.1, 0.1]);
+            translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
             translate([0, tooth_d, 2.0]) cylinder(r=shank_w/2, h=0.1);
         }
         
-        // 2. Seating Pocket (Y = 0 to 6.5mm, Z = 2.0 to h_rest = 7.0mm)
+        // Layer 1: The Rising Foot Shelf (Z = 2.0 to shelf surface)
         hull() {
-            translate([-foot_w/2, 0, 2.0]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, 6.5, 2.0]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, 0, h_rest]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, 6.5, h_rest]) cube([foot_w, 0.1, 0.1]);
-        }
-        
-        // 3. Fluted Rising Retention Prow & Capital Volute Wings (Y = 6.5 to tooth_d = 16.0mm)
-        hull() {
-            translate([-foot_w/2, 6.5, 2.0]) cube([foot_w, 0.1, 0.1]);
-            translate([-w_wing/2, tooth_d - 2.5, 2.0]) cube([w_wing, 0.1, 0.1]);
+            translate([-foot_w_back/2, 0, 2.0]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_back/2, y_saddle, 2.0]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_front/2, tooth_d - 2.5, 2.0]) cube([foot_w_front, 0.1, 0.1]);
             translate([0, tooth_d, 2.0]) cylinder(r=shank_w/2, h=0.1);
             
-            translate([-foot_w/2, 6.5, h_rest]) cube([foot_w, 0.1, 0.1]);
-            
-            translate([-w_wing/2, tooth_d - 2.5, h_prow]) cube([w_wing, 0.1, 0.1]);
-            translate([0, tooth_d, h_prow - 0.5]) cylinder(r=shank_w/2, h=0.1);
+            translate([-foot_w_back/2, 0, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_back/2, y_saddle, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_front/2, tooth_d - 2.5, z_shelf_front]) cube([foot_w_front, 0.1, 0.1]);
+            translate([0, tooth_d, z_shelf_front]) cylinder(r=shank_w/2, h=0.1);
         }
         
-        // 4. Roman Scotia Transition Saddle (Z = h_rest to h_saddle = 14.0mm)
+        // Layer 2: Scotia Saddle Transition (STAYS AT REAR Y <= y_saddle!)
         hull() {
-            translate([-foot_w/2, 0, h_rest]) cube([foot_w, 0.1, 0.1]);
-            translate([-foot_w/2, 6.5, h_rest]) cube([foot_w, 0.1, 0.1]);
+            translate([-foot_w_back/2, 0, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
+            translate([-foot_w_back/2, y_saddle, z_shelf_back]) cube([foot_w_back, 0.1, 0.1]);
             
             translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 5.5, h_saddle]) cylinder(r=shank_w/2, h=0.1);
+            translate([0, y_saddle, h_saddle]) cylinder(r=shank_w/2, h=0.1);
         }
         
-        // 5. Fluted Pilaster Column (Z = h_saddle = 14.0mm to h_tooth = 24.0mm)
+        // Layer 3: Fluted Pilaster Column (Z = h_saddle to h_tooth)
         hull() {
             translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 5.5, h_saddle]) cylinder(r=shank_w/2, h=0.1);
+            translate([0, y_saddle, h_saddle]) cylinder(r=shank_w/2, h=0.1);
             
             translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
             translate([0, 4.0, h_tooth]) cylinder(r=shank_w/2, h=0.1);
         }
         
-        // 6. Classical Pediment Finial Apex (Z = 24.0 to 26.5mm)
+        // Layer 4: Pediment Apex
         hull() {
             translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
             translate([0, 4.0, h_tooth]) cylinder(r=shank_w/2, h=0.1);
@@ -302,74 +281,57 @@ module single_hanging_tooth(style_type="faceted") {
         }
     } else {
         // Minimalist Satin Curve
-        // Feature 1: Outer tip rising prow (Z: 7mm -> 12mm) (+5mm retaining lip blocks horizontal slide)
-        // Feature 2: Outer tip lateral wings (Width: 15mm -> 17.6mm) (gap narrows to 7.4mm)
-        
-        // 1. Satin Rounded Plinth Base (Z = 0 to 2.0mm)
+        // Layer 0: Plinth
         hull() {
-            translate([-foot_w/2 + 2, 0, 0]) cylinder(r=2, h=0.1);
-            translate([ foot_w/2 - 2, 0, 0]) cylinder(r=2, h=0.1);
-            translate([-w_wing/2 + 2.5, tooth_d - 3, 0]) cylinder(r=2, h=0.1);
-            translate([ w_wing/2 - 2.5, tooth_d - 3, 0]) cylinder(r=2, h=0.1);
-            translate([0, tooth_d - 1, 0]) cylinder(r=1, h=0.1);
+            translate([-foot_w_back/2 + 2, 0, 0]) cylinder(r=2, h=0.1);
+            translate([ foot_w_back/2 - 2, 0, 0]) cylinder(r=2, h=0.1);
+            translate([-foot_w_front/2 + 2, tooth_d - 2, 0]) cylinder(r=2, h=0.1);
+            translate([ foot_w_front/2 - 2, tooth_d - 2, 0]) cylinder(r=2, h=0.1);
             
-            translate([-foot_w/2 + 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w/2 - 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([-w_wing/2 + 2.0, tooth_d - 2.5, 2.0]) cylinder(r=2, h=0.1);
-            translate([ w_wing/2 - 2.0, tooth_d - 2.5, 2.0]) cylinder(r=2, h=0.1);
-            translate([0, tooth_d, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_back/2 + 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([ foot_w_back/2 - 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_front/2 + 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([ foot_w_front/2 - 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
         }
         
-        // 2. Seating Pocket (Y = 0 to 6.5mm, Z = 2.0 to h_rest = 7.0mm)
+        // Layer 1: Angled Foot Shelf
         hull() {
-            translate([-foot_w/2 + 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w/2 - 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([-foot_w/2 + 1.5, 6.5, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w/2 - 1.5, 6.5, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_back/2 + 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([ foot_w_back/2 - 1.5, 0, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_back/2 + 1.5, y_saddle, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([ foot_w_back/2 - 1.5, y_saddle, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_front/2 + 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
+            translate([ foot_w_front/2 - 1.5, tooth_d - 2, 2.0]) cylinder(r=1.5, h=0.1);
             
-            translate([-foot_w/2 + 1.5, 0, h_rest]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w/2 - 1.5, 0, h_rest]) cylinder(r=1.5, h=0.1);
-            translate([-foot_w/2 + 1.5, 6.5, h_rest]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w/2 - 1.5, 6.5, h_rest]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_back/2 + 1.5, 0, z_shelf_back]) cylinder(r=1.5, h=0.1);
+            translate([ foot_w_back/2 - 1.5, 0, z_shelf_back]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_back/2 + 1.5, y_saddle, z_shelf_back]) cylinder(r=1.5, h=0.1);
+            translate([ foot_w_back/2 - 1.5, y_saddle, z_shelf_back]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_front/2 + 1.5, tooth_d - 2, z_shelf_front]) cylinder(r=1.5, h=0.1);
+            translate([ foot_w_front/2 - 1.5, tooth_d - 2, z_shelf_front]) cylinder(r=1.5, h=0.1);
         }
         
-        // 3. Curved Rising Retention Prow (Y = 6.5 to tooth_d = 16.0mm)
+        // Layer 2: Saddle (Y <= y_saddle)
         hull() {
-            translate([-foot_w/2 + 1.5, 6.5, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w/2 - 1.5, 6.5, 2.0]) cylinder(r=1.5, h=0.1);
-            translate([-w_wing/2 + 2.0, tooth_d - 2.5, 2.0]) cylinder(r=2, h=0.1);
-            translate([ w_wing/2 - 2.0, tooth_d - 2.5, 2.0]) cylinder(r=2, h=0.1);
-            translate([0, tooth_d, 2.0]) cylinder(r=1.5, h=0.1);
-            
-            translate([-foot_w/2 + 1.5, 6.5, h_rest]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w/2 - 1.5, 6.5, h_rest]) cylinder(r=1.5, h=0.1);
-            
-            translate([-w_wing/2 + 2.0, tooth_d - 2.5, h_prow]) cylinder(r=2, h=0.1);
-            translate([ w_wing/2 - 2.0, tooth_d - 2.5, h_prow]) cylinder(r=2, h=0.1);
-            translate([0, tooth_d, h_prow - 0.5]) cylinder(r=1.5, h=0.1);
-        }
-        
-        // 4. Smooth Saddle Ramp (Z = h_rest to h_saddle = 14.0mm)
-        hull() {
-            translate([-foot_w/2 + 1.5, 0, h_rest]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w/2 - 1.5, 0, h_rest]) cylinder(r=1.5, h=0.1);
-            translate([-foot_w/2 + 1.5, 6.5, h_rest]) cylinder(r=1.5, h=0.1);
-            translate([ foot_w/2 - 1.5, 6.5, h_rest]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_back/2 + 1.5, 0, z_shelf_back]) cylinder(r=1.5, h=0.1);
+            translate([ foot_w_back/2 - 1.5, 0, z_shelf_back]) cylinder(r=1.5, h=0.1);
+            translate([-foot_w_back/2 + 1.5, y_saddle, z_shelf_back]) cylinder(r=1.5, h=0.1);
+            translate([ foot_w_back/2 - 1.5, y_saddle, z_shelf_back]) cylinder(r=1.5, h=0.1);
             
             translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 5.0, h_saddle]) cylinder(r=shank_w/2, h=0.1);
+            translate([0, y_saddle, h_saddle]) cylinder(r=shank_w/2, h=0.1);
         }
         
-        // 5. Satin Rounded Column (Z = h_saddle to h_tooth = 24.0mm)
+        // Layer 3: Column
         hull() {
             translate([-shank_w/2, 0, h_saddle]) cube([shank_w, 0.1, 0.1]);
-            translate([0, 5.0, h_saddle]) cylinder(r=shank_w/2, h=0.1);
+            translate([0, y_saddle, h_saddle]) cylinder(r=shank_w/2, h=0.1);
             
             translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
             translate([0, 3.5, h_tooth]) cylinder(r=shank_w/2, h=0.1);
         }
         
-        // 6. Satin Dome Finial Apex (Z = 24.0 to 26.5mm)
+        // Layer 4: Apex
         hull() {
             translate([-shank_w/2, 0, h_tooth]) cube([shank_w, 0.1, 0.1]);
             translate([0, 3.5, h_tooth]) cylinder(r=shank_w/2, h=0.1);
