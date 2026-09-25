@@ -228,7 +228,7 @@ module arch_backplate_frame_trim() {
 // =============================================================================
 // 3. FRONT-WALL TOOTHBRUSH HANGING TEETH & SCULPTED 3D ANIMAL FACES
 // =============================================================================
-animals_list = ["cat", "bear", "bunny", "panda", "puppy", "fox", "koala"];
+animals_list = ["cat", "bear", "bunny", "panda", "puppy", "pig", "koala"];
 
 // Conformal Whisker Helper for Cat (Surface relief tightly hugging the spherical cheek)
 // 100% printable without overhangs; zero cantilever floating geometry
@@ -312,6 +312,46 @@ module supportfree_muzzle(z, rx=2.2, ry=1.4, rz=1.6, relief=0.8) {
     }
 }
 
+// Pig Snout in C3 (Pink) - Conformal oval snout with self-supporting draft
+module pig_snout_c3(z=4.8, rx=2.3, rz=1.5, relief=0.85) {
+    y_s = tooth_surf_y(0, z);
+    hull() {
+        translate([0, y_s + relief, z])
+            scale([rx, 0.6, rz]) sphere(r=1.0, $fn=24);
+        translate([0, y_s - 0.8, z])
+            scale([rx*1.1, 0.8, rz*1.1]) sphere(r=1.0, $fn=24);
+        translate([0, y_s - 0.2, z - rz*1.2])
+            scale([rx*0.7, 0.4, 0.5]) sphere(r=1.0, $fn=16);
+    }
+}
+
+// Pig Nostril in C2 (Black) - Sits on front face of snout
+module pig_nostril_c2(x, z, rx=0.42, rz=0.7) {
+    y_s = tooth_surf_y(0, z) + 0.85;
+    hull() {
+        translate([x, y_s + 0.2, z])
+            scale([rx, 0.4, rz]) sphere(r=1.0, $fn=16);
+        translate([x, y_s - 0.6, z])
+            scale([rx, 0.6, rz]) sphere(r=1.0, $fn=16);
+        translate([x, y_s - 0.1, z - rz*0.8])
+            scale([rx*0.6, 0.3, rz*0.4]) sphere(r=1.0, $fn=16);
+    }
+}
+
+// Pig Folded Triangular Ears in C3 (Pink)
+module pig_ears_c3() {
+    y_center = tooth_d - foot_w_front / 2;
+    for (s = [-1, 1]) {
+        hull() {
+            translate([s * 3.6, y_center + 0.6, 9.4]) scale([1.2, 0.8, 1.0]) sphere(r=1.4, $fn=16);
+            translate([s * 5.6, y_center + 0.4, 8.4]) scale([1.2, 0.8, 1.0]) sphere(r=1.3, $fn=16);
+            translate([s * 4.8, y_center + 1.2, 10.8]) scale([1.0, 0.7, 0.8]) sphere(r=1.1, $fn=16);
+            translate([s * 4.4, y_center + 1.9, 9.2]) scale([1.0, 0.7, 0.7]) sphere(r=1.0, $fn=16);
+            translate([s * 4.2, y_center + 0.6, 7.8]) sphere(r=1.1, $fn=16);
+        }
+    }
+}
+
 // Color 2: Black Accents (Eyes, Noses, Panda ears, Cat Whiskers)
 module animal_features_c2(animal) {
     y_center = tooth_d - foot_w_front / 2; // 7.25mm
@@ -338,6 +378,10 @@ module animal_features_c2(animal) {
     } else if (animal == "puppy") {
         supportfree_nose(5.6, rx=1.2, ry=0.8, rz=0.8, relief=0.55);
         for (s = [-1, 1]) supportfree_eye(s * 3.4, 7.4, 0.9);
+    } else if (animal == "pig") {
+        for (s = [-1, 1]) supportfree_eye(s * 3.2, 7.2, 0.85);
+        pig_nostril_c2(-1.0, 4.8);
+        pig_nostril_c2( 1.0, 4.8);
     } else if (animal == "fox") {
         supportfree_nose(5.2, rx=0.85, ry=0.7, rz=0.7, relief=0.45);
         for (s = [-1, 1]) supportfree_eye(s * 3.5, 7.2, 0.9, tilt=s * 25, scale_xy=[1.3, 0.8]);
@@ -387,6 +431,13 @@ module animal_features_c3(animal) {
             }
         }
         supportfree_muzzle(4.6, 2.3, 1.3, 1.5, relief=0.75);
+    } else if (animal == "pig") {
+        pig_ears_c3();
+        pig_snout_c3();
+        for (s = [-1, 1]) {
+            translate([s * 4.6, tooth_surf_y(s * 4.6, 4.6) + 0.1, 4.6])
+                scale([1.1, 0.3, 0.8]) sphere(r=1.0, $fn=16);
+        }
     } else if (animal == "fox") {
         for (s = [-1, 1]) {
             hull() {
