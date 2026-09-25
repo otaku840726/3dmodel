@@ -1,17 +1,18 @@
 // =============================================================================
 // LUXURY WALL-MOUNTED TOOTHBRUSH, TOOTHPASTE & CLEANSER ORGANIZER
-// 奢華壁掛前壁一體式洗面乳牙刷牙膏置物架 (裝飾藝術水晶切面 / 羅馬殿堂旗艦版)
+// 奢華壁掛前壁一體式洗面乳牙刷牙膏置物架 (羅馬殿堂長虹柱 × 7 大萌寵 4 色旗艦版)
 // Precision reverse-engineered from 621-01.stp with Front-Wall Integrated Colonnade
 // =============================================================================
 
 $fn = 40;
 
 // Configuration Parameters
-edition     = "grand";          // "grand" (2 Facial Cleansers + 2 Toothpastes + 6 Toothbrushes)
-style       = "fluted";         // Primary & Canonical Edition: "fluted" (Palazzo Fluting + Diamond Wall + 7 Animal Faces)
-tooth_style = "animals";        // "animals" (7 sculpted 3D animal faces: 🐱 Cat, 🐻 Bear, 🐰 Bunny, 🐼 Panda, 🐶 Puppy, 🦊 Fox, 🐨 Koala), "plain"
-wall_style  = "diamond_fluted"; // "diamond_fluted" (Organic irregular diamond crystalline facet relief + flank fluting)
-mode        = "holder";         // "holder", "plate", "bracket", "standalone_toothbrush", "assembled"
+edition      = "grand";          // "grand" (2 Facial Cleansers + 2 Toothpastes + 6 Toothbrushes)
+style        = "fluted";         // Primary & Canonical Edition: "fluted" (Palazzo Fluting + 7 Animal Faces)
+tooth_style  = "animals";        // "animals" (7 sculpted 3D animal faces: 🐱 Cat, 🐻 Bear, 🐰 Bunny, 🐼 Panda, 🐶 Puppy, 🦊 Fox, 🐨 Koala), "plain"
+wall_style   = "fluted";         // "fluted" (Classical Roman Fluting + Horizontal Beltline, Diamonds Removed)
+mode         = "holder";         // "holder", "plate", "bracket", "standalone_toothbrush", "assembled", "holder_monochrome"
+color_export = 0;                // 0: Full Colored Object, 1: Color 1 (Body), 2: Color 2 (Black), 3: Color 3 (Warm Pink), 4: Color 4 (Gold Trim)
 
 // Master Dimensions
 w_total     = 204.0;
@@ -35,7 +36,7 @@ z_shelf_front = 11.0; // forward-and-upward retention slope (越往外越厚: 5.
 h_foot        = z_shelf_front; // backward compatibility
 h_tooth       = z_shelf_front; // backward compatibility
 h_apex        = 11.7; // subtle finial apex
-tooth_top_style = "arched"; // "arched" (全新圓弧拱頂，零積水自導正 - 用戶建議) 或 "flat" (純平直切面)
+tooth_top_style = "arched"; // "arched" (全新圓弧拱頂，零積水自導正 - 用戶建議)
 r_crown         = 18.0;     // 圓弧拱頂半徑 (mm)
 
 // Dovetail Bracket Parameters
@@ -47,9 +48,16 @@ dove_w_top = 26.0;
 dove_w_bot = 22.0;
 dove_angle = 12.0;
 
-// Colors
-rose_gold_base  = [0.88, 0.58, 0.52];
-accent_brass    = [0.82, 0.65, 0.35];
+// =============================================================================
+// 4-COLOR MULTI-MATERIAL PALETTE (4 色多色 3D 列印 / AMS 最佳化配色)
+// =============================================================================
+c1_body  = [0.96, 0.95, 0.93]; // [Filament 1] 珠光暖象牙白 (主體結構、收納艙外壁、水滴托爪基座)
+c2_black = [0.14, 0.14, 0.16]; // [Filament 2] 曜石碳素黑 (萌寵靈動眼睛、鼻子、熊貓圓耳與眼圈、貓咪鬍鬚)
+c3_warm  = [0.94, 0.65, 0.58]; // [Filament 3] 蜜桃珊瑚粉 / 玫瑰金 (小兔長耳、小狗垂耳、小熊吻部、小狐耳朵、無尾熊蓬鬆耳)
+c4_gold  = [0.82, 0.65, 0.35]; // [Filament 4] 典雅香檳金 / 輕奢黃銅 (羅馬長虹柱凹槽飾條、水平腰線、背板邊框飾條、快拆背板)
+
+rose_gold_base  = c1_body;
+accent_brass    = c4_gold;
 wall_tile_color = [0.93, 0.94, 0.95];
 
 
@@ -59,14 +67,12 @@ wall_tile_color = [0.93, 0.94, 0.95];
 module wall_bracket() {
     difference() {
         union() {
-            // Flat mounting base plate
             hull() {
                 translate([-bracket_w/2+4, 4, 0]) cylinder(r=4, h=bracket_th);
                 translate([ bracket_w/2-4, 4, 0]) cylinder(r=4, h=bracket_th);
                 translate([-bracket_w/2+4, bracket_h-4, 0]) cylinder(r=4, h=bracket_th);
                 translate([ bracket_w/2-4, bracket_h-4, 0]) cylinder(r=4, h=bracket_th);
             }
-            // Male dovetail wedge
             translate([0, bracket_h, bracket_th])
                 rotate([90, 0, 0])
                     linear_extrude(height=bracket_h, scale=[dove_w_bot/dove_w_top, 1.0])
@@ -78,7 +84,6 @@ module wall_bracket() {
                         ]);
         }
         
-        // Countersunk screw holes
         for (y_screw = [7.5, 25.5]) {
             translate([0, y_screw, -1.0]) {
                 cylinder(d=4.2, h=bracket_th + dove_th + 3.0);
@@ -126,89 +131,104 @@ module female_dovetail_cavity() {
 // =============================================================================
 // 2. ARCHITECTURAL TABLET BACKPLATE
 // =============================================================================
-module arch_backplate() {
+module arch_backplate_solid() {
     w = w_total;
     th_back = d_wall;
     r = 10.0;
     
-    difference() {
-        translate([0, th_back, 0])
-            rotate([90, 0, 0])
-                linear_extrude(height = th_back) {
+    translate([0, th_back, 0])
+        rotate([90, 0, 0])
+            linear_extrude(height = th_back) {
+                hull() {
+                    translate([-w/2 + r, r]) circle(r=r);
+                    translate([ w/2 - r, r]) circle(r=r);
+                    translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);
+                    translate([ w/2 - r - 3.0, h_total - r]) circle(r=r - 3.0);
+                }
+            }
+}
+
+// Classical Molding Frame Trim (Color 4: Champagne Gold)
+module arch_backplate_frame_trim() {
+    w = w_total;
+    th_back = d_wall;
+    r = 10.0;
+    
+    translate([0, th_back + 0.1, 0])
+        rotate([90, 0, 0])
+            difference() {
+                linear_extrude(height = 1.2)
                     hull() {
                         translate([-w/2 + r, r]) circle(r=r);
                         translate([ w/2 - r, r]) circle(r=r);
                         translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);
                         translate([ w/2 - r - 3.0, h_total - r]) circle(r=r - 3.0);
                     }
-                }
-                
-        // Classical framed molding relief on front face
-        translate([0, th_back, 0])
-            rotate([90, 0, 0])
-                difference() {
-                    linear_extrude(height = 1.8)
+                translate([0, 0, -1.0])
+                    linear_extrude(height = 4.0)
                         hull() {
-                            translate([-w/2 + r, r]) circle(r=r + 1.0);
-                            translate([ w/2 - r, r]) circle(r=r + 1.0);
-                            translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 2.0);
-                            translate([ w/2 - r - 3.0, h_total - r]) circle(r=r - 2.0);
+                            translate([-w/2 + r + 4.0, r + 4.0]) circle(r=r - 3.0);
+                            translate([ w/2 - r - 4.0, r + 4.0]) circle(r=r - 3.0);
+                            translate([-w/2 + r + 6.0, h_total - r - 4.0]) circle(r=r - 5.0);
+                            translate([ w/2 - r - 6.0, h_total - r - 4.0]) circle(r=r - 5.0);
                         }
-                    translate([0, 0, -1.0])
-                        linear_extrude(height = 4.0)
-                            hull() {
-                                translate([-w/2 + r + 4.0, r + 4.0]) circle(r=r - 3.0);
-                                translate([ w/2 - r - 4.0, r + 4.0]) circle(r=r - 3.0);
-                                translate([-w/2 + r + 6.0, h_total - r - 4.0]) circle(r=r - 5.0);
-                                translate([ w/2 - r - 6.0, h_total - r - 4.0]) circle(r=r - 5.0);
-                            }
-                }
-    }
+            }
 }
 
 
 // =============================================================================
 // 3. FRONT-WALL TOOTHBRUSH HANGING TEETH & SCULPTED 3D ANIMAL FACES
 // =============================================================================
-// Organic Pseudo-random hash function for crystalline facet distribution
-function phash(a, b, seed=1) =
-    let (v = sin(a * 127.1 + b * 311.7 + seed * 113.5) * 43758.5453)
-    v - floor(v);
-
-// 7 Adorable 3D Animal Face Sculptures integrated seamlessly into the waterdrop prongs:
-// Tooth 0 (X = -75): 🐱 Cat   (`cat`)
-// Tooth 1 (X = -50): 🐻 Bear  (`bear`)
-// Tooth 2 (X = -25): 🐰 Bunny (`bunny`)
-// Tooth 3 (X =   0): 🐼 Panda (`panda`)
-// Tooth 4 (X = +25): 🐶 Puppy (`puppy`)
-// Tooth 5 (X = +50): 🦊 Fox   (`fox`)
-// Tooth 6 (X = +75): 🐨 Koala (`koala`)
 animals_list = ["cat", "bear", "bunny", "panda", "puppy", "fox", "koala"];
 
-module animal_features(animal) {
+// Color 2: Black Accents (Eyes, Noses, Panda ears, Cat Whiskers)
+module animal_features_c2(animal) {
     y_center = tooth_d - foot_w_front / 2; // 7.25mm
     
     if (animal == "bear") {
-        for (s = [-1, 1]) {
-            translate([s * 5.2, y_center + 1.2, 10.2]) scale([1.0, 0.8, 1.0]) sphere(r=2.2);
-        }
-        translate([0, y_center + 6.8, 4.8]) scale([1.2, 0.8, 0.9]) sphere(r=2.5);
-        translate([0, y_center + 8.5, 5.6]) sphere(r=1.0);
-        for (s = [-1, 1]) translate([s * 3.4, y_center + 6.6, 7.5]) sphere(r=0.85);
+        translate([0, y_center + 8.5, 5.6]) sphere(r=1.0); // nose
+        for (s = [-1, 1]) translate([s * 3.4, y_center + 6.6, 7.5]) sphere(r=0.85); // eyes
     } else if (animal == "cat") {
-        for (s = [-1, 1]) {
-            hull() {
-                translate([s * 4.5, y_center + 0.8, 9.2]) sphere(r=1.6);
-                translate([s * 5.8, y_center + 1.2, 13.0]) sphere(r=0.8);
-            }
-        }
-        translate([0, y_center + 8.2, 5.2]) scale([1.2, 0.7, 0.9]) sphere(r=0.9);
+        translate([0, y_center + 8.2, 5.2]) scale([1.2, 0.7, 0.9]) sphere(r=0.9); // nose
         for (s = [-1, 1]) translate([s * 3.5, y_center + 6.8, 7.2]) rotate([0, s * 15, 0]) scale([1.2, 0.8, 0.9]) sphere(r=0.95);
         for (s = [-1, 1]) {
             for (w = [-1, 1]) {
                 translate([s * 5.0, y_center + 7.2, 4.8 + w * 1.2])
                     rotate([0, 90, s * (25 + w * 8)])
-                        cylinder(r=0.4, h=2.8, center=true);
+                        cylinder(r=0.45, h=3.0, center=true);
+            }
+        }
+    } else if (animal == "bunny") {
+        translate([0, y_center + 8.2, 5.0]) sphere(r=0.9); // nose
+        for (s = [-1, 1]) translate([s * 3.2, y_center + 6.8, 7.2]) sphere(r=0.9); // eyes
+    } else if (animal == "panda") {
+        for (s = [-1, 1]) translate([s * 5.8, y_center + 1.0, 10.0]) sphere(r=2.1); // round ears
+        for (s = [-1, 1]) translate([s * 3.5, y_center + 6.6, 7.2]) rotate([0, s * -25, 0]) scale([1.3, 0.8, 1.0]) sphere(r=1.4); // eyes
+        translate([0, y_center + 8.6, 5.4]) sphere(r=1.05); // nose
+    } else if (animal == "puppy") {
+        translate([0, y_center + 8.6, 5.6]) scale([1.2, 0.8, 0.9]) sphere(r=1.2); // nose
+        for (s = [-1, 1]) translate([s * 3.4, y_center + 6.8, 7.4]) sphere(r=0.95); // eyes
+    } else if (animal == "fox") {
+        translate([0, y_center + 9.2, 5.2]) sphere(r=0.85); // nose tip
+        for (s = [-1, 1]) translate([s * 3.5, y_center + 6.8, 7.2]) rotate([0, s * 25, 0]) scale([1.3, 0.7, 0.8]) sphere(r=0.95); // eyes
+    } else if (animal == "koala") {
+        translate([0, y_center + 8.2, 5.4]) scale([0.9, 0.8, 1.4]) sphere(r=1.8); // big oval nose
+        for (s = [-1, 1]) translate([s * 3.4, y_center + 6.6, 7.4]) sphere(r=0.85); // eyes
+    }
+}
+
+// Color 3: Warm Peach / Pink Accents (Ears, Muzzles, Cheeks)
+module animal_features_c3(animal) {
+    y_center = tooth_d - foot_w_front / 2; // 7.25mm
+    
+    if (animal == "bear") {
+        for (s = [-1, 1]) translate([s * 5.2, y_center + 1.2, 10.2]) scale([1.0, 0.8, 1.0]) sphere(r=2.2); // ears
+        translate([0, y_center + 6.8, 4.8]) scale([1.2, 0.8, 0.9]) sphere(r=2.5); // muzzle
+    } else if (animal == "cat") {
+        for (s = [-1, 1]) {
+            hull() {
+                translate([s * 4.5, y_center + 0.8, 9.2]) sphere(r=1.6);
+                translate([s * 5.8, y_center + 1.2, 13.0]) sphere(r=0.8);
             }
         }
     } else if (animal == "bunny") {
@@ -218,59 +238,37 @@ module animal_features(animal) {
                 translate([s * 4.2, y_center + 0.2, 14.5]) sphere(r=1.2);
             }
         }
-        translate([0, y_center + 8.2, 5.0]) sphere(r=0.9);
-        for (s = [-1, 1]) {
-            translate([s * 1.5, y_center + 7.4, 4.4]) sphere(r=1.5);
-            translate([s * 3.2, y_center + 6.8, 7.2]) sphere(r=0.9);
-        }
+        for (s = [-1, 1]) translate([s * 1.5, y_center + 7.4, 4.4]) sphere(r=1.5); // cheeks
     } else if (animal == "panda") {
-        for (s = [-1, 1]) {
-            translate([s * 5.8, y_center + 1.0, 10.0]) sphere(r=2.1);
-            translate([s * 3.5, y_center + 6.6, 7.2]) rotate([0, s * -25, 0]) scale([1.3, 0.8, 1.0]) sphere(r=1.4);
-        }
-        translate([0, y_center + 7.2, 4.6]) scale([1.1, 0.8, 0.9]) sphere(r=2.3);
-        translate([0, y_center + 8.6, 5.4]) sphere(r=1.05);
+        translate([0, y_center + 7.2, 4.6]) scale([1.1, 0.8, 0.9]) sphere(r=2.3); // snout
     } else if (animal == "puppy") {
         for (s = [-1, 1]) {
             hull() {
                 translate([s * 6.0, y_center + 1.5, 9.5]) sphere(r=1.8);
                 translate([s * 7.2, y_center + 4.2, 6.2]) sphere(r=2.0);
             }
-            translate([s * 3.4, y_center + 6.8, 7.4]) sphere(r=0.95);
         }
-        translate([0, y_center + 7.0, 4.6]) scale([1.3, 0.8, 1.0]) sphere(r=2.5);
-        translate([0, y_center + 8.6, 5.6]) scale([1.2, 0.8, 0.9]) sphere(r=1.2);
+        translate([0, y_center + 7.0, 4.6]) scale([1.3, 0.8, 1.0]) sphere(r=2.5); // muzzle
     } else if (animal == "fox") {
         for (s = [-1, 1]) {
             hull() {
                 translate([s * 4.8, y_center + 0.8, 9.2]) sphere(r=1.6);
                 translate([s * 6.5, y_center + 0.8, 13.5]) sphere(r=0.8);
             }
-            translate([s * 3.5, y_center + 6.8, 7.2]) rotate([0, s * 25, 0]) scale([1.3, 0.7, 0.8]) sphere(r=0.95);
         }
-        translate([0, y_center + 7.6, 4.8]) scale([1.0, 1.1, 0.9]) sphere(r=2.0);
-        translate([0, y_center + 9.2, 5.2]) sphere(r=0.85);
+        translate([0, y_center + 7.6, 4.8]) scale([1.0, 1.1, 0.9]) sphere(r=2.0); // snout
     } else if (animal == "koala") {
-        for (s = [-1, 1]) {
-            translate([s * 6.4, y_center + 1.2, 9.5]) scale([1.1, 0.8, 1.1]) sphere(r=2.8);
-            translate([s * 3.4, y_center + 6.6, 7.4]) sphere(r=0.85);
-        }
-        translate([0, y_center + 8.2, 5.4]) scale([0.9, 0.8, 1.4]) sphere(r=1.8);
+        for (s = [-1, 1]) translate([s * 6.4, y_center + 1.2, 9.5]) scale([1.1, 0.8, 1.1]) sphere(r=2.8); // ears
     }
 }
 
+// Complete animal features (all colors unioned for single-color print)
+module animal_features(animal) {
+    animal_features_c2(animal);
+    animal_features_c3(animal);
+}
+
 module single_hanging_tooth(style_type="fluted", animal_idx=-1) {
-    // 圓滑 3D 有機水滴托爪 (Pure 3D Organic Teardrop / Waterdrop Teeth)
-    // 100% 滿足用戶明確要求：「前端改為一個圓弧，整體類似水滴狀，越往外越厚」
-    // 1. 整體為完美雙圓心 3D 水滴造型：
-    //    - 後方根部 (直徑 14.5mm, 高度 5.5mm): 兩齒間隔 10.5mm，牙刷懸掛安放寬敞順手
-    //    - 前方圓弧 (直徑 17.5mm, 高度 11.0mm): 越往外越厚 (5.5mm -> 11.0mm)，間隔收窄至 7.5mm 防脫出
-    // 2. 前端 100% 圓弧：
-    //    - 俯視為 R=8.75mm 圓滑水滴凸弧，側視為 3D 凸半橢球穹頂，從頂部圓滑過渡至底部
-    //    - 零平截斷崖、零生硬稜角、零積水凹陷
-    // 3. 熱床附著：底部平整貼床 (Z=0)，免支撐、高強度
-    // 4. 精緻 3D 動物雕刻面容 (當 tooth_style == "animals" 時自動無縫融合)
-    
     r1 = foot_w_back / 2;  // 7.25mm
     r2 = foot_w_front / 2; // 8.75mm
     y1 = 0.0;
@@ -281,27 +279,13 @@ module single_hanging_tooth(style_type="fluted", animal_idx=-1) {
     union() {
         difference() {
             hull() {
-                // 後方半橢球實體 (貼近前壁處，平順過渡)
-                translate([0, y1, 0])
-                    scale([1.0, 1.0, h1/r1])
-                        sphere(r=r1);
-                        
-                // 前方半橢球水滴頭 (前端純圓弧，全 3D 凸面，越往外越厚)
-                translate([0, y2, 0])
-                    scale([1.0, 1.0, h2/r2])
-                        sphere(r=r2);
+                translate([0, y1, 0]) scale([1.0, 1.0, h1/r1]) sphere(r=r1);
+                translate([0, y2, 0]) scale([1.0, 1.0, h2/r2]) sphere(r=r2);
             }
-            
-            // 確保熱床貼合面 Z=0 絕對平整
-            translate([0, 0, -10.0])
-                cube([100.0, 100.0, 20.0], center=true);
-                
-            // 確保後方不突出壁面 (Y < -3.0mm 切除，確保壁掛背部 100% 絕對平整)
-            translate([0, -53.0, 0])
-                cube([100.0, 100.0, 100.0], center=true);
+            translate([0, 0, -10.0]) cube([100.0, 100.0, 20.0], center=true);
+            translate([0, -53.0, 0]) cube([100.0, 100.0, 100.0], center=true);
         }
         
-        // 疊加可愛 3D 動物五官雕刻
         if (tooth_style == "animals" && animal_idx >= 0) {
             animal = animals_list[animal_idx % 7];
             animal_features(animal);
@@ -309,7 +293,28 @@ module single_hanging_tooth(style_type="fluted", animal_idx=-1) {
     }
 }
 
-// 7 Teeth Array across front wall
+// 7 Animals Arrays for Multi-Color Export
+module front_animals_c2() {
+    translate([0, y_front, 0]) {
+        for (i = [-3 : 3]) {
+            x_pos = i * tb_pitch;
+            animal = animals_list[i + 3];
+            translate([x_pos, 0, 0]) animal_features_c2(animal);
+        }
+    }
+}
+
+module front_animals_c3() {
+    translate([0, y_front, 0]) {
+        for (i = [-3 : 3]) {
+            x_pos = i * tb_pitch;
+            animal = animals_list[i + 3];
+            translate([x_pos, 0, 0]) animal_features_c3(animal);
+        }
+    }
+}
+
+// 7 Teeth Array across front wall (Full Unified)
 module front_hanging_teeth_array(style_type="fluted") {
     translate([0, y_front, 0]) {
         for (i = [-3 : 3]) {
@@ -322,23 +327,20 @@ module front_hanging_teeth_array(style_type="fluted") {
 
 
 // =============================================================================
-// 4. STORAGE GALLERY SOLID (外觀實體)
+// 4. STORAGE GALLERY SOLID & CLASSICAL ARCHITECTURAL FLUTING
 // =============================================================================
 module squircle_body(w, d, r, h, ch=3.0) {
     hull() {
-        // Bottom at Z=0
         translate([-w/2 + r, d_wall + r, 0]) cylinder(r=r, h=0.1);
         translate([ w/2 - r, d_wall + r, 0]) cylinder(r=r, h=0.1);
         translate([-w/2 + r, d_wall + d - r, 0]) cylinder(r=r, h=0.1);
         translate([ w/2 - r, d_wall + d - r, 0]) cylinder(r=r, h=0.1);
         
-        // Shoulder at Z = h - ch
         translate([-w/2 + r, d_wall + r, h - ch]) cylinder(r=r, h=0.1);
         translate([ w/2 - r, d_wall + r, h - ch]) cylinder(r=r, h=0.1);
         translate([-w/2 + r, d_wall + d - r, h - ch]) cylinder(r=r, h=0.1);
         translate([ w/2 - r, d_wall + d - r, h - ch]) cylinder(r=r, h=0.1);
         
-        // Top Crest at Z = h (45° waterfall perimeter chamfer)
         translate([-w/2 + r, d_wall + r, h]) cylinder(r=r - ch, h=0.1);
         translate([ w/2 - r, d_wall + r, h]) cylinder(r=r - ch, h=0.1);
         translate([-w/2 + r, d_wall + d - r, h]) cylinder(r=r - ch, h=0.1);
@@ -346,37 +348,21 @@ module squircle_body(w, d, r, h, ch=3.0) {
     }
 }
 
-// Framed Diamond Crystalline Facet Panel (Front Wall Exterior Z=13~38mm)
-module diamond_crystalline_facade_panel() {
-    pitch_x = 9.0;
-    pitch_z = 7.0;
-    nx = floor(74.0 / pitch_x);
-    
-    // Embed 0.3mm into front wall at Y = y_front - 0.3 to ensure seamless manifold
-    translate([0, y_front - 0.3, 0]) {
-        for (ix = [-nx : nx]) {
-            for (iz = [0 : 3]) {
-                z_pos = 14.5 + iz * pitch_z;
-                jx = (phash(ix, iz, 101) - 0.5) * pitch_x * 0.5;
-                jz = (phash(iz, ix, 102) - 0.5) * pitch_z * 0.5;
-                fn_c = (phash(ix, iz, 103) < 0.35) ? 3 : 4;
-                base_r = 5.8 + phash(ix, iz, 104) * 2.2;
-                pyr_h = 1.3 + phash(ix, iz, 105) * 0.9;
-                rot = phash(ix, iz, 106) * 360;
-                
-                x_pos = ix * pitch_x + jx;
-                if (abs(x_pos) <= 72.0) {
-                    translate([x_pos, 0, z_pos + jz])
-                        rotate([-90, 0, rot])
-                            cylinder(r1=base_r, r2=0, h=pyr_h + 0.3, $fn=fn_c);
-                }
-            }
+// Classical Architectural Fluting & Champagne Gold Trim (Color 4)
+module architectural_trim_c4() {
+    // 1. Horizontal Beltline at Z=28mm (Across flat front facade)
+    translate([0, y_front + 0.1, 28.0])
+        cube([152.0, 1.2, 1.4], center=true);
+        
+    // 2. Classical Vertical Fluting on front wall
+    for (fx = [-w_pod/2 + 22 : 6.0 : w_pod/2 - 22]) {
+        hull() {
+            translate([fx, y_front + 0.1, 12.0]) rotate([-90, 0, 0]) cylinder(d=2.2, h=1.0);
+            translate([fx, y_front + 0.1, 25.0]) rotate([-90, 0, 0]) cylinder(d=2.2, h=1.0);
         }
     }
-}
-
-// Architectural Vertical Fluting on Rounded Flanks (Left & Right wraps)
-module side_fluting_flanks() {
+    
+    // 3. Side flank flutes on curved corners
     for (s = [-1, 1]) {
         for (ang = [15 : 20 : 75]) {
             cx = s * (w_pod/2 - 16.0);
@@ -386,23 +372,12 @@ module side_fluting_flanks() {
             translate([px, py, 26.0])
                 rotate([0, 0, s * (90 - ang)])
                     rotate([-90, 0, 0])
-                        cylinder(d=2.6, h=1.4, center=true);
+                        cylinder(d=2.4, h=1.0, center=true);
         }
     }
-}
-
-module storage_gallery_solid(style_type="fluted") {
-    w = w_pod;
-    d = d_pod;
-    h = h_pod;
     
-    squircle_body(w, d, 16.0, h, 3.0);
-    front_hanging_teeth_array(style_type);
-    
-    // Artistic Diamond Crystalline Faceted Facade
-    if (wall_style == "diamond_fluted" || style_type == "fluted") {
-        diamond_crystalline_facade_panel();
-    }
+    // 4. Backplate Molding Frame
+    arch_backplate_frame_trim();
 }
 
 
@@ -424,31 +399,20 @@ module rear_storage_cavities_and_drains() {
     h = h_pod;               // 44.0mm
     
     // 1. Cleanser Chambers (X = -66, +66) - Compatible with Ø44mm Thick Caps
-    if (edition == "grand") {
-        for (side = [-1, 1]) {
-            cx = side * 66.0;
-            translate([cx, y_cav, 0]) {
-                // Squircle Cavity 46 x 44 mm
-                translate([0, 0, z_floor])
-                    squircle_cavity(46.0, 44.0, 12.0, h_total);
-                    
-                // Top Lead-in chamfer
-                translate([0, 0, h - 2.5])
-                    cylinder(r1=44.0/2 - 2.0, r2=44.0/2 + 2.0, h=3.0);
-                    
-                // 45° Conical drainage funnel (from Z=9 down to Z=5)
-                translate([0, 0, z_floor - 4.0])
-                    cylinder(r1=7.0, r2=12.0, h=4.01);
-                    
-                // Ø14.0mm Vertical Through-Drain Hole to open air below!
-                translate([0, 0, -5.0])
-                    cylinder(d=14.0, h=z_floor + 2.0);
-                    
-                // Cross-ventilation grooves (4mm wide x 2mm deep)
-                translate([0, 0, z_floor]) {
-                    cube([46.0, 4.0, 2.0], center=true);
-                    cube([4.0, 44.0, 2.0], center=true);
-                }
+    for (side = [-1, 1]) {
+        cx = side * 66.0;
+        translate([cx, y_cav, 0]) {
+            translate([0, 0, z_floor])
+                squircle_cavity(46.0, 44.0, 12.0, h_total);
+            translate([0, 0, h - 2.5])
+                cylinder(r1=44.0/2 - 2.0, r2=44.0/2 + 2.0, h=3.0);
+            translate([0, 0, z_floor - 4.0])
+                cylinder(r1=7.0, r2=12.0, h=4.01);
+            translate([0, 0, -5.0])
+                cylinder(d=14.0, h=z_floor + 2.0);
+            translate([0, 0, z_floor]) {
+                cube([46.0, 4.0, 2.0], center=true);
+                cube([4.0, 44.0, 2.0], center=true);
             }
         }
     }
@@ -457,23 +421,14 @@ module rear_storage_cavities_and_drains() {
     for (side = [-1, 1]) {
         cx = side * 22.0;
         translate([cx, y_cav, 0]) {
-            // Squircle Cavity 36 x 38 mm
             translate([0, 0, z_floor])
                 squircle_cavity(36.0, 38.0, 10.0, h_total);
-                
-            // Top Lead-in chamfer
             translate([0, 0, h - 2.5])
                 cylinder(r1=36.0/2 - 2.0, r2=36.0/2 + 2.0, h=3.0);
-                
-            // 45° Conical drainage funnel (from Z=9 down to Z=5)
             translate([0, 0, z_floor - 4.0])
                 cylinder(r1=6.0, r2=10.0, h=4.01);
-                
-            // Ø12.0mm Vertical Through-Drain Hole to open air below!
             translate([0, 0, -5.0])
                 cylinder(d=12.0, h=z_floor + 2.0);
-                
-            // Cross-ventilation grooves (4mm wide x 2mm deep)
             translate([0, 0, z_floor]) {
                 cube([36.0, 4.0, 2.0], center=true);
                 cube([4.0, 38.0, 2.0], center=true);
@@ -484,33 +439,67 @@ module rear_storage_cavities_and_drains() {
 
 
 // =============================================================================
-// 6. MASTER INTEGRATED ORGANIZER (二合一旗艦主體)
+// 6. MULTI-COLOR DISCRETE SOLIDS & FULL INTEGRATED MASTER HOLDER
 // =============================================================================
-module luxury_holder(style_type="fluted") {
+
+// Solid 1: Pearl Warm White Base Body (Main Structure + Wells + Teeth Bases)
+module luxury_holder_c1() {
     difference() {
         union() {
-            arch_backplate();
-            storage_gallery_solid(style_type);
+            arch_backplate_solid();
+            squircle_body(w_pod, d_pod, 16.0, h_pod, 3.0);
+            translate([0, y_front, 0]) {
+                for (i = [-3 : 3]) {
+                    translate([i * tb_pitch, 0, 0])
+                        single_hanging_tooth("fluted", -1);
+                }
+            }
         }
         
-        // Architectural Horizontal Accent Shadow Beltline at Z=28mm (Golden Ratio facade break across front facade)
-        translate([0, y_front, 28.0])
-            cube([152.0, 1.8, 1.4], center=true);
-            
-        // Refined Vertical Fluting on rounded flanks
-        if (wall_style == "diamond_fluted" || style_type == "fluted") {
-            side_fluting_flanks();
-        }
+        // Subtract C4 trim grooves for seamless puzzle fit
+        architectural_trim_c4();
         
-        // Dovetail slide receiver on rear
         female_dovetail_cavity();
-        
-        // Rear Chambers + Funnels + Through-Drains (Cuts straight through to open air!)
         rear_storage_cavities_and_drains();
-        
-        // Clean cut at Z=0 ensuring 100% planar bed adhesion
         translate([0, 0, -50.0]) cube([500.0, 500.0, 100.0], center=true);
     }
+}
+
+// Solid 2: Obsidian Charcoal Black Features (Eyes, Noses, Panda ears & eye patches, Cat whiskers)
+module luxury_holder_c2() {
+    front_animals_c2();
+}
+
+// Solid 3: Pastel Coral Peach / Pink Details (Ears, Muzzles, Cheeks)
+module luxury_holder_c3() {
+    front_animals_c3();
+}
+
+// Solid 4: Champagne Gold Architectural Trim (Fluting inlays, Beltline, Molding frame)
+module luxury_holder_c4() {
+    architectural_trim_c4();
+}
+
+// Complete 4-Color Assembly with Full OpenSCAD Palette Preview
+module luxury_holder_4color() {
+    color(c1_body)  luxury_holder_c1();
+    color(c2_black) luxury_holder_c2();
+    color(c3_warm)  luxury_holder_c3();
+    color(c4_gold)  luxury_holder_c4();
+}
+
+// Complete Unified Monolithic Solid (100% Watertight Single-Material Print)
+module luxury_holder_monochrome() {
+    union() {
+        luxury_holder_c1();
+        luxury_holder_c2();
+        luxury_holder_c3();
+        luxury_holder_c4();
+    }
+}
+
+module luxury_holder(style_type="fluted") {
+    luxury_holder_4color();
 }
 
 
@@ -520,9 +509,8 @@ module luxury_holder(style_type="fluted") {
 module standalone_toothbrush_rack(style_type="fluted") {
     difference() {
         union() {
-            // Slender backing plate
             w_rack = 166.0;
-            h_rack = 34.0; // Compact matching lower column height
+            h_rack = 34.0;
             th_back = 4.0;
             translate([0, th_back, 0])
                 rotate([90, 0, 0])
@@ -533,7 +521,6 @@ module standalone_toothbrush_rack(style_type="fluted") {
                             translate([-w_rack/2 + 8, h_rack - 4]) circle(r=3);
                             translate([ w_rack/2 - 8, h_rack - 4]) circle(r=3);
                         }
-            // Hanging teeth on front with 7 animal heads
             translate([0, th_back, 0]) {
                 for (i = [-3 : 3]) {
                     translate([i * tb_pitch, 0, 0])
@@ -541,9 +528,7 @@ module standalone_toothbrush_rack(style_type="fluted") {
                 }
             }
         }
-        // Dovetail slide receiver
         female_dovetail_cavity();
-        // Bed cut
         translate([0, 0, -50.0]) cube([500.0, 500.0, 100.0], center=true);
     }
 }
@@ -553,39 +538,29 @@ module standalone_toothbrush_rack(style_type="fluted") {
 // 8. REALISTIC PROPS MATCHING USER SETUP
 // =============================================================================
 module mijia_electric_brush_prop() {
-    // Point 1: caught directly at the lower end of the brush head!
-    // Lower end of brush head rests on forward-and-upward slanted plane at Z ~ 7.5mm
     y_brush = y_front + 5.5;
     translate([0, y_brush, 7.5]) {
-        // Brush head backing & oval body (facing front)
         color([0.96, 0.96, 0.97]) {
             translate([0, 0, 11.0])
                 scale([1.0, 0.65, 1.8])
                     sphere(r=5.8);
-            // Slender neck passing down through 9mm slot
             translate([0, 0, -28.0])
                 cylinder(d=5.6, h=28.0);
-            // Text "mijia Regular" indicator
             translate([0, 2.5, -18.0])
                 cube([3.5, 0.6, 12.0], center=true);
-            // Flared transition to electric body
             translate([0, 0, -43.0])
                 cylinder(d1=27.0, d2=11.5, h=15.0);
-            // Main electric handle body
             translate([0, 0, -155.0])
                 cylinder(d=27.0, h=112.0);
             translate([0, 0, -155.0])
                 sphere(d=27.0);
         }
-        // Bristles facing front (+Y)
         color([0.82, 0.85, 0.90])
             translate([0, 2.8, 11.0])
                 cube([8.0, 4.2, 16.0], center=true);
-        // Accent ring
         color([0.90, 0.85, 0.82])
             translate([0, 0, -42.5])
                 cylinder(d=27.2, h=3.0);
-        // Power button
         color([0.88, 0.58, 0.52])
             translate([0, 13.0, -70.0])
                 rotate([90, 0, 0])
@@ -594,31 +569,24 @@ module mijia_electric_brush_prop() {
 }
 
 module manual_brush_prop(color_handle=[0.92, 0.80, 0.20], color_bristle=[0.95, 0.85, 0.10]) {
-    // Point 1: caught directly at the lower end of the brush head!
-    // Lower end of brush head rests on slanted plane at Z ~ 7.5mm
     y_brush = y_front + 5.5;
     translate([0, y_brush, 7.5]) {
-        // Brush head backing & body
         color([0.96, 0.96, 0.97]) {
             translate([0, 0, 11.5])
                 scale([1.0, 0.65, 1.9])
                     sphere(r=5.5);
-            // Slender neck passing down through 9mm slot
             translate([0, 0, -28.0])
                 cylinder(d=4.8, h=28.0);
         }
-        // Handle below
         color(color_handle) {
             translate([0, 0, -120.0]) {
                 cylinder(d1=10.5, d2=8.0, h=92.0);
                 sphere(d=10.5);
             }
         }
-        // Grip accent
         color([0.85, 0.95, 0.30])
             translate([0, 0, -75.0])
                 cylinder(d=11.2, h=35.0);
-        // Bristles facing front (+Y)
         color(color_bristle)
             translate([0, 2.8, 11.5])
                 cube([8.5, 4.2, 17.0], center=true);
@@ -646,21 +614,18 @@ module cleanser_tube_prop(color_tube=[0.85, 0.90, 0.95]) {
 }
 
 module preview_assembled(style_type="fluted") {
-    // Wall
     color(wall_tile_color)
         translate([0, -2.0, 50.0])
             cube([w_total + 60.0, 4.0, 260.0], center=true);
             
-    // Wall Bracket
-    color([0.35, 0.35, 0.38])
+    color(c4_gold)
         translate([0, 0, 4.0])
             rotate([90, 0, 0])
                 wall_bracket();
                 
-    // Main Holder (Fluted Grand with Diamond Crystalline Wall + 7 Animal Faces)
-    color(rose_gold_base)
-        luxury_holder(style_type);
-        
+    // Main 4-Color Luxury Holder
+    luxury_holder_4color();
+    
     // Rear Cleansers & Toothpastes
     y_cav = d_wall + d_pod/2;
     translate([ 66.0, y_cav, 9.0]) cleanser_tube_prop([0.22, 0.40, 0.72]);
@@ -668,34 +633,43 @@ module preview_assembled(style_type="fluted") {
     translate([ 22.0, y_cav, 9.0]) toothpaste_tube_prop([0.88, 0.30, 0.35]);
     translate([-22.0, y_cav, 9.0]) toothpaste_tube_prop([0.20, 0.58, 0.85]);
     
-    // Front Hanging Toothbrushes (Matching user photo 1:1)
-    // Looking at front wall: +X is on viewer's left, -X is on viewer's right
-    // Slot 1 (X = +62.5): Empty / spare
-    // Slot 2 (X = +37.5): Xiaomi Mijia White Electric Toothbrush
+    // Front Hanging Toothbrushes
     translate([ 37.5, 0, 0]) mijia_electric_brush_prop();
-    // Slot 3 (X = +12.5): Empty buffer slot
-    // Slot 4 (X = -12.5): Yellow Manual Toothbrush
     translate([-12.5, 0, 0]) manual_brush_prop([0.95, 0.85, 0.15], [0.95, 0.80, 0.05]);
-    // Slot 5 (X = -37.5): Black Manual Toothbrush
     translate([-37.5, 0, 0]) manual_brush_prop([0.15, 0.15, 0.18], [0.18, 0.18, 0.20]);
-    // Slot 6 (X = -62.5): Green Manual Toothbrush
     translate([-62.5, 0, 0]) manual_brush_prop([0.15, 0.75, 0.35], [0.20, 0.85, 0.40]);
 }
 
 
 // =============================================================================
-// 9. OUTPUT SELECTOR
+// 9. OUTPUT SELECTOR (DISCRETE COLOR EXPORT & ASSEMBLY MODES)
 // =============================================================================
-if (mode == "holder") {
-    color(rose_gold_base) luxury_holder(style);
+if (color_export == 1) {
+    // Export Color 1: Pearl Warm White Base Body
+    luxury_holder_c1();
+} else if (color_export == 2) {
+    // Export Color 2: Obsidian Charcoal Black Features
+    luxury_holder_c2();
+} else if (color_export == 3) {
+    // Export Color 3: Pastel Coral Peach / Pink Details
+    luxury_holder_c3();
+} else if (color_export == 4) {
+    // Export Color 4: Champagne Gold Architectural Trim
+    luxury_holder_c4();
+} else if (mode == "holder") {
+    // Default: Full 4-Color Luxury Assembly Preview
+    luxury_holder_4color();
+} else if (mode == "holder_monochrome") {
+    // 100% Watertight Unified Monolithic Solid (Single Material Print)
+    color(rose_gold_base) luxury_holder_monochrome();
 } else if (mode == "bracket") {
-    color([0.35, 0.35, 0.38]) wall_bracket();
+    color(c4_gold) wall_bracket();
 } else if (mode == "plate") {
-    // 1-Plate Combo: Compact footprint at Z=0 (204mm x 116mm)
-    color(rose_gold_base) luxury_holder(style);
-    color([0.35, 0.35, 0.38]) translate([0, y_front + 24.0, 0]) wall_bracket();
+    // 1-Plate Combo: 4-Color Holder + Wall Bracket
+    luxury_holder_4color();
+    color(c4_gold) translate([0, y_front + 24.0, 0]) wall_bracket();
 } else if (mode == "standalone_toothbrush") {
-    color(rose_gold_base) standalone_toothbrush_rack(style);
+    color(c1_body) standalone_toothbrush_rack("fluted");
 } else if (mode == "assembled") {
-    preview_assembled(style);
+    preview_assembled("fluted");
 }

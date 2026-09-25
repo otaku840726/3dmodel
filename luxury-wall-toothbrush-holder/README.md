@@ -1,137 +1,125 @@
 # Luxury Wall-Mounted Integrated Toothbrush, Toothpaste & Cleanser Suite
 ## 奢華壁掛前壁一體化 6 位牙刷 + 雙洗面乳 + 雙牙膏衛浴收納套裝
-### 🌟 旗艦典藏版：羅馬長虹藝術鑽石晶簇牆 × 7 大萌寵立體浮雕水滴托爪 (Grand Fluted Edition)
+### 🌟 4 色多色旗艦典藏版：羅馬長虹金柱 × 7 大萌寵立體多色浮雕 (Grand Fluted 4-Color Edition)
 
-專為 **玫瑰金絲綢金屬線材（Rose Gold / Copper Silk PLA）** 量身打造的五星級輕奢衛浴收納套裝。
+專為 **Bambu Lab AMS / 多色 3D 列印機（最多 4 色）** 量身打造的五星級輕奢衛浴收納套裝。
 
-依據使用者明確指示，專注打造唯一頂級旗艦版本 **`luxury_holder_grand_fluted`**，集結前壁立面一體化、零死角直通大排水、藝術鑽石切面紋理牆面與 7 大精雕動物水滴托爪於一身！
+依據使用者最新指示：
+1. **外牆恢復**：移除鑽石切面，恢復平整大器的古典羅馬長虹柱（Fluted Colonnade）外立面與黃金分割水平光影腰線。
+2. **精準 4 色上色方案**：針對 4 槽多色供料系統（AMS / MMU），完美分配 4 種經典輕奢配色，將 7 大萌寵五官面容與古典建築飾條點綴得栩栩如生！
 
 ---
 
-## 🏛️ 旗艦升級核心設計亮點 (Key Highlights)
+## 🎨 4 色多色配色方案 (4-Color AMS Multi-Material System)
+
+| 色槽 (AMS Slot) | 推薦線材顏色 | 賦予組件部位 | 視覺效果與設計原理 |
+| :---: | :---: | :--- | :--- |
+| **Filament 1** | **珠光暖象牙白 / 玫瑰金**<br>`#F5F2EC` (Pearl Warm White) | • 主體收納艙外壁與連貫艙體<br>• 7 顆水滴托爪有機主體弧面<br>• 建築背板大底座 | 衛浴最乾淨優雅的陶瓷基調，光澤溫潤高雅。 |
+| **Filament 2** | **曜石碳素黑**<br>`#242429` (Obsidian Black) | • 7 款萌寵全部靈動眼睛（14 顆眼球）<br>• 萌寵立體鼻頭（小狗、小熊、小狐、無尾熊大黑鼻）<br>• 🐼 **大熊貓招牌黑耳與微傾黑眼圈**<br>• 🐱 **小貓咪立體兩側鬍鬚** | 畫龍點睛，賦予每隻動物無比靈動的神態與表情。 |
+| **Filament 3** | **蜜桃珊瑚粉 / 玫瑰粉**<br>`#EFA694` (Coral Peach Pink) | • 🐰 **小兔子萌感長立耳與嘟嘟嘴臉頰**<br>• 🐶 **小狗狗俏皮下垂大折耳與立體吻部**<br>• 🐻 **泰迪熊圓耳與圓潤吻部台階**<br>• 🦊 **小狐狸立耳與尖翹鼻吻**<br>• 🐨 **無尾熊蓬鬆大圓耳**<br>• 🐱 **小貓咪內耳輪廓與粉嫩鼻尖** | 溫暖粉嫩的親和力，為衛浴空間增添溫馨童趣。 |
+| **Filament 4** | **典雅香檳金 / 輕奢黃銅**<br>`#D1A659` (Champagne Gold) | • 收納艙前立面**垂直長虹柱凹槽飾條**<br>• 前艙立面 $Z=28\text{mm}$ **黃金分割水平腰線**<br>• 建築拱門背板**古典浮雕邊框飾條**<br>• 兩側圓弧導角長虹包邊<br>• 快拆燕尾壁掛滑軌背板 | 經典羅馬殿堂建築金屬線條，輕奢高級感十足。 |
+
+---
+
+## 🏛️ 旗艦立面與 7 大萌寵水滴爪 (Grand Fluted Architecture)
 
 ```
        +-------------------------------------------------------------+
-       |                  Wall Bracket (錐形燕尾滑軌)                 |
+       |             Wall Bracket (錐形燕尾滑軌，金屬香檳金)           |
        +-------------------------------------------------------------+
        |   洗面乳艙 (Ø44)   | 牙膏艙 (Ø36) | 牙膏艙 (Ø36) |  洗面乳艙 (Ø44)  |
        |  (Ø14mm 貫穿排水)  |(Ø12mm貫穿排水)|(Ø12mm貫穿排水)| (Ø14mm 貫穿排水) |
        +=============================================================+
-       |  [ 不規則藝術鑽石晶簇浮雕外牆 (Organic Diamond Crystalline) ]  |
-       |  [ 兩側羅馬長虹曲面包邊 (Architectural Fluting Wraparound) ]   |
+       |  ====== [ 典雅香檳金水平腰線 Architectural Beltline ] ======  |
+       |  |||||||||||||||||||||||||||||||||||||||||||||||||||||||||  | <-- 羅馬長虹金柱 (香檳金)
        +-------------------------------------------------------------+
-       |   🐱貓咪   🐻小熊   🐰兔子   🐼熊貓   🐶狗狗   🦊小狐狸  🐨無尾熊 | <-- 7 大萌寵立體浮雕水滴頭
+       |   🐱貓咪   🐻小熊   🐰兔子   🐼熊貓   🐶狗狗   🦊小狐狸  🐨無尾熊 | <-- 7 大立體多色萌寵
        |     |       |       |       |       |       |       |       |
        |  Slot 1  Slot 2  Slot 3  Slot 4  Slot 5  Slot 6  (間距 25mm)  |
        |   手動    手動    手動     緩衝   小米電動   緩衝                |
 ```
 
-### 1. 後方洗面乳與牙膏外牆：不規則藝術鑽石晶簇切面 (Diamond Crystalline Facade)
-- **立體光影浮雕面**：在收納艙外立面（$Z = 13 \sim 38\text{ mm}$）雕琢高低錯落、傾角各異的不規則多邊形鑽石金字塔晶簇（Diamond Crystalline Facets）。
-- **玫瑰金絲綢高光折射**：每顆切面在浴室鏡前燈下反射出不同角度的金屬絲綢高光，呈現如奢華珠寶與現代建築般的藝術質感。
-- **古典長虹柱面包角與水平腰線**：兩側圓弧導角（$R = 16\text{ mm}$）飾以垂直古典長虹柱凹槽（Fluted Wraparound），並在 $Z = 28\text{ mm}$ 處設計黃金分割水平光影腰線（Architectural Shadow Beltline）。
+### 1. 後方外牆恢復：古典長虹柱飾 × 平整大器 (Fluted Colonnade)
+- **告別繁複，回歸純粹建築美學**：依據要求已徹底移除鑽石切面，恢復平整乾淨的收納艙前外壁。
+- **長虹柱金色飾條**：前立面雕刻均勻排列的羅馬立柱長虹槽（間距 $6.0\text{ mm}$），在 4 色模式下自動鑲嵌香檳金色線條，與水平腰線交織成殿堂級立面。
 
-### 2. 前方牙刷托爪：有機水滴造型 × 7 大萌寵立體浮雕 (7 Cute Animal Waterdrops)
+### 2. 7 款萌寵 3D 有機水滴托爪 (7 Cute Animal Waterdrops)
 - **純 3D 有機雙圓心水滴造型**：
-  - 100% 滿足用戶要求：「**前端改為圓弧、整體為水滴狀、越往外越厚**」。
-  - 後方根部厚度 $5.5\text{ mm}$（寬 $14.5\text{ mm}$），向前平順隆起至前端圓弧水滴頭厚度 **$11.0\text{ mm}$**（寬 $17.5\text{ mm}$，厚度翻倍 $+5.5\text{ mm}$）。
-  - 水滴托爪兩側收窄（間隔由內部的 $10.5\text{ mm}$ 縮至前端出槽口 $7.5\text{ mm}$），搭配前端半橢球穹頂向上昂起，形成雙重物理自鎖防滑機制，牙刷永不向前滑脫！
-- **7 大萌寵趣味辨識雕刻（由左至右）**：
-  - **T0（$X = -75\text{ mm}$）**：🐱 **小貓咪 (Cat)** —— 靈動尖立雙耳、圓潤鼻尖與兩側鬍鬚細節。
-  - **T1（$X = -50\text{ mm}$）**：🐻 **小泰迪熊 (Bear)** —— 渾圓立耳、立體飽滿吻部與呆萌圓鼻。
-  - **T2（$X = -25\text{ mm}$）**：🐰 **小兔子 (Bunny)** —— 優雅長萌耳、小巧圓鼻與三瓣嘟嘟嘴。
-  - **T3（$X = 0\text{ mm}$ 正中）**：🐼 **大熊貓 (Panda)** —— 招牌圓黑耳、標誌性微傾眼圈與飽滿臉頰。
-  - **T4（$X = +25\text{ mm}$）**：🐶 **小狗狗 (Puppy)** —— 俏皮下垂大折耳、立體大鼻頭與忠厚微笑面龐。
-  - **T5（$X = +50\text{ mm}$）**：🦊 **小赤狐 (Fox)** —— 機靈錐形大耳、修長微翹鼻吻部與靈動眼型。
-  - **T6（$X = +75\text{ mm}$）**：🐨 **無尾熊 (Koala)** —— 超萌毛茸蓬鬆大圓耳與標誌性大橢圓鼻頭。
-- **免支撐 FDM 列印工藝保證**：
-  - 所有動物五官微浮雕起伏（$0.8 \sim 2.5\text{ mm}$）均經過拔模角最佳化，耳部與鼻部最大外伸角度 $< 45^\circ$，**100% 免支撐（Zero Supports）**，底面平整貼床（$Z = 0$）列印附著穩固！
+  - 前端圓弧、整體水滴狀、**越往外越厚（$5.5\text{mm} \to 11.0\text{mm}$）**。
+  - 出槽口向外收窄至 **$7.5\text{ mm}$**，配合前端穹頂向上昂起，**物理防滑自鎖**，牙刷永不向前滑脫。
+- **7 大萌寵彩色表情（由左至右）**：
+  - **T0（$X = -75\text{ mm}$）**：🐨 **無尾熊 (Koala)** —— 蜜桃粉蓬鬆立體大圓耳、曜石黑大橢圓鼻頭與黑眼球。
+  - **T1（$X = -50\text{ mm}$）**：🦊 **小赤狐 (Fox)** —— 蜜桃粉立耳與吻部、曜石黑尖鼻頭與靈動黑眼。
+  - **T2（$X = -25\text{ mm}$）**：🐶 **小狗狗 (Puppy)** —— 蜜桃粉俏皮下垂大折耳、大黑鼻頭與黑眼睛。
+  - **T3（$X = 0\text{ mm}$ 正中）**：🐼 **大熊貓 (Panda)** —— 曜石黑招牌圓耳、曜石黑微傾眼圈、粉吻部與黑鼻。
+  - **T4（$X = +25\text{ mm}$）**：🐰 **小兔子 (Bunny)** —— 蜜桃粉優雅長萌耳、粉嫩腮紅臉頰、小黑眼與黑鼻。
+  - **T5（$X = +50\text{ mm}$）**：🐻 **泰迪熊 (Bear)** —— 蜜桃粉圓耳、飽滿吻部台階、小黑鼻與黑圓眼。
+  - **T6（$X = +75\text{ mm}$）**：🐱 **小貓咪 (Cat)** —— 蜜桃粉尖立耳、曜石黑靈動鬍鬚、黑眼與粉鼻尖。
+- **100% 免支撐與熱床平貼**：
+  - 底部 $Z = 0$ 保持**絕對水平面**（熱床貼合面積 $> 3800\text{ mm}^2$）。
+  - 所有動物微浮雕與五官斜角均控制在安全拔模角內（$< 45^\circ$），**Supports: None** 零支撐列印！
 
-### 3. 大厚度大圓蓋全相容·後排連貫迴廊艙 (Palazzo Gallery)
-- **左右雙洗面乳大艙（$X = \pm 66\text{ mm}$）**：
-  - 尺寸 **$46 \times 44\text{ mm}$**（導角 $R = 12\text{ mm}$），深度達 **$33.5\text{ mm}$**。
-  - **相容市售直徑高達 $\varnothing 44\text{ mm}$、厚度達 $15 \sim 25\text{ mm}$ 的超大厚實圓形翻蓋洗面乳**（如資生堂專科 Senka、Biore 蜜妮、曼秀雷敦、Uno、Kiehl's 等）。
-- **正中雙牙膏大艙（$X = \pm 22\text{ mm}$）**：
-  - 尺寸 **$36 \times 38\text{ mm}$**（導角 $R = 10\text{ mm}$），深度達 **$33.5\text{ mm}$**。
-  - **相容市售直徑高達 $\varnothing 36\text{ mm}$、厚度達 $15 \sim 22\text{ mm}$ 的立式大圓蓋牙膏**（如高露潔全效、Crest 3D White、好來 Darlie、Marvis 等）。
-- **直通開放空氣層貫穿排水（Through-Drain）+ 十字防密閉立體風道**：
-  - 洗面乳專屬超大排水孔：**$\varnothing 14.0\text{ mm}$**（配 $45^\circ$ 導水漏斗）。
-  - 牙膏專屬大排水孔：**$\varnothing 12.0\text{ mm}$**（配 $45^\circ$ 導水漏斗）。
-  - **底部十字立體防密閉風道（$4.0\text{mm} \times 2.0\text{mm}$）**：即便大圓蓋平壓艙底，水流依然排空，煙囪效應保持空氣常態對流！
-
-### 4. 快拆錐形燕尾背板模組 (Universal Dovetail Wall Bracket)
-- $12^\circ$ 錐形燕尾滑軌，具備 $>1400\text{ mm}^2$ 超大免打孔無痕膠黏貼面與 2 個 M4 沉頭螺絲孔。
-- 清潔時向上推移 2cm 即可秒拆下架直沖水龍頭！
+### 3. 直通空氣層全排空大排水孔 (Through-Drainage)
+- 雙洗面乳大艙：**$\varnothing 14.0\text{ mm}$** 直通排水孔（相容 $\varnothing 44\text{ mm}$ 大翻蓋）。
+- 雙牙膏大艙：**$\varnothing 12.0\text{ mm}$** 直通排水孔（相容 $\varnothing 36\text{ mm}$ 大圓蓋）。
+- 底面十字防密閉立體風道（$4.0\text{mm} \times 2.0\text{mm}$），排空水氣絕不積水發霉。
 
 ---
 
-## 📸 視覺渲染畫廊 (Render Gallery)
+## 📸 4 色視覺渲染畫廊 (Render Gallery)
 
-### 1. 使用者真實牙刷配置安裝演示 (Bathroom Wall In-Situ Real Setup)
-![Fluted Assembled Perspective](renders/fluted_assembled_perspective.png)
-*(後排：2 支大圓蓋洗面乳 + 2 支大圓蓋牙膏；前排：3 支手動牙刷 + 1 支小米電動牙刷 + 2 緩衝位)*
+### 1. 浴室真實牙刷與收納配置安裝視角 (4-Color In-Situ Real Setup)
+![Fluted 4-Color Assembled](renders/fluted_assembled_perspective.png)
+*(後艙：2 支大蓋洗面乳 + 2 支牙膏；前排：小米電動牙刷 + 3 支手動牙刷 + 2 處緩衝位)*
 
-### 2. 正視圖·7 大萌寵水滴爪與鑽石晶簇外牆 (Front Elevation & Animals Detail)
-![Fluted Front View](renders/fluted_crystalline_front.png)
-*(從左至右依次為：🐱貓咪、🐻小熊、🐰兔子、🐼熊貓、🐶狗狗、🦊狐狸、🐨無尾熊)*
+### 2. 正視圖·7 大萌寵多色托爪與羅馬金柱外牆 (Front Elevation)
+![Fluted 4-Color Front](renders/fluted_crystalline_front.png)
+*(從左至右依次為：🐨無尾熊、🦊狐狸、🐶狗狗、🐼熊貓、🐰兔子、🐻小熊、🐱貓咪)*
 
 ### 3. 多視角全景透視 (Multi-Angle Architectural Views)
-| 正面等角透視 (Isometric Front) | 側面水滴厚度變化 (Side Profile) | 底面貫穿排水與立體風道 (Bottom Drains) |
+| 正面等角透視 (Isometric Front) | 萌寵托爪特寫 (Animal Prongs Closeup) | 側面水滴厚度漸變 (Side Profile) |
 | :---: | :---: | :---: |
-| <img src="renders/fluted_crystalline_iso_front.png" width="300" alt="Iso Front View"> | <img src="renders/fluted_crystalline_side.png" width="300" alt="Side View"> | <img src="renders/fluted_crystalline_bottom.png" width="300" alt="Bottom Drains"> |
-| 鑽石金字塔晶簇牆面 + 羅馬長虹包角 | 越往外越厚 (5.5mm 升至 11.0mm) | Ø14/Ø12mm 貫穿開放大排水孔 + 十字立體風道 |
-
-### 4. 獨立單體版與單盤同印切片佈局 (Standalone & 1-Plate Print Bed)
-| 獨立 6 位萌寵牙刷架 (Standalone Rack) | 快拆燕尾背板 (Wall Bracket) | 單盤同印佈局 (1-Plate Combo Bed) |
-| :---: | :---: | :---: |
-| <img src="renders/standalone_toothbrush_rack.png" width="300" alt="Standalone Toothbrush Rack"> | <img src="renders/wall_bracket_mounting.png" width="300" alt="Wall Bracket Detail"> | <img src="renders/print_bed_layout.png" width="300" alt="Print Bed Layout"> |
-| 包含 7 大萌寵水滴爪，自帶燕尾滑軌 | 100% 平整熱床貼合面 + 沉頭螺絲孔 + 錐形燕尾軌 | $204 \times 116\text{mm}$ 單盤排版，主體 + 快拆背板一盤印完 |
+| <img src="renders/fluted_crystalline_iso_front.png" width="300" alt="Iso Front View"> | <img src="renders/fluted_animal_prongs_closeup.png" width="300" alt="Animals Closeup"> | <img src="renders/fluted_crystalline_side.png" width="300" alt="Side View"> |
+| 長虹金柱 + 金色背板框 + 白底瓷光 | 7 款動物獨立分色五官，立體生動 | 越往外越厚 (5.5mm 升至 11.0mm) |
 
 ---
 
-## 📐 尺寸與幾何規格表 (Specifications)
+## 🖨️ 4 色 3D 列印切片操作指南 (Bambu Studio / AMS Quickstart)
 
-| 功能組件 | 前壁一體化旗艦套裝（Grand Fluted） | 獨立 6 位牙刷架（Standalone Fluted） | 設計原理與功能優勢 |
-| :--- | :--- | :--- | :--- |
-| **外觀總尺寸** | **寬 204mm × 深 74.5mm × 高 88mm** | 寬 167mm × 深 20.5mm × 高 46mm | 總進深壓縮至 74.5mm，小衛浴無壓迫感 |
-| **牙刷懸掛位** | **6 位（節距 25mm，跨度 150mm）**<br>• 7 顆萌寵水滴爪（🐱🐻🐰🐼🐶🦊🐨）<br>• 越往外越厚（$5.5\text{mm} \to 11.0\text{mm}$）<br>• 前端出槽口收窄至 $7.5\text{mm}$ 防脫 | **6 位（節距 25mm，跨度 150mm）**<br>• 7 顆萌寵水滴爪（🐱🐻🐰🐼🐶🦊🐨）<br>• 越往外越厚（$5.5\text{mm} \to 11.0\text{mm}$）<br>• 前端出槽口收窄至 $7.5\text{mm}$ 防脫 | 雙圓心 3D 水滴流體穹頂，卡定牙刷頭下緣，普通牙刷與小米電動牙刷全相容 |
-| **後排收納艙** | **4 倉一體（寬 188mm × 深 50mm）**<br>• 2 洗面乳倉（$46 \times 44\text{mm}$，**相容 Ø44mm 厚圓蓋**）<br>• 2 牙膏倉（$36 \times 38\text{mm}$，**相容 Ø36mm 厚圓蓋**） | 無（純牙刷專用款） | 倒錐底漏斗 + $\varnothing 14\text{mm}/\varnothing 12\text{mm}$ 全貫穿直通排水大孔 + 十字立體風道 |
-| **外牆藝術質感** | **不規則鑽石晶簇切面浮雕 + 古典長虹柱包邊** | 典雅簡約背板飾面 | 絲綢玫瑰金光澤折射極致發揮 |
-| **熱床貼合面積** | **$> 3800\text{ mm}^2$**（$Z = 0$ 實心大基座） | $> 600\text{ mm}^2$ | 底部 100% 平整貼床，無懸空，徹底防止翹曲 |
-| **快拆背板** | 寬 44mm × 高 34mm × 厚 6.8mm | 寬 44mm × 高 34mm × 厚 6.8mm | 共用通用規格，支援免打孔黏貼與 M4 沉頭螺絲孔 |
+本套件為 4 色列印提供 **兩大極致便利方式**：
 
----
+### 方式 A：一鍵開啟 3MF 專案檔（最推薦，首選！）
+1. 下載 **[`luxury_holder_grand_fluted_4color.3mf`](luxury_holder_grand_fluted_4color.3mf)**。
+2. 直接拖入 **Bambu Studio** 或 **OrcaSlicer**。
+3. 軟體將自動載入已組合為單一物件的 4 大彩色分件：
+   - `Filament1_PearlWhite_Body` ➜ 自動對應 AMS 插槽 1
+   - `Filament2_CharcoalBlack_Features` ➜ 自動對應 AMS 插槽 2
+   - `Filament3_PeachPink_Accents` ➜ 自動對應 AMS 插槽 3
+   - `Filament4_ChampagneGold_Trim` ➜ 自動對應 AMS 插槽 4
+4. 一鍵點擊切片並發送至印表機列印！
 
-## 🖨️ 3D 列印建議參數 (Optimized for Rose Gold Silk PLA)
-
-1. **切片設定 (Slicer Settings)**：
-   - **支撐結構 (Supports)**：**完全關閉（Supports: None）**！全模型內部天花板均採用 $45^\circ$ 錐度與懸臂斜撐，動物雕刻均在拔模安全角內，100% 自支撐（0.00g 支撐廢料）。
-   - **底邊 (Brim)**：**無須開啟 Brim**（主體底面接觸面積達 $>3800\text{ mm}^2$）。
-   - **層高 (Layer Height)**：推薦 `0.16mm` ~ `0.20mm`（追求動物面部微雕細節與極致金屬光澤外壁層高可設 `0.12mm`）。
-   - **列印方向**：直接使用 STL 預設放置方向（主體平貼底面正立印、背板平躺印）。
-   - **熱床尺寸相容**：
-     - Bambu Lab（X1 / P1 / A1，256×256）：直接單盤同印組合檔（$204 \times 116\text{mm}$）。
-     - Prusa（MK3 / MK4，250×210）：直接單盤同印組合檔（$204 \times 116\text{mm}$，遠小於 $250 \times 210$）。
-     - Creality（Ender-3 系列，220×220）：主體 204mm 舒適放入，單盤同印（$204 \times 116\text{mm}$）開箱即印！
-2. **絲綢線材調校建議 (Silk PLA Optical Optimization)**：
-   - **噴嘴溫度 (Nozzle Temp)**：建議比一般 PLA 提高 $5^\circ\text{C} \sim 10^\circ\text{C}$（約 $215^\circ\text{C} \sim 220^\circ\text{C}$），溫度稍高有助於金屬絲綢光澤充分析出。
-   - **外壁速度 (Outer Wall Speed)**：建議降低至 `35 ~ 45 mm/s`，外壁走速平緩均勻能讓金屬高光折射最為璀璨。
-   - **外壁圈數 (Wall Loops)**：建議設為 `3 ~ 4 圈`，增強結構剛度與耐用度。
+### 方式 B：手動拖入 4 個分件 STL
+1. 同時框選以下 4 個 STL 檔案拖入切片軟體：
+   - `luxury_holder_c1_body.stl`
+   - `luxury_holder_c2_black.stl`
+   - `luxury_holder_c3_warm.stl`
+   - `luxury_holder_c4_gold.stl`
+2. 當軟體彈出提示：**「是否將這些檔案載入為包含多個零件的單一物件？」** ➜ 點選 **「是 (Yes)」**。
+3. 在左側物件清單中，將零件 1~4 分別指派至 AMS 的 1~4 號料捲。
 
 ---
 
-## 📦 檔案清單 (STL Catalog)
+## 📦 檔案清單 (File Catalog)
 
-### 唯一主打旗艦款（Grand Fluted Edition）
-| 檔案名稱 | 說明 | 規格 |
+| 檔案名稱 | 說明 | 格式 / 適用場景 |
 | :--- | :--- | :--- |
-| **[`luxury_holder_grand_fluted.stl`](luxury_holder_grand_fluted.stl)** | **旗艦羅馬長虹鑽石晶簇外牆 × 7 大萌寵水滴托爪衛浴收納架 (★唯一主推)** | 雙洗面乳（Ø44mm 蓋）+ 雙牙膏（Ø36mm 蓋）+ 6 位牙刷架（7 大萌寵 🐱🐻🐰🐼🐶🦊🐨 水滴托爪），鑽石晶簇外牆，總深 74.5mm。 |
-| **[`combo_plate_grand_fluted.stl`](combo_plate_grand_fluted.stl)** | **旗艦版整盤同印組合檔 (一鍵開印)** | 旗艦主體 + 快拆背板同盤排列（佔用 $204 \times 116\text{mm}$）。 |
-| **[`standalone_toothbrush_fluted.stl`](standalone_toothbrush_fluted.stl)** | **獨立 6 位萌寵水滴牙刷架** | 附 7 大萌寵水滴托爪與快拆燕尾滑軌，小巧精緻（$167 \times 20.5 \times 46\text{mm}$）。 |
-
-### 通用配件與原始碼
-| 檔案名稱 | 說明 | 備註 |
-| :--- | :--- | :--- |
-| **[`wall_bracket.stl`](wall_bracket.stl)** | **快拆免打孔雙用背板 (共用件)** | 平貼熱床印，背貼 3M 膠或打螺絲。 |
-| **[`luxury_wall_toothbrush_holder.scad`](luxury_wall_toothbrush_holder.scad)** | OpenSCAD 參數化原始代碼 | 支援萌寵開關（`tooth_style`）、外牆樣式（`wall_style`）、牙刷槽距、孔徑與尺寸自定義。 |
-| **`renders/`** | 高解析多視角渲染圖庫 | 包含實際牙刷配置圖、各角度特寫與單盤切片排版。 |
+| **[`luxury_holder_grand_fluted_4color.3mf`](luxury_holder_grand_fluted_4color.3mf)** | **4 色多色預設工程專案檔 (★推薦首選)** | 3MF 格式，Bambu Studio / OrcaSlicer 開箱即印 |
+| **[`luxury_holder_c1_body.stl`](luxury_holder_c1_body.stl)** | **分件 1：主體白色基座** (Body Base) | STL，對應料槽 1（暖象牙白 / 玫瑰金） |
+| **[`luxury_holder_c2_black.stl`](luxury_holder_c2_black.stl)** | **分件 2：黑色五官特徵** (Black Features) | STL，對應料槽 2（曜石碳素黑） |
+| **[`luxury_holder_c3_warm.stl`](luxury_holder_c3_warm.stl)** | **分件 3：萌寵粉色耳朵與吻部** (Warm Accents) | STL，對應料槽 3（蜜桃珊瑚粉） |
+| **[`luxury_holder_c4_gold.stl`](luxury_holder_c4_gold.stl)** | **分件 4：羅馬金柱飾條與腰線** (Gold Trim) | STL，對應料槽 4（香檳金 / 黃銅） |
+| **[`luxury_holder_grand_fluted.stl`](luxury_holder_grand_fluted.stl)** | **一體化單色旗艦主體** (Monolithic) | STL，適用單色印表機一次列印 |
+| **[`wall_bracket.stl`](wall_bracket.stl)** | **通用快拆燕尾背板** (Wall Bracket) | STL，共用快拆免打孔背板 |
+| **[`combo_plate_grand_fluted.stl`](combo_plate_grand_fluted.stl)** | **單盤同印組合檔** (Combo Plate) | STL，主體 + 快拆背板同盤排列 |
+| **[`standalone_toothbrush_fluted.stl`](standalone_toothbrush_fluted.stl)** | **獨立 6 位萌寵牙刷架** (Standalone) | STL，純牙刷專用款 |
+| **[`luxury_wall_toothbrush_holder.scad`](luxury_wall_toothbrush_holder.scad)** | OpenSCAD 參數化原始代碼 | 支援 `color_export` 分色匯出與自定義參數 |
