@@ -102,12 +102,19 @@ module female_dovetail_cavity() {
     w_t = dove_w_top + tol*2;
     w_b = dove_w_bot + tol*2;
     d_s = dove_th + tol;
+    ch_dove = 1.2;
     
     poly_bot = [
         [-w_t/2, -0.1],
         [-w_t/2 - d_s*tan(dove_angle), d_s],
         [ w_t/2 + d_s*tan(dove_angle), d_s],
         [ w_t/2, -0.1]
+    ];
+    poly_bot_chamfer = [
+        [-w_t/2 - ch_dove, -0.1 - ch_dove],
+        [-w_t/2 - (d_s + ch_dove)*tan(dove_angle) - ch_dove, d_s + ch_dove],
+        [ w_t/2 + (d_s + ch_dove)*tan(dove_angle) + ch_dove, d_s + ch_dove],
+        [ w_t/2 + ch_dove, -0.1 - ch_dove]
     ];
     poly_top = [
         [-w_b/2, -0.1],
@@ -122,6 +129,14 @@ module female_dovetail_cavity() {
             linear_extrude(height=0.1) polygon(poly_bot);
         translate([0, 0, h_slot])
             linear_extrude(height=0.1) polygon(poly_top);
+    }
+    
+    // 45° Bottom entrance lead-in chamfer (avoid sharp right-angle rim, smooth bracket alignment)
+    hull() {
+        translate([0, 0, -0.5])
+            linear_extrude(height=0.1) polygon(poly_bot_chamfer);
+        translate([0, 0, ch_dove])
+            linear_extrude(height=0.1) polygon(poly_bot);
     }
     
     // 55° Self-supporting gable ceiling sloping smoothly to back wall (zero support required)
@@ -147,13 +162,19 @@ module arch_backplate_solid() {
     w = w_total;
     th_back = d_wall;
     r = 10.0;
+    ch_bot = 4.0; // 4.0mm 45° self-supporting corner chamfers (zero sharp corners, zero supports)
     
     translate([0, th_back, 0])
         rotate([90, 0, 0])
             linear_extrude(height = th_back) {
                 hull() {
-                    // Solid flat bottom edge resting firmly on print bed (zero bed liftoff overhang)
-                    translate([-w/2, 0]) square([w, 2.0]);
+                    // 45° self-supporting bottom corner chamfers avoiding sharp right angles
+                    polygon([
+                        [-w/2 + ch_bot, 0],
+                        [ w/2 - ch_bot, 0],
+                        [ w/2, ch_bot],
+                        [-w/2, ch_bot]
+                    ]);
                     translate([-w/2 + r, r]) circle(r=r);
                     translate([ w/2 - r, r]) circle(r=r);
                     translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);
@@ -167,13 +188,19 @@ module arch_backplate_frame_trim() {
     w = w_total;
     th_back = d_wall;
     r = 10.0;
+    ch_bot = 4.0;
     
     translate([0, th_back, 0])
         rotate([90, 0, 0])
             difference() {
                 linear_extrude(height = 1.0)
                     hull() {
-                        translate([-w/2 + 3.0, 0]) square([w - 6.0, 2.0]);
+                        polygon([
+                            [-w/2 + ch_bot, 0],
+                            [ w/2 - ch_bot, 0],
+                            [ w/2, ch_bot],
+                            [-w/2, ch_bot]
+                        ]);
                         translate([-w/2 + r, r]) circle(r=r);
                         translate([ w/2 - r, r]) circle(r=r);
                         translate([-w/2 + r + 3.0, h_total - r]) circle(r=r - 3.0);
@@ -385,6 +412,7 @@ module single_hanging_tooth(style_type="fluted", animal_idx=-1) {
     y2 = tooth_d - r2;     // 16.0 - 8.75 = 7.25mm
     h1 = z_shelf_back;     // 5.5mm
     h2 = z_shelf_front;    // 11.0mm
+    ch_bot = 1.2;          // 45° bottom edge chamfer (avoid sharp 90° equator cut)
     
     union() {
         difference() {
@@ -394,6 +422,14 @@ module single_hanging_tooth(style_type="fluted", animal_idx=-1) {
             }
             translate([0, 0, -10.0]) cube([100.0, 100.0, 20.0], center=true);
             translate([0, -53.0, 0]) cube([100.0, 100.0, 100.0], center=true);
+            // 45° bottom edge chamfer around teardrop perimeter (silky touch, anti-cut)
+            difference() {
+                translate([0, 0, ch_bot/2]) cube([50.0, 50.0, ch_bot + 0.01], center=true);
+                hull() {
+                    translate([0, y1, -0.1]) cylinder(r1=r1 - ch_bot, r2=r1, h=ch_bot + 0.2);
+                    translate([0, y2, -0.1]) cylinder(r1=r2 - ch_bot, r2=r2, h=ch_bot + 0.2);
+                }
+            }
         }
         
         if (tooth_style == "animals" && animal_idx >= 0) {
@@ -439,18 +475,27 @@ module front_hanging_teeth_array(style_type="fluted") {
 // =============================================================================
 // 4. STORAGE GALLERY SOLID & CLASSICAL ARCHITECTURAL FLUTING
 // =============================================================================
-module squircle_body(w, d, r, h, ch=3.5) {
+module squircle_body(w, d, r, h, ch=3.5, ch_bot=1.2) {
     hull() {
-        translate([-w/2 + r, d_wall + r, 0]) cylinder(r=r, h=0.1);
-        translate([ w/2 - r, d_wall + r, 0]) cylinder(r=r, h=0.1);
-        translate([-w/2 + r, d_wall + d - r, 0]) cylinder(r=r, h=0.1);
-        translate([ w/2 - r, d_wall + d - r, 0]) cylinder(r=r, h=0.1);
+        // Bottom 45° chamfer at Z = 0 (avoid sharp 90° bed rim, silky handling)
+        translate([-w/2 + r, d_wall + r, 0]) cylinder(r=max(1, r - ch_bot), h=0.1);
+        translate([ w/2 - r, d_wall + r, 0]) cylinder(r=max(1, r - ch_bot), h=0.1);
+        translate([-w/2 + r, d_wall + d - r, 0]) cylinder(r=max(1, r - ch_bot), h=0.1);
+        translate([ w/2 - r, d_wall + d - r, 0]) cylinder(r=max(1, r - ch_bot), h=0.1);
         
+        // Full footprint at Z = ch_bot (100% self-supporting 45° outward slope)
+        translate([-w/2 + r, d_wall + r, ch_bot]) cylinder(r=r, h=0.1);
+        translate([ w/2 - r, d_wall + r, ch_bot]) cylinder(r=r, h=0.1);
+        translate([-w/2 + r, d_wall + d - r, ch_bot]) cylinder(r=r, h=0.1);
+        translate([ w/2 - r, d_wall + d - r, ch_bot]) cylinder(r=r, h=0.1);
+        
+        // Full footprint up to Z = h - ch
         translate([-w/2 + r, d_wall + r, h - ch]) cylinder(r=r, h=0.1);
         translate([ w/2 - r, d_wall + r, h - ch]) cylinder(r=r, h=0.1);
         translate([-w/2 + r, d_wall + d - r, h - ch]) cylinder(r=r, h=0.1);
         translate([ w/2 - r, d_wall + d - r, h - ch]) cylinder(r=r, h=0.1);
         
+        // Top 4-sided chamfer at Z = h
         translate([-w/2 + r, d_wall + r, h]) cylinder(r=max(1, r - ch), h=0.1);
         translate([ w/2 - r, d_wall + r, h]) cylinder(r=max(1, r - ch), h=0.1);
         translate([-w/2 + r, d_wall + d - r, h]) cylinder(r=max(1, r - ch), h=0.1);
@@ -574,6 +619,9 @@ module rear_storage_cavities_and_drains() {
             // 100% continuous straight-through drainage hole (Z=-5 to Z=z_floor+20)
             translate([0, 0, -5.0])
                 cylinder(d=14.0, h=z_floor + 20.0);
+            // 45° bottom exit countersink chamfer (smooth to touch, anti-cut)
+            translate([0, 0, -0.1])
+                cylinder(r1=14.0/2 + 1.2, r2=14.0/2, h=1.3);
             translate([0, 0, z_floor]) {
                 cube([44.0, 4.0, 2.0], center=true);
                 cube([4.0, 39.0, 2.0], center=true);
@@ -601,6 +649,9 @@ module rear_storage_cavities_and_drains() {
             // 100% continuous straight-through drainage hole (Z=-5 to Z=z_floor+20)
             translate([0, 0, -5.0])
                 cylinder(d=12.0, h=z_floor + 20.0);
+            // 45° bottom exit countersink chamfer (smooth to touch, anti-cut)
+            translate([0, 0, -0.1])
+                cylinder(r1=12.0/2 + 1.2, r2=12.0/2, h=1.3);
             translate([0, 0, z_floor]) {
                 cube([36.0, 4.0, 2.0], center=true);
                 cube([4.0, 38.0, 2.0], center=true);
