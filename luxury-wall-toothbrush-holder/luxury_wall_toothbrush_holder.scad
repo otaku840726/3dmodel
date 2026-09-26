@@ -15,6 +15,7 @@ mode         = "holder";         // "holder", "plate", "bracket", "standalone_to
 color_export = 0;                // 0: Full Colored Object, 1: Color 1 (Body), 2: Color 2 (Black), 3: Color 3 (Warm Pink), 4: Color 4 (Gold Trim)
 side_hooks   = "both";           // "both" (左右兩側雙掛勾), "left" (僅左側), "right" (僅右側), "none" (不加掛勾)
 side_hook_color = "body";        // "body" (C1 暖象牙白 - 結構一體無耗材最高強度), "gold" (C4 香檳金輕奢金屬掛勾)
+side_hook_type = "cradle_1b";    // "cradle_1b" (輕奢 45° 幾何切面一體雕塑雙功能掛勾 - 兼具毛巾掛勾與刮鬍刀架)
 
 // Master Dimensions
 w_total     = 194.0; // Reduced from 204.0 to 194.0 to form a true rectangle aligned with storage pod
@@ -646,61 +647,144 @@ module architectural_trim_c4() {
 }
 
 // =============================================================================
-// 4b. SUPPORT-FREE SIDE UTILITY HOOKS (側面免支撐多功能置物掛勾)
 // =============================================================================
-// 4b. SUPPORT-FREE SIDE UTILITY HOOKS (側面多功能扁平刀鋒掛勾 - 方案 5-2 修長實用延展款)
+// 4b. SUPPORT-FREE SIDE UTILITY HOOKS (輕奢一體雕塑雙功能外擴鞍座掛勾 - 1B 專用款)
 // =============================================================================
-// Designed for hanging hair ties, loofah sponges, shower caps, razors, or washcloths.
-// 根部採用全連續切線雙圓弧（上弧 R=3mm、下弧 R=7.5mm）無縫溶入外牆，徹底消除稜角並均勻分散重力應力；
-// 刀身全程採用 100% 筆直等寬 3.2mm，絕對無腰身內縮；懸臂外伸 11.2mm 提供充裕實用掛持空間。
-module single_side_utility_hook(side=1) {
+// 100% 遵守 FDM 3D 列印自支撐法則（底部 45° 平滑自支撐爬升斜面，列印時零支撐）。
+// 兼顧雙重用途：
+// 1. 刮鬍刀專用架：中央引導鞍槽由內向外漸擴開展（壁側 11.5mm → 前端 18.0mm），
+//    能同時適配細柄傳統雙刃安全刮鬍刀（深靠內側）與粗柄人體工學刀柄（外側自然自定心卡托）。
+// 2. 頂面圓滑弧形凹槽：頂面呈連續圓滑凹槽鞍面，刀頭橫跨置放時更加貼合，手指拿取順手優雅。
+// 3. 左右雕塑雙角：苗條修長不笨重（壁厚約 4.8mm），外側經 45° 切面修飾，角尖平滑倒角微翹防滑落。
+// 全體邊緣經 R=0.65mm 空間球體柔潤微圓角處理，完全無生硬直角與割手稜角。
+module monolithic_dual_utility_cradle(side=1) {
     x_base = side * (w_pod/2); // ±97.0mm
     y_center = d_wall + d_pod/2; // 34.0mm
-    z_center = 20.0;
-    r_edge = 0.60;
-    w_total = 3.20;
+    z_center = 22.0;
     
-    // N=12 points (sparse calibrated profile for smooth G1 curvature and high-performance 3D minkowski)
-    hook_profile_pts = [
-        [0.000, 5.400], [0.000, -9.900], [0.064, -8.921], [0.256, -7.959], [0.571, -7.030],
-        [1.005, -6.150], [1.550, -5.334], [2.197, -4.597], [2.934, -3.950], [3.750, -3.405],
-        [4.630, -2.971], [5.559, -2.656], [6.521, -2.464], [7.500, -2.400], [8.157, -2.370],
-        [8.606, -2.281], [9.039, -2.134], [9.450, -1.931], [9.831, -1.677], [10.175, -1.375],
-        [10.477, -1.031], [10.731, -0.650], [10.934, -0.239], [11.081, 0.194], [11.170, 0.643],
-        [11.200, 1.100], [11.200, 5.400], [11.145, 5.814], [10.986, 6.200], [10.731, 6.531],
-        [10.400, 6.786], [10.014, 6.945], [9.600, 7.000], [9.186, 6.945], [8.800, 6.786],
-        [8.469, 6.531], [8.214, 6.200], [8.055, 5.814], [8.000, 5.400], [8.000, 4.200],
-        [7.985, 3.965], [7.939, 3.734], [7.863, 3.511], [7.759, 3.300], [7.628, 3.104],
-        [7.473, 2.927], [7.296, 2.772], [7.100, 2.641], [6.889, 2.537], [6.666, 2.461],
-        [6.435, 2.415], [6.200, 2.400], [3.000, 2.400], [2.608, 2.426], [2.224, 2.502],
-        [1.852, 2.628], [1.500, 2.802], [1.174, 3.020], [0.879, 3.279], [0.620, 3.574],
-        [0.402, 3.900], [0.228, 4.252], [0.102, 4.624], [0.026, 5.008]
-    ];
+    w = 32.0;       // Y 軸總寬度 (沿側壁前後向)
+    h = 36.0;       // Z 軸總高度 (垂直向)
+    d = 23.0;       // X 軸向外懸挑總深度
+    ch = 3.5;      // 外周 45° 八角形倒角
+    r_edge = 0.65;  // 柔潤圓角半徑
+    
+    // 漸擴鞍槽尺寸 (越往外越開，適配不同粗細刮鬍刀柄)
+    gap_rear_top   = 11.5; // 靠牆內側頂部開口 (適合細柄安全刮鬍刀)
+    gap_rear_bot   = 8.5;  // 靠牆內側槽底直徑
+    gap_front_top  = 18.0; // 前端頂部開口 (適合粗柄人體工學刮鬍刀)
+    gap_front_bot  = 13.0; // 前端槽底直徑
+    
+    // 苗條雙角寬度 (左右兩根沒那麼粗)
+    prong_w = 4.8;
     
     translate([x_base, y_center, z_center]) {
-        // 1. Deep solid wall anchor (penetrates 4.0mm inside pod wall)
-        translate([-side * 3.0, 0, -0.5]) rotate([0, 90, 0])
-            cylinder(d=5.5, h=4.0, center=true, $fn=24);
+        // 內部深層受力強化銷 (錨定入壁體 4.0mm)
+        translate([-side * 3.0, 0, 0]) rotate([0, 90, 0])
+            cylinder(d=6.0, h=4.0, center=true, $fn=24);
             
-        // 2. High-strength Flawless Rounded-Edge Blade Hook (R=0.60mm full-perimeter fillet, no right angles)
         scale([side, 1, 1]) {
             minkowski() {
-                rotate([90, 0, 0])
-                    linear_extrude(height = w_total - 2*r_edge, center = true, convexity = 10)
-                        offset(r = -r_edge)
-                        polygon(points = hook_profile_pts);
-                sphere(r = r_edge, $fn=16);
+                difference() {
+                    // 1. 一體化雕塑本體 (八角底板 + 自支撐實心雕塑楔形塊)
+                    union() {
+                        // 壁面貼合面八角飾板
+                        hull() {
+                            translate([0, 0, 0]) rotate([0, 90, 0])
+                                linear_extrude(height=0.1)
+                                    polygon(points=[
+                                        [-h/2+ch, -w/2], [h/2-ch, -w/2],
+                                        [h/2, -w/2+ch], [h/2, w/2-ch],
+                                        [h/2-ch, w/2], [-h/2+ch, w/2],
+                                        [-h/2, w/2-ch], [-h/2, -w/2+ch]
+                                    ]);
+                            translate([3.0, 0, 0]) rotate([0, 90, 0])
+                                linear_extrude(height=0.1)
+                                    polygon(points=[
+                                        [-h/2+ch+1.5, -w/2+1.5], [h/2-ch-1.5, -w/2+1.5],
+                                        [h/2-1.5, -w/2+ch+1.5], [h/2-1.5, w/2-ch-1.5],
+                                        [h/2-ch-1.5, w/2-1.5], [-h/2+ch+1.5, w/2-1.5],
+                                        [-h/2+1.5, w/2-ch-1.5], [-h/2+1.5, -w/2+ch+1.5]
+                                    ]);
+                        }
+                        
+                        // 連續一體化雕塑楔塊 (由飾板延伸至雙角尖端)
+                        hull() {
+                            translate([3.0, 0, 0]) rotate([0, 90, 0])
+                                linear_extrude(height=0.1)
+                                    polygon(points=[
+                                        [-h/2+ch+1.5, -w/2+1.5], [h/2-ch-1.5, -w/2+1.5],
+                                        [h/2-1.5, -w/2+ch+1.5], [h/2-1.5, w/2-ch-1.5],
+                                        [h/2-ch-1.5, w/2-1.5], [-h/2+ch+1.5, w/2-1.5],
+                                        [-h/2+1.5, w/2-ch-1.5], [-h/2+1.5, -w/2+ch+1.5]
+                                    ]);
+                                    
+                            // 底部 45° 平滑免支撐自爬升前緣
+                            translate([d - 5.0, 0, -2.0])
+                                cube([1.0, gap_front_bot + 2*prong_w - 2.0, 1.0], center=true);
+                                
+                            // 左側尖端 (向外擴展至 gap_front_top)
+                            translate([d, (gap_front_top/2 + prong_w/2), h/2 - 2.0])
+                                rotate([0, 40, 12])
+                                    cube([2.0, prong_w * 0.7, 2.0], center=true);
+                                    
+                            // 右側尖端 (向外擴展至 gap_front_top)
+                            translate([d, -(gap_front_top/2 + prong_w/2), h/2 - 2.0])
+                                rotate([0, 40, -12])
+                                    cube([2.0, prong_w * 0.7, 2.0], center=true);
+                        }
+                    }
+
+                    // 2. 頂面圓滑凹槽 (Top Concave Scoop)
+                    translate([5.5, 0, h/2 + 6.0])
+                        rotate([0, 75, 0])
+                            scale([1.0, 1.40, 0.75])
+                                cylinder(r=11.5, h=w*1.5, center=true, $fn=48);
+                                
+                    translate([2.5, 0, h/2 - 1.0])
+                        scale([1.0, 1.35, 0.8])
+                            rotate([0, 90, 0])
+                                cylinder(r=6.5, h=14.0, center=true, $fn=32);
+
+                    // 3. 中央漸擴 V 形引導鞍槽 (越往外越開)
+                    hull() {
+                        translate([d + 4.0, 0, h/2 + 2.0])
+                            cube([6.0, gap_front_top, 4.0], center=true);
+                        translate([3.5, 0, h/2 + 2.0])
+                            cube([4.0, gap_rear_top, 4.0], center=true);
+                        translate([d - 3.0, 0, 3.5])
+                            rotate([0, 90, 0])
+                                cylinder(d=gap_front_bot, h=6.0, center=true, $fn=32);
+                        translate([3.0, 0, 0.5])
+                            rotate([0, 90, 0])
+                                cylinder(d=gap_rear_bot, h=5.0, center=true, $fn=32);
+                    }
+
+                    // 4. 外側雕塑斜切面 (苗條骨感，消除笨重感)
+                    for (y_sign = [-1, 1]) {
+                        y_flank = y_sign * (w/2 + 1.8);
+                        translate([d * 0.55, y_flank, 2.0])
+                            rotate([0, 0, -y_sign * 10])
+                                rotate([-y_sign * 36, 0, 0])
+                                    cube([28.0, 10.0, 26.0], center=true);
+                                    
+                        translate([d * 0.75, y_sign * (gap_front_top/2 + prong_w + 2.5), h/2 + 1.5])
+                            rotate([0, -20, y_sign * 8])
+                                rotate([y_sign * 40, 0, 0])
+                                    cube([20.0, 8.0, 14.0], center=true);
+                    }
+                }
+                sphere(r=r_edge, $fn=12);
             }
         }
     }
 }
 
 module side_utility_hooks() {
-    if (side_hooks == "both" || side_hooks == "right") {
-        single_side_utility_hook(1);
-    }
     if (side_hooks == "both" || side_hooks == "left") {
-        single_side_utility_hook(-1);
+        monolithic_dual_utility_cradle(-1);
+    }
+    if (side_hooks == "both" || side_hooks == "right") {
+        monolithic_dual_utility_cradle(1);
     }
 }
 
