@@ -651,27 +651,46 @@ module architectural_trim_c4() {
 // Designed for hanging hair ties, loofah sponges, shower caps, razors, or washcloths.
 // Underside draft angle >= 48° from horizontal (100% self-supporting FDM 3D printing, zero supports required).
 module single_side_utility_hook(side=1) {
-    x_base = side * (w_pod/2); // ±94.0mm
-    y_center = d_wall + d_pod/2; // 33.0mm
+    x_base = side * (w_pod/2); // ±97.0mm
+    y_center = d_wall + d_pod/2; // 34.0mm
     
     translate([x_base, y_center, 0]) {
-        // Sculpted, organic support-free hook arm
+        // --- 1. Flared Wall Transition Gusset (Footprint on side wall) ---
+        // Spreads along exterior wall to 25mm in Y (±12.5mm) and 20mm in Z (7.5~27.5mm),
+        // completely eliminating sharp 90° right angles and dispersing impact forces smoothly into the wall.
         hull() {
-            // Root anchor deeply fused into main body wall (4mm penetration)
-            translate([-side * 2.0, 0, 12.0]) rotate([0, 90, 0]) cylinder(d=9.0, h=4.0, center=true, $fn=32);
-            translate([-side * 2.0, 0, 24.0]) rotate([0, 90, 0]) cylinder(d=9.0, h=4.0, center=true, $fn=32);
+            // Root anchor inside wall (penetrates 2.5mm into wall)
+            translate([-side * 2.0, -11.0, 16.5]) rotate([0, 90, 0]) cylinder(d=8.5, h=3.0, center=true, $fn=32);
+            translate([-side * 2.0,  11.0, 16.5]) rotate([0, 90, 0]) cylinder(d=8.5, h=3.0, center=true, $fn=32);
+            translate([-side * 2.0,   0.0,  9.5]) rotate([0, 90, 0]) cylinder(d=8.5, h=3.0, center=true, $fn=32);
+            translate([-side * 2.0,   0.0, 24.5]) rotate([0, 90, 0]) cylinder(d=8.5, h=3.0, center=true, $fn=32);
             
-            // Mid-span arm extending outward with >= 48° draft angle
-            translate([side * 6.0, 0, 19.5]) sphere(d=7.5, $fn=32);
-            
-            // Hook saddle elbow (10.5mm extension from wall)
-            translate([side * 10.5, 0, 24.5]) sphere(d=6.8, $fn=32);
+            // First transition ring at X = side * 1.5mm (smooth flared collar)
+            translate([side * 1.5, -6.5, 17.0]) sphere(d=7.5, $fn=32);
+            translate([side * 1.5,  6.5, 17.0]) sphere(d=7.5, $fn=32);
+            translate([side * 1.5,  0.0, 12.0]) sphere(d=8.0, $fn=32);
+            translate([side * 1.5,  0.0, 22.5]) sphere(d=7.5, $fn=32);
         }
         
-        // Upward retention prow / finial (6.0mm retention lip preventing items from slipping off)
+        // --- 2. Main Cantilever Arm with Organic Blending ---
         hull() {
-            translate([side * 10.5, 0, 24.5]) sphere(d=6.8, $fn=32);
-            translate([side * 11.2, 0, 30.5]) sphere(d=5.8, $fn=32);
+            // Matches transition ring at X = side * 1.5mm
+            translate([side * 1.5, -6.5, 17.0]) sphere(d=7.5, $fn=32);
+            translate([side * 1.5,  6.5, 17.0]) sphere(d=7.5, $fn=32);
+            translate([side * 1.5,  0.0, 12.0]) sphere(d=8.0, $fn=32);
+            translate([side * 1.5,  0.0, 22.5]) sphere(d=7.5, $fn=32);
+            
+            // Mid-span arm at X = side * 5.5mm (saddle valley)
+            translate([side * 5.5,  0.0, 18.5]) sphere(d=7.6, $fn=32);
+            
+            // Hook elbow at X = side * 10.0mm
+            translate([side * 10.0, 0.0, 24.0]) sphere(d=6.8, $fn=32);
+        }
+        
+        // --- 3. Upward Retention Finial ---
+        hull() {
+            translate([side * 10.0, 0.0, 24.0]) sphere(d=6.8, $fn=32);
+            translate([side * 10.8, 0.0, 30.5]) sphere(d=5.8, $fn=32);
         }
     }
 }
@@ -729,15 +748,15 @@ module rear_storage_cavities_and_drains() {
             translate([0, 0, z_floor])
                 flush_rear_cavity(46.0, y_front_c=56.0, r_c=8.0);
             
-            // Floor conical guidance funnel
+            // Floor conical guidance funnel (widens to 24mm at cavity floor for rapid water intake)
             translate([0, y_drain, z_floor - 4.0])
-                cylinder(r1=14.0/2, r2=12.0, h=4.01);
-            // 100% continuous straight-through drainage hole (Z=-5 to Z=z_floor+20)
+                cylinder(r1=18.0/2, r2=12.0, h=4.01);
+            // 100% continuous straight-through drainage hole (Ø18.0mm expanded)
             translate([0, y_drain, -5.0])
-                cylinder(d=14.0, h=z_floor + 20.0);
+                cylinder(d=18.0, h=z_floor + 20.0);
             // 45° bottom exit countersink chamfer (smooth to touch, anti-cut)
             translate([0, y_drain, -0.1])
-                cylinder(r1=14.0/2 + 1.2, r2=14.0/2, h=1.3);
+                cylinder(r1=18.0/2 + 1.2, r2=18.0/2, h=1.3);
             // Floor cross drainage channels
             translate([0, y_drain, z_floor]) {
                 cube([46.0, 4.0, 2.0], center=true);
@@ -753,15 +772,15 @@ module rear_storage_cavities_and_drains() {
             translate([0, 0, z_floor])
                 flush_rear_cavity(38.0, y_front_c=56.0, r_c=8.0);
             
-            // Floor conical guidance funnel
+            // Floor conical guidance funnel (widens to 24mm at cavity floor for rapid water intake)
             translate([0, y_drain, z_floor - 4.0])
-                cylinder(r1=12.0/2, r2=10.0, h=4.01);
-            // 100% continuous straight-through drainage hole (Z=-5 to Z=z_floor+20)
+                cylinder(r1=18.0/2, r2=12.0, h=4.01);
+            // 100% continuous straight-through drainage hole (Ø18.0mm expanded)
             translate([0, y_drain, -5.0])
-                cylinder(d=12.0, h=z_floor + 20.0);
+                cylinder(d=18.0, h=z_floor + 20.0);
             // 45° bottom exit countersink chamfer (smooth to touch, anti-cut)
             translate([0, y_drain, -0.1])
-                cylinder(r1=12.0/2 + 1.2, r2=12.0/2, h=1.3);
+                cylinder(r1=18.0/2 + 1.2, r2=18.0/2, h=1.3);
             // Floor cross drainage channels
             translate([0, y_drain, z_floor]) {
                 cube([38.0, 4.0, 2.0], center=true);
