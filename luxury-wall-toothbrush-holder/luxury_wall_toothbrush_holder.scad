@@ -679,12 +679,12 @@ module monolithic_dual_utility_cradle(side=1) {
     h_base    = 38.0;   // Base height in Z
     ch_corner = 4.5;    // Octagonal corner chamfer
     th_bevel  = 3.0;    // Wall perimeter bevel depth in X
-    d_proj    = 22.0;   // Forward reach in X
-    h_tip     = 11.5;   // Horn tip height in Z (proud, upward-hooking)
+    d_proj    = 23.0;   // Forward reach in X
+    h_tip     = 12.5;   // Horn tip height in Z (proud, upward-hooking to secure razor)
     
     // Flare specifications: 越往外越開
-    gap_rear  = 11.5;   // Gap at wall (11.5mm for slim DE safety razors)
-    gap_front = 18.0;   // Gap at tips (18.0mm for thick ergonomic razors)
+    gap_rear  = 11.5;   // Gap near wall (fits slim DE safety razors)
+    gap_front = 18.0;   // Gap at tips (fits thick ergonomic razors)
     prong_w   = 4.5;    // Slender horn thickness (左右兩根沒那麼粗)
     r_edge    = 0.60;   // Soft edge fillet
 
@@ -706,42 +706,58 @@ module monolithic_dual_utility_cradle(side=1) {
                         linear_extrude(height=0.1)
                             octagonal_profile_2d(w_base - 2*th_bevel, h_base - 2*th_bevel, ch_corner - 1.0);
                             
-                    // 3. 左側尖端 (3D 圓球穹頂，向外開展至 gap_front，向上昂起)
+                    // 3. 左側尖端 (3D 圓球穹頂，向外開展至 gap_front，向上昂起防滑)
                     translate([d_proj, (gap_front/2 + prong_w/2), h_tip])
                         rotate([0, 30, 14])
                             sphere(d=prong_w, $fn=24);
 
-                    // 4. 右側尖端 (3D 圓球穹頂，向外開展至 gap_front，向上昂起)
+                    // 4. 右側尖端 (3D 圓球穹頂，向外開展至 gap_front，向上昂起防滑)
                     translate([d_proj, -(gap_front/2 + prong_w/2), h_tip])
                         rotate([0, 30, -14])
                             sphere(d=prong_w, $fn=24);
 
                     // 5. 底部 45° 平滑自支撐爬升斜面 (100% 零支撐保證)
-                    translate([d_proj - 5.5, 0, -h_base/2 + th_bevel + (d_proj - 5.5 - th_bevel)])
+                    translate([d_proj - 6.0, 0, -h_base/2 + th_bevel + (d_proj - 6.0 - th_bevel)])
                         cube([0.5, gap_rear + 2.0, 1.0], center=true);
                 }
 
-                // 一體化平滑雙曲面鞍槽 (結合頂面圓滑凹槽與漸擴 V 槽)
+                // =============================================================
+                // 細節 1: 兩根的根部到前端是凹型的 (Top Concave Saddle Dish)
+                // 自根部至前端雕琢出圓滑下凹鞍面，穩固托住刮鬍刀頭，避免前後晃動滑落
+                // =============================================================
+                translate([d_proj * 0.54, 0, 22.5])
+                    rotate([0, 90, 90])
+                        cylinder(r=13.5, h=w_base * 1.5, center=true, $fn=64);
+
+                // =============================================================
+                // 細節 2: 兩根中間的部分往根部內縮 (Deep Recessed V-Trough)
+                // 深度內縮至 X = 1.2mm，並提供手柄垂直下垂空間，確保手柄 100% 垂直直立
+                // =============================================================
                 hull() {
-                    // 前端口 (寬度 gap_front = 18.0mm)
-                    translate([d_proj + 3.0, 0, h_tip + 4.0])
-                        cube([4.0, gap_front, 6.0], center=true);
-                    // 根部口 (寬度 gap_rear = 11.5mm，起始於 X = th_bevel + 1.0，確保背板上緣完整)
-                    translate([th_bevel + 1.0, 0, h_tip + 4.0])
-                        cube([4.0, gap_rear, 6.0], center=true);
-                    // 中央凹陷鞍面 (下凹形成頂面圓滑凹槽)
-                    translate([d_proj * 0.55, 0, 6.5])
-                        rotate([0, 90, 0])
-                            cylinder(r=5.5, h=d_proj, center=true, $fn=36);
+                    // 前端口 (寬度 gap_front = 18.0mm，越往外越開)
+                    translate([d_proj + 3.0, 0, 15.0])
+                        cube([4.0, gap_front, 10.0], center=true);
+                    // 深度內縮根部口 (往根部縮至 X = 1.2mm，寬度 gap_rear = 11.5mm)
+                    translate([1.2, 0, 15.0])
+                        cube([2.0, gap_rear, 10.0], center=true);
                     // 前段圓弧槽底
-                    translate([d_proj - 3.0, 0, 3.0])
+                    translate([d_proj - 3.0, 0, 2.0])
                         rotate([0, 90, 0])
                             cylinder(d=5.5, h=4.0, center=true, $fn=32);
-                    // 後段圓弧槽底
-                    translate([th_bevel + 1.0, 0, 1.5])
+                    // 根部深度內縮圓弧 U 形凹口 (X = 1.2mm，半徑 5.75mm)
+                    translate([1.2, 0, 0.5])
                         rotate([0, 90, 0])
-                            cylinder(d=4.5, h=4.0, center=true, $fn=32);
+                            cylinder(d=gap_rear, h=2.0, center=true, $fn=32);
+                    // 手柄垂直垂放容置槽 (使各種粗細手柄皆可筆直垂立)
+                    translate([d_proj * 0.45, 0, -9.0])
+                        cube([d_proj * 0.65, gap_rear, 14.0], center=true);
                 }
+
+                // 背板頂部柔潤凹槽修飾 (手指拿取空間)
+                translate([th_bevel + 8.5, 0, h_base/2 + 6.5])
+                    rotate([0, 75, 0])
+                        scale([1.0, 1.45, 0.75])
+                            cylinder(r=13.0, h=w_base * 1.5, center=true, $fn=64);
             }
         }
     }
