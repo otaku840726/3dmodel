@@ -657,123 +657,91 @@ module architectural_trim_c4() {
 // 2. 頂面圓滑弧形凹槽：頂面呈連續圓滑凹槽鞍面，刀頭橫跨置放時更加貼合，手指拿取順手優雅。
 // 3. 左右雕塑雙角：苗條修長不笨重（壁厚約 4.8mm），外側經 45° 切面修飾，角尖平滑倒角微翹防滑落。
 // 全體邊緣經 R=0.65mm 空間球體柔潤微圓角處理，完全無生硬直角與割手稜角。
+module octagonal_profile_2d(w, h, ch) {
+    polygon([
+        [-w/2 + ch, -h/2],
+        [w/2 - ch, -h/2],
+        [w/2, -h/2 + ch],
+        [w/2, h/2 - ch],
+        [w/2 - ch, h/2],
+        [-w/2 + ch, h/2],
+        [-w/2, h/2 - ch],
+        [-w/2, -h/2 + ch]
+    ]);
+}
+
 module monolithic_dual_utility_cradle(side=1) {
     x_base = side * (w_pod/2); // ±97.0mm
     y_center = d_wall + d_pod/2; // 34.0mm
     z_center = 22.0;
     
-    w = 32.0;       // Y 軸總寬度 (沿側壁前後向)
-    h = 36.0;       // Z 軸總高度 (垂直向)
-    d = 23.0;       // X 軸向外懸挑總深度
-    ch = 3.5;      // 外周 45° 八角形倒角
-    r_edge = 0.65;  // 柔潤圓角半徑
+    w_base    = 34.0;   // Base width in Y
+    h_base    = 38.0;   // Base height in Z
+    ch_corner = 4.5;    // Octagonal corner chamfer
+    th_bevel  = 3.0;    // Wall perimeter bevel depth in X
+    d_proj    = 22.0;   // Forward reach in X
+    h_tip     = 11.5;   // Horn tip height in Z (proud, upward-hooking)
     
-    // 漸擴鞍槽尺寸 (越往外越開，適配不同粗細刮鬍刀柄)
-    gap_rear_top   = 11.5; // 靠牆內側頂部開口 (適合細柄安全刮鬍刀)
-    gap_rear_bot   = 8.5;  // 靠牆內側槽底直徑
-    gap_front_top  = 18.0; // 前端頂部開口 (適合粗柄人體工學刮鬍刀)
-    gap_front_bot  = 13.0; // 前端槽底直徑
-    
-    // 苗條雙角寬度 (左右兩根沒那麼粗)
-    prong_w = 4.8;
-    
+    // Flare specifications: 越往外越開
+    gap_rear  = 11.5;   // Gap at wall (11.5mm for slim DE safety razors)
+    gap_front = 18.0;   // Gap at tips (18.0mm for thick ergonomic razors)
+    prong_w   = 4.5;    // Slender horn thickness (左右兩根沒那麼粗)
+    r_edge    = 0.60;   // Soft edge fillet
+
     translate([x_base, y_center, z_center]) {
-        // 內部深層受力強化銷 (錨定入壁體 4.0mm)
+        // Internal wall anchor pin (stays inside wall X <= 0)
         translate([-side * 3.0, 0, 0]) rotate([0, 90, 0])
-            cylinder(d=6.0, h=4.0, center=true, $fn=24);
-            
+            cylinder(d=6.0, h=3.0, center=false, $fn=24);
+
         scale([side, 1, 1]) {
-            minkowski() {
-                difference() {
-                    // 1. 一體化雕塑本體 (八角底板 + 自支撐實心雕塑楔形塊)
-                    union() {
-                        // 壁面貼合面八角飾板
-                        hull() {
-                            translate([0, 0, 0]) rotate([0, 90, 0])
-                                linear_extrude(height=0.1)
-                                    polygon(points=[
-                                        [-h/2+ch, -w/2], [h/2-ch, -w/2],
-                                        [h/2, -w/2+ch], [h/2, w/2-ch],
-                                        [h/2-ch, w/2], [-h/2+ch, w/2],
-                                        [-h/2, w/2-ch], [-h/2, -w/2+ch]
-                                    ]);
-                            translate([3.0, 0, 0]) rotate([0, 90, 0])
-                                linear_extrude(height=0.1)
-                                    polygon(points=[
-                                        [-h/2+ch+1.5, -w/2+1.5], [h/2-ch-1.5, -w/2+1.5],
-                                        [h/2-1.5, -w/2+ch+1.5], [h/2-1.5, w/2-ch-1.5],
-                                        [h/2-ch-1.5, w/2-1.5], [-h/2+ch+1.5, w/2-1.5],
-                                        [-h/2+1.5, w/2-ch-1.5], [-h/2+1.5, -w/2+ch+1.5]
-                                    ]);
-                        }
-                        
-                        // 連續一體化雕塑楔塊 (由飾板延伸至雙角尖端)
-                        hull() {
-                            translate([3.0, 0, 0]) rotate([0, 90, 0])
-                                linear_extrude(height=0.1)
-                                    polygon(points=[
-                                        [-h/2+ch+1.5, -w/2+1.5], [h/2-ch-1.5, -w/2+1.5],
-                                        [h/2-1.5, -w/2+ch+1.5], [h/2-1.5, w/2-ch-1.5],
-                                        [h/2-ch-1.5, w/2-1.5], [-h/2+ch+1.5, w/2-1.5],
-                                        [-h/2+1.5, w/2-ch-1.5], [-h/2+1.5, -w/2+ch+1.5]
-                                    ]);
-                                    
-                            // 底部 45° 平滑免支撐自爬升前緣
-                            translate([d - 5.0, 0, -2.0])
-                                cube([1.0, gap_front_bot + 2*prong_w - 2.0, 1.0], center=true);
-                                
-                            // 左側尖端 (向外擴展至 gap_front_top)
-                            translate([d, (gap_front_top/2 + prong_w/2), h/2 - 2.0])
-                                rotate([0, 40, 12])
-                                    cube([2.0, prong_w * 0.7, 2.0], center=true);
-                                    
-                            // 右側尖端 (向外擴展至 gap_front_top)
-                            translate([d, -(gap_front_top/2 + prong_w/2), h/2 - 2.0])
-                                rotate([0, 40, -12])
-                                    cube([2.0, prong_w * 0.7, 2.0], center=true);
-                        }
-                    }
+            difference() {
+                hull() {
+                    // 1. 貼牆八角底面 (X = 0)
+                    translate([0, 0, 0]) rotate([0, 90, 0])
+                        linear_extrude(height=0.1)
+                            octagonal_profile_2d(w_base, h_base, ch_corner);
+                            
+                    // 2. 45° 倒角過渡階 (X = th_bevel = 3.0)
+                    translate([th_bevel, 0, 0]) rotate([0, 90, 0])
+                        linear_extrude(height=0.1)
+                            octagonal_profile_2d(w_base - 2*th_bevel, h_base - 2*th_bevel, ch_corner - 1.0);
+                            
+                    // 3. 左側尖端 (3D 圓球穹頂，向外開展至 gap_front，向上昂起)
+                    translate([d_proj, (gap_front/2 + prong_w/2), h_tip])
+                        rotate([0, 30, 14])
+                            sphere(d=prong_w, $fn=24);
 
-                    // 2. 頂面圓滑凹槽 (Top Concave Scoop)
-                    translate([5.5, 0, h/2 + 6.0])
-                        rotate([0, 75, 0])
-                            scale([1.0, 1.40, 0.75])
-                                cylinder(r=11.5, h=w*1.5, center=true, $fn=48);
-                                
-                    translate([2.5, 0, h/2 - 1.0])
-                        scale([1.0, 1.35, 0.8])
-                            rotate([0, 90, 0])
-                                cylinder(r=6.5, h=14.0, center=true, $fn=32);
+                    // 4. 右側尖端 (3D 圓球穹頂，向外開展至 gap_front，向上昂起)
+                    translate([d_proj, -(gap_front/2 + prong_w/2), h_tip])
+                        rotate([0, 30, -14])
+                            sphere(d=prong_w, $fn=24);
 
-                    // 3. 中央漸擴 V 形引導鞍槽 (越往外越開)
-                    hull() {
-                        translate([d + 4.0, 0, h/2 + 2.0])
-                            cube([6.0, gap_front_top, 4.0], center=true);
-                        translate([3.5, 0, h/2 + 2.0])
-                            cube([4.0, gap_rear_top, 4.0], center=true);
-                        translate([d - 3.0, 0, 3.5])
-                            rotate([0, 90, 0])
-                                cylinder(d=gap_front_bot, h=6.0, center=true, $fn=32);
-                        translate([3.0, 0, 0.5])
-                            rotate([0, 90, 0])
-                                cylinder(d=gap_rear_bot, h=5.0, center=true, $fn=32);
-                    }
-
-                    // 4. 外側雕塑斜切面 (苗條骨感，消除笨重感)
-                    for (y_sign = [-1, 1]) {
-                        y_flank = y_sign * (w/2 + 1.8);
-                        translate([d * 0.55, y_flank, 2.0])
-                            rotate([0, 0, -y_sign * 10])
-                                rotate([-y_sign * 36, 0, 0])
-                                    cube([28.0, 10.0, 26.0], center=true);
-                                    
-                        translate([d * 0.75, y_sign * (gap_front_top/2 + prong_w + 2.5), h/2 + 1.5])
-                            rotate([0, -20, y_sign * 8])
-                                rotate([y_sign * 40, 0, 0])
-                                    cube([20.0, 8.0, 14.0], center=true);
-                    }
+                    // 5. 底部 45° 平滑自支撐爬升斜面 (100% 零支撐保證)
+                    translate([d_proj - 5.5, 0, -h_base/2 + th_bevel + (d_proj - 5.5 - th_bevel)])
+                        cube([0.5, gap_rear + 2.0, 1.0], center=true);
                 }
-                sphere(r=r_edge, $fn=12);
+
+                // 一體化平滑雙曲面鞍槽 (結合頂面圓滑凹槽與漸擴 V 槽)
+                hull() {
+                    // 前端口 (寬度 gap_front = 18.0mm)
+                    translate([d_proj + 3.0, 0, h_tip + 4.0])
+                        cube([4.0, gap_front, 6.0], center=true);
+                    // 根部口 (寬度 gap_rear = 11.5mm，起始於 X = th_bevel + 1.0，確保背板上緣完整)
+                    translate([th_bevel + 1.0, 0, h_tip + 4.0])
+                        cube([4.0, gap_rear, 6.0], center=true);
+                    // 中央凹陷鞍面 (下凹形成頂面圓滑凹槽)
+                    translate([d_proj * 0.55, 0, 6.5])
+                        rotate([0, 90, 0])
+                            cylinder(r=5.5, h=d_proj, center=true, $fn=36);
+                    // 前段圓弧槽底
+                    translate([d_proj - 3.0, 0, 3.0])
+                        rotate([0, 90, 0])
+                            cylinder(d=5.5, h=4.0, center=true, $fn=32);
+                    // 後段圓弧槽底
+                    translate([th_bevel + 1.0, 0, 1.5])
+                        rotate([0, 90, 0])
+                            cylinder(d=4.5, h=4.0, center=true, $fn=32);
+                }
             }
         }
     }
