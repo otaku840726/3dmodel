@@ -196,7 +196,7 @@ module arch_backplate_solid() {
             }
 }
 
-// Classical Molding Frame Trim (Color 4: Champagne Gold)
+// Classical Molding Frame Trim (Color 4: Champagne Gold) - Exposed Upper Backplate
 module arch_backplate_frame_trim() {
     w = w_total;
     th_back = d_wall;
@@ -207,19 +207,18 @@ module arch_backplate_frame_trim() {
             difference() {
                 linear_extrude(height = 1.0)
                     hull() {
-                        polygon(backplate_bottom_polygon(w, r, 42.0, 8));
-                        translate([-w/2 + r, r]) circle(r=r);
-                        translate([ w/2 - r, r]) circle(r=r);
+                        translate([-w/2 + r, h_pod]) circle(r=r);
+                        translate([ w/2 - r, h_pod]) circle(r=r);
                         translate([-w/2 + r, h_total - r]) circle(r=r);
                         translate([ w/2 - r, h_total - r]) circle(r=r);
                     }
                 translate([0, 0, -1.0])
                     linear_extrude(height = 3.0)
                         hull() {
-                            translate([-w/2 + r, r + 4.0]) circle(r=6.0);
-                            translate([ w/2 - r, r + 4.0]) circle(r=6.0);
-                            translate([-w/2 + r, h_total - r]) circle(r=6.0);
-                            translate([ w/2 - r, h_total - r]) circle(r=6.0);
+                            translate([-w/2 + r + 4.0, h_pod + 4.0]) circle(r=4.0);
+                            translate([ w/2 - r - 4.0, h_pod + 4.0]) circle(r=4.0);
+                            translate([-w/2 + r + 4.0, h_total - r - 4.0]) circle(r=4.0);
+                            translate([ w/2 - r - 4.0, h_total - r - 4.0]) circle(r=4.0);
                         }
             }
 }
@@ -558,32 +557,54 @@ module front_hanging_teeth_array(style_type="fluted") {
 // =============================================================================
 // 4. STORAGE GALLERY SOLID & CLASSICAL ARCHITECTURAL FLUTING
 // =============================================================================
-module squircle_body(w, d, r, h, ch=3.5, ch_bot=1.2) {
+module fused_master_body() {
+    w = w_total;
+    r_back = 10.0;
+    r_front = 14.0;
+    ch_front = 2.5; // Top chamfer on front wall and front corners
+    ch_bot = 1.2;   // Bottom perimeter 45° anti-cut chamfer
+    
+    // 1. Monolithic Lower Storage Pod Body (Z = 0 to h_pod = 44.0)
+    // Seamlessly integrates the storage box with the backplate (from Y = 0 to Y = y_front = 60.0)
     hull() {
-        // Bottom 45° chamfer at Z = 0 (avoid sharp 90° bed rim, silky handling)
-        translate([-w/2 + r, d_wall + r, 0]) cylinder(r=max(1, r - ch_bot), h=0.1);
-        translate([ w/2 - r, d_wall + r, 0]) cylinder(r=max(1, r - ch_bot), h=0.1);
-        translate([-w/2 + r, d_wall + d - r, 0]) cylinder(r=max(1, r - ch_bot), h=0.1);
-        translate([ w/2 - r, d_wall + d - r, 0]) cylinder(r=max(1, r - ch_bot), h=0.1);
+        // Base at Z = 0 (45° anti-cut chamfered around outer perimeter)
+        translate([-w/2 + r_back, r_back, 0]) cylinder(r=r_back - ch_bot, h=0.1);
+        translate([ w/2 - r_back, r_back, 0]) cylinder(r=r_back - ch_bot, h=0.1);
+        translate([-w/2 + r_front, y_front - r_front, 0]) cylinder(r=r_front - ch_bot, h=0.1);
+        translate([ w/2 - r_front, y_front - r_front, 0]) cylinder(r=r_front - ch_bot, h=0.1);
         
-        // Full footprint at Z = ch_bot (100% self-supporting 45° outward slope)
-        translate([-w/2 + r, d_wall + r, ch_bot]) cylinder(r=r, h=0.1);
-        translate([ w/2 - r, d_wall + r, ch_bot]) cylinder(r=r, h=0.1);
-        translate([-w/2 + r, d_wall + d - r, ch_bot]) cylinder(r=r, h=0.1);
-        translate([ w/2 - r, d_wall + d - r, ch_bot]) cylinder(r=r, h=0.1);
+        // Footprint at Z = ch_bot (full footprint)
+        translate([-w/2 + r_back, r_back, ch_bot]) cylinder(r=r_back, h=0.1);
+        translate([ w/2 - r_back, r_back, ch_bot]) cylinder(r=r_back, h=0.1);
+        translate([-w/2 + r_front, y_front - r_front, ch_bot]) cylinder(r=r_front, h=0.1);
+        translate([ w/2 - r_front, y_front - r_front, ch_bot]) cylinder(r=r_front, h=0.1);
         
-        // Full footprint up to Z = h - ch
-        translate([-w/2 + r, d_wall + r, h - ch]) cylinder(r=r, h=0.1);
-        translate([ w/2 - r, d_wall + r, h - ch]) cylinder(r=r, h=0.1);
-        translate([-w/2 + r, d_wall + d - r, h - ch]) cylinder(r=r, h=0.1);
-        translate([ w/2 - r, d_wall + d - r, h - ch]) cylinder(r=r, h=0.1);
+        // Footprint at Z = h_pod - ch_front
+        translate([-w/2 + r_back, r_back, h_pod - ch_front]) cylinder(r=r_back, h=0.1);
+        translate([ w/2 - r_back, r_back, h_pod - ch_front]) cylinder(r=r_back, h=0.1);
+        translate([-w/2 + r_front, y_front - r_front, h_pod - ch_front]) cylinder(r=r_front, h=0.1);
+        translate([ w/2 - r_front, y_front - r_front, h_pod - ch_front]) cylinder(r=r_front, h=0.1);
         
-        // Top 4-sided chamfer at Z = h
-        translate([-w/2 + r, d_wall + r, h]) cylinder(r=max(1, r - ch), h=0.1);
-        translate([ w/2 - r, d_wall + r, h]) cylinder(r=max(1, r - ch), h=0.1);
-        translate([-w/2 + r, d_wall + d - r, h]) cylinder(r=max(1, r - ch), h=0.1);
-        translate([ w/2 - r, d_wall + d - r, h]) cylinder(r=max(1, r - ch), h=0.1);
+        // Top deck at Z = h_pod:
+        // Rear and side edges maintain full profile to meet the backplate with ZERO gap!
+        // Front wall and front corners chamfer smoothly by ch_front
+        translate([-w/2 + r_back, r_back, h_pod]) cylinder(r=r_back, h=0.1);
+        translate([ w/2 - r_back, r_back, h_pod]) cylinder(r=r_back, h=0.1);
+        translate([-w/2 + r_front, y_front - r_front - ch_front, h_pod]) cylinder(r=r_front - ch_front, h=0.1);
+        translate([ w/2 - r_front, y_front - r_front - ch_front, h_pod]) cylinder(r=r_front - ch_front, h=0.1);
     }
+    
+    // 2. Upper Architectural Backplate (Z = h_pod to h_total = 88.0)
+    // Continuous monolithic extension of the rear wall (from Y = 0 to Y = d_wall = 8.0)
+    translate([0, d_wall, 0])
+        rotate([90, 0, 0])
+            linear_extrude(height = d_wall)
+                hull() {
+                    translate([-w/2 + r_back, h_pod - 1.0]) circle(r=r_back);
+                    translate([ w/2 - r_back, h_pod - 1.0]) circle(r=r_back);
+                    translate([-w/2 + r_back, h_total - r_back]) circle(r=r_back);
+                    translate([ w/2 - r_back, h_total - r_back]) circle(r=r_back);
+                }
 }
 
 // Classical Architectural Fluting & Champagne Gold Trim (Color 4)
@@ -668,76 +689,83 @@ module side_utility_hooks() {
 // =============================================================================
 // 5. STORAGE CAVITIES, CONICAL FUNNELS & THROUGH-DRAINS (頂層統一差集)
 // =============================================================================
-module squircle_cavity(w, d, r, h) {
+// Flush-Rear Storage Cavity Module
+// Rear wall is flush at Y = d_wall = 8.0mm (backplate serves directly as the rear wall!)
+// Smooth 45° mouth lead-in chamfer on front and sides for luxurious bottle guidance
+module flush_rear_cavity(w_c, y_front_c=56.0, r_c=8.0, h_c=h_total, ch_mouth=1.5) {
+    y_rear_c = d_wall; // 8.0mm
+    
+    // Main pocket
     hull() {
-        translate([-w/2 + r, -d/2 + r, 0]) cylinder(r=r, h=h);
-        translate([ w/2 - r, -d/2 + r, 0]) cylinder(r=r, h=h);
-        translate([-w/2 + r,  d/2 - r, 0]) cylinder(r=r, h=h);
-        translate([ w/2 - r,  d/2 - r, 0]) cylinder(r=r, h=h);
+        translate([-w_c/2 + r_c, y_front_c - r_c, 0]) cylinder(r=r_c, h=h_c);
+        translate([ w_c/2 - r_c, y_front_c - r_c, 0]) cylinder(r=r_c, h=h_c);
+        translate([-w_c/2 + 2.0, y_rear_c + 2.0, 0]) cylinder(r=2.0, h=h_c);
+        translate([ w_c/2 - 2.0, y_rear_c + 2.0, 0]) cylinder(r=2.0, h=h_c);
+    }
+    
+    // Mouth chamfer (front and sides only, rear stays vertical flush with backplate)
+    hull() {
+        translate([-w_c/2 + r_c, y_front_c - r_c, h_pod - 9.0 - 2.0]) cylinder(r=r_c, h=0.1);
+        translate([ w_c/2 - r_c, y_front_c - r_c, h_pod - 9.0 - 2.0]) cylinder(r=r_c, h=0.1);
+        translate([-w_c/2 + 2.0, y_rear_c + 2.0, h_pod - 9.0 - 2.0]) cylinder(r=2.0, h=0.1);
+        translate([ w_c/2 - 2.0, y_rear_c + 2.0, h_pod - 9.0 - 2.0]) cylinder(r=2.0, h=0.1);
+        
+        translate([-w_c/2 + r_c - ch_mouth, y_front_c - r_c + ch_mouth, h_pod - 9.0 + 0.5]) cylinder(r=r_c + ch_mouth, h=0.1);
+        translate([ w_c/2 - r_c + ch_mouth, y_front_c - r_c + ch_mouth, h_pod - 9.0 + 0.5]) cylinder(r=r_c + ch_mouth, h=0.1);
+        translate([-w_c/2 + 2.0 - ch_mouth, y_rear_c + 2.0, h_pod - 9.0 + 0.5]) cylinder(r=2.0, h=0.1);
+        translate([ w_c/2 - 2.0 + ch_mouth, y_rear_c + 2.0, h_pod - 9.0 + 0.5]) cylinder(r=2.0, h=0.1);
     }
 }
 
 module rear_storage_cavities_and_drains() {
-    y_cav = d_wall + d_pod/2; // 34.0mm
     z_floor = 9.0;           // Cavity floor
     h = h_pod;               // 44.0mm
+    y_drain = 32.0;          // Center of drainage hole (halfway between Y=8 and Y=56)
     
-    // 1. Cleanser Chambers (X = -66.5, +66.5) - Compatible with Ø44mm Thick Caps
-    // Sized 44mm x 39mm with uniform surrounding flat top landing (1.8mm ~ 3.8mm)
+    // 1. Cleanser Chambers (X = -67.0, +67.0) - Sized 46mm x 48mm (Expansive volume)
     for (side = [-1, 1]) {
-        cx = side * 66.5;
-        translate([cx, y_cav, 0]) {
+        cx = side * 67.0;
+        translate([cx, 0, 0]) {
             translate([0, 0, z_floor])
-                squircle_cavity(44.0, 39.0, 10.5, h_total);
-            // 4-sided chamfer mouth at top (2.0mm depth, 1.2mm bevel on all 4 sides)
-            hull() {
-                translate([0, 0, h - 2.0])
-                    squircle_cavity(44.0, 39.0, 10.5, 0.1);
-                translate([0, 0, h + 0.5])
-                    squircle_cavity(44.0 + 2.4, 39.0 + 2.4, 10.5 + 1.2, 0.1);
-            }
+                flush_rear_cavity(46.0, y_front_c=56.0, r_c=8.0);
+            
             // Floor conical guidance funnel
-            translate([0, 0, z_floor - 4.0])
-                cylinder(r1=14.0/2, r2=11.5, h=4.01);
+            translate([0, y_drain, z_floor - 4.0])
+                cylinder(r1=14.0/2, r2=12.0, h=4.01);
             // 100% continuous straight-through drainage hole (Z=-5 to Z=z_floor+20)
-            translate([0, 0, -5.0])
+            translate([0, y_drain, -5.0])
                 cylinder(d=14.0, h=z_floor + 20.0);
             // 45° bottom exit countersink chamfer (smooth to touch, anti-cut)
-            translate([0, 0, -0.1])
+            translate([0, y_drain, -0.1])
                 cylinder(r1=14.0/2 + 1.2, r2=14.0/2, h=1.3);
-            translate([0, 0, z_floor]) {
-                cube([44.0, 4.0, 2.0], center=true);
-                cube([4.0, 39.0, 2.0], center=true);
+            // Floor cross drainage channels
+            translate([0, y_drain, z_floor]) {
+                cube([46.0, 4.0, 2.0], center=true);
+                cube([4.0, 48.0, 2.0], center=true);
             }
         }
     }
     
-    // 2. Toothpaste Chambers (X = -22, +22) - Compatible with Ø36mm Thick Caps
-    // Sized 36mm x 38mm with uniform surrounding flat top landing (2.3mm)
+    // 2. Toothpaste Chambers (X = -21.5, +21.5) - Sized 38mm x 48mm (Expansive volume)
     for (side = [-1, 1]) {
-        cx = side * 22.0;
-        translate([cx, y_cav, 0]) {
+        cx = side * 21.5;
+        translate([cx, 0, 0]) {
             translate([0, 0, z_floor])
-                squircle_cavity(36.0, 38.0, 10.0, h_total);
-            // 4-sided chamfer mouth at top (2.0mm depth, 1.2mm bevel on all 4 sides)
-            hull() {
-                translate([0, 0, h - 2.0])
-                    squircle_cavity(36.0, 38.0, 10.0, 0.1);
-                translate([0, 0, h + 0.5])
-                    squircle_cavity(36.0 + 2.4, 38.0 + 2.4, 10.0 + 1.2, 0.1);
-            }
+                flush_rear_cavity(38.0, y_front_c=56.0, r_c=8.0);
+            
             // Floor conical guidance funnel
-            translate([0, 0, z_floor - 4.0])
-                cylinder(r1=12.0/2, r2=9.5, h=4.01);
+            translate([0, y_drain, z_floor - 4.0])
+                cylinder(r1=12.0/2, r2=10.0, h=4.01);
             // 100% continuous straight-through drainage hole (Z=-5 to Z=z_floor+20)
-            translate([0, 0, -5.0])
+            translate([0, y_drain, -5.0])
                 cylinder(d=12.0, h=z_floor + 20.0);
             // 45° bottom exit countersink chamfer (smooth to touch, anti-cut)
-            translate([0, 0, -0.1])
+            translate([0, y_drain, -0.1])
                 cylinder(r1=12.0/2 + 1.2, r2=12.0/2, h=1.3);
-            translate([0, 0, z_floor]) {
-                cube([36.0, 4.0, 2.0], center=true);
-                cube([4.0, 38.0, 2.0], center=true);
+            // Floor cross drainage channels
+            translate([0, y_drain, z_floor]) {
+                cube([38.0, 4.0, 2.0], center=true);
+                cube([4.0, 48.0, 2.0], center=true);
             }
         }
     }
@@ -752,8 +780,7 @@ module rear_storage_cavities_and_drains() {
 module luxury_holder_c1() {
     difference() {
         union() {
-            arch_backplate_solid();
-            squircle_body(w_pod, d_pod, 16.0, h_pod, 3.5);
+            fused_master_body();
             translate([0, y_front, 0]) {
                 for (i = [-3 : 3]) {
                     translate([i * tb_pitch, 0, 0])
@@ -942,11 +969,11 @@ module preview_assembled(style_type="fluted") {
     luxury_holder_4color();
     
     // Rear Cleansers & Toothpastes
-    y_cav = d_wall + d_pod/2;
-    translate([ 66.5, y_cav, 9.0]) cleanser_tube_prop([0.22, 0.40, 0.72]);
-    translate([-66.5, y_cav, 9.0]) cleanser_tube_prop([0.92, 0.92, 0.95]);
-    translate([ 22.0, y_cav, 9.0]) toothpaste_tube_prop([0.88, 0.30, 0.35]);
-    translate([-22.0, y_cav, 9.0]) toothpaste_tube_prop([0.20, 0.58, 0.85]);
+    y_cav = 32.0;
+    translate([ 67.0, y_cav, 9.0]) cleanser_tube_prop([0.22, 0.40, 0.72]);
+    translate([-67.0, y_cav, 9.0]) cleanser_tube_prop([0.92, 0.92, 0.95]);
+    translate([ 21.5, y_cav, 9.0]) toothpaste_tube_prop([0.88, 0.30, 0.35]);
+    translate([-21.5, y_cav, 9.0]) toothpaste_tube_prop([0.20, 0.58, 0.85]);
     
     // Front Hanging Toothbrushes
     translate([ 37.5, 0, 0]) mijia_electric_brush_prop();
