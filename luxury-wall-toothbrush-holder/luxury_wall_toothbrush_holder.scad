@@ -653,44 +653,39 @@ module architectural_trim_c4() {
 module single_side_utility_hook(side=1) {
     x_base = side * (w_pod/2); // ±97.0mm
     y_center = d_wall + d_pod/2; // 34.0mm
+    z_center = 20.0;
     
-    translate([x_base, y_center, 0]) {
-        // --- 1. Flared Wall Transition Gusset (Footprint on side wall) ---
-        // Spreads along exterior wall to 25mm in Y (±12.5mm) and 20mm in Z (7.5~27.5mm),
-        // completely eliminating sharp 90° right angles and dispersing impact forces smoothly into the wall.
-        hull() {
-            // Root anchor inside wall (penetrates 2.5mm into wall)
-            translate([-side * 2.0, -11.0, 16.5]) rotate([0, 90, 0]) cylinder(d=8.5, h=3.0, center=true, $fn=32);
-            translate([-side * 2.0,  11.0, 16.5]) rotate([0, 90, 0]) cylinder(d=8.5, h=3.0, center=true, $fn=32);
-            translate([-side * 2.0,   0.0,  9.5]) rotate([0, 90, 0]) cylinder(d=8.5, h=3.0, center=true, $fn=32);
-            translate([-side * 2.0,   0.0, 24.5]) rotate([0, 90, 0]) cylinder(d=8.5, h=3.0, center=true, $fn=32);
+    translate([x_base, y_center, z_center]) {
+        // 1. Deep solid wall anchor (penetrates 3.0mm inside wall)
+        translate([-side * 3.0, 0, 0]) rotate([0, 90, 0])
+            scale([1, 0.65, 1.25]) cylinder(d=7.5, h=4.0, center=true, $fn=48);
             
-            // First transition ring at X = side * 1.5mm (smooth flared collar)
-            translate([side * 1.5, -6.5, 17.0]) sphere(d=7.5, $fn=32);
-            translate([side * 1.5,  6.5, 17.0]) sphere(d=7.5, $fn=32);
-            translate([side * 1.5,  0.0, 12.0]) sphere(d=8.0, $fn=32);
-            translate([side * 1.5,  0.0, 22.5]) sphere(d=7.5, $fn=32);
+        // 2. Smooth Concave Fillet Collar (全周圓弧切線喇叭狀過渡 - 100% 圓潤無任何菱角)
+        hull() {
+            translate([0, 0, 0]) rotate([0, 90, 0])
+                scale([1, 0.65, 1.25]) cylinder(d=9.5, h=0.1, center=true, $fn=48);
+            translate([side * 1.3, 0, 0]) rotate([0, 90, 0])
+                scale([1, 0.58, 1.15]) cylinder(d=6.5, h=0.1, center=true, $fn=48);
+        }
+        hull() {
+            translate([side * 1.3, 0, 0]) rotate([0, 90, 0])
+                scale([1, 0.58, 1.15]) cylinder(d=6.5, h=0.1, center=true, $fn=48);
+            translate([side * 3.0, 0, 0]) rotate([0, 90, 0])
+                scale([1, 0.52, 1.10]) cylinder(d=5.0, h=0.1, center=true, $fn=48);
         }
         
-        // --- 2. Main Cantilever Arm with Organic Blending ---
+        // 3. Slender Ribbon Blade Cantilever Arm (圓潤過渡扁平刀鋒懸臂)
         hull() {
-            // Matches transition ring at X = side * 1.5mm
-            translate([side * 1.5, -6.5, 17.0]) sphere(d=7.5, $fn=32);
-            translate([side * 1.5,  6.5, 17.0]) sphere(d=7.5, $fn=32);
-            translate([side * 1.5,  0.0, 12.0]) sphere(d=8.0, $fn=32);
-            translate([side * 1.5,  0.0, 22.5]) sphere(d=7.5, $fn=32);
-            
-            // Mid-span arm at X = side * 5.5mm (saddle valley)
-            translate([side * 5.5,  0.0, 18.5]) sphere(d=7.6, $fn=32);
-            
-            // Hook elbow at X = side * 10.0mm
-            translate([side * 10.0, 0.0, 24.0]) sphere(d=6.8, $fn=32);
+            translate([side * 3.0, 0, 0]) rotate([0, 90, 0])
+                scale([1, 0.52, 1.10]) cylinder(d=5.0, h=0.1, center=true, $fn=48);
+            translate([side * 6.5, 0, 0.0]) sphere(d=4.4, $fn=48);
+            translate([side * 8.8, 0, 3.5]) sphere(d=4.2, $fn=48);
         }
         
-        // --- 3. Upward Retention Finial ---
+        // 4. Upward Retention Finial (防脫落圓潤頂端)
         hull() {
-            translate([side * 10.0, 0.0, 24.0]) sphere(d=6.8, $fn=32);
-            translate([side * 10.8, 0.0, 30.5]) sphere(d=5.8, $fn=32);
+            translate([side * 8.8, 0, 3.5]) sphere(d=4.2, $fn=48);
+            translate([side * 9.0, 0, 8.5]) sphere(d=3.8, $fn=48);
         }
     }
 }
