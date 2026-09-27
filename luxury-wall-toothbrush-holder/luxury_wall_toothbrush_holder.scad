@@ -687,6 +687,9 @@ module monolithic_dual_utility_cradle(side=1) {
     gap_front = 18.0;   // Gap at tips (fits thick ergonomic razors)
     prong_w   = 4.5;    // Slender horn thickness (左右兩根沒那麼粗)
     r_fillet  = 1.1;    // 消除頂面與側面邊角，改為圓潤弧角 (R = 1.1mm 空間圓弧倒角)
+    tip_d     = 7.0;    // 防撞安全超圓潤球頂外徑 (R = 3.5mm 圓頂，避免用戶碰撞受傷)
+    tip_r     = tip_d / 2;
+    tip_core_d = max(tip_d - 2*r_fillet, 1.5);
 
     translate([x_base, y_center, z_center]) {
         // Internal wall anchor pin (stays inside wall X <= 0)
@@ -707,15 +710,15 @@ module monolithic_dual_utility_cradle(side=1) {
                             linear_extrude(height=0.1)
                                 octagonal_profile_2d(w_base - 2*th_bevel, h_base - 2*th_bevel, ch_corner - 0.8);
                                 
-                        // 3. 左側尖端 (向外開展至 gap_front，溫和微昂防滑)
-                        translate([d_proj - r_fillet, (gap_front/2 + prong_w/2), h_tip])
+                        // 3. 左側尖端 (向外開展至 gap_front，防撞超圓潤安全球頂，相切內槽)
+                        translate([d_proj - r_fillet, (gap_front/2 + tip_r), h_tip])
                             rotate([0, 20, 14])
-                                sphere(d=max(prong_w - 2*r_fillet, 2.0), $fn=16);
+                                sphere(d=tip_core_d, $fn=28);
 
-                        // 4. 右側尖端 (向外開展至 gap_front，溫和微昂防滑)
-                        translate([d_proj - r_fillet, -(gap_front/2 + prong_w/2), h_tip])
+                        // 4. 右側尖端 (向外開展至 gap_front，防撞超圓潤安全球頂，相切內槽)
+                        translate([d_proj - r_fillet, -(gap_front/2 + tip_r), h_tip])
                             rotate([0, 20, -14])
-                                sphere(d=max(prong_w - 2*r_fillet, 2.0), $fn=16);
+                                sphere(d=tip_core_d, $fn=28);
 
                         // 5. 底部 45° 平滑自支撐爬升斜面 (100% 零支撐保證)
                         ramp_end_x = d_proj - 4.5;
