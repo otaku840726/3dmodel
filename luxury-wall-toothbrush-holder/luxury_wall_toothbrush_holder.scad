@@ -42,14 +42,15 @@ h_apex        = 11.7; // subtle finial apex
 tooth_top_style = "arched"; // "arched" (全新圓弧拱頂，零積水自導正 - 用戶建議)
 r_crown         = 18.0;     // 圓弧拱頂半徑 (mm)
 
-// Dovetail Bracket Parameters
-bracket_w  = 44.0;
-bracket_h  = 34.0;
-bracket_th = 2.4;
-dove_th    = 4.4;
-dove_w_top = 26.0;
-dove_w_bot = 22.0;
-dove_angle = 12.0;
+// Dovetail Bracket Parameters (一體式加寬超穩雙滑軌壁掛系統)
+bracket_w     = 118.0; // 加寬至 118mm (跨距涵蓋主體 61%，彻底消除偏載槓桿旋轉)
+bracket_h     = 34.0;
+bracket_th    = 2.4;
+dove_th       = 4.4;
+dove_w_top    = 22.0;  // 雙滑軌單軌上寬
+dove_w_bot    = 18.0;  // 雙滑軌單軌下寬 (重力自鎖楔形)
+dove_angle    = 12.0;
+rail_x_offset = 38.0;  // 左右雙軌中心間距 76mm (X = ±38.0mm)
 
 // =============================================================================
 // 4-COLOR MULTI-MATERIAL PALETTE (4 色多色 3D 列印 / AMS 最佳化配色)
@@ -65,39 +66,55 @@ wall_tile_color = [0.93, 0.94, 0.95];
 
 
 // =============================================================================
-// 1. UNIVERSAL WALL MOUNTING BRACKET
+// 1. UNIVERSAL WIDENED DUAL-RAIL WALL MOUNTING BRACKET
 // =============================================================================
+module single_dovetail_rail() {
+    translate([0, bracket_h, bracket_th])
+        rotate([90, 0, 0])
+            linear_extrude(height=bracket_h, scale=[dove_w_bot/dove_w_top, 1.0])
+                polygon([
+                    [-dove_w_top/2, 0],
+                    [-dove_w_top/2 - dove_th*tan(dove_angle), dove_th],
+                    [ dove_w_top/2 + dove_th*tan(dove_angle), dove_th],
+                    [ dove_w_top/2, 0]
+                ]);
+}
+
 module wall_bracket() {
     difference() {
         union() {
+            // Main wide backing plate (118mm x 34mm, huge 40 cm^2 3M VHB adhesion area)
             hull() {
                 translate([-bracket_w/2+4, 4, 0]) cylinder(r=4, h=bracket_th);
                 translate([ bracket_w/2-4, 4, 0]) cylinder(r=4, h=bracket_th);
                 translate([-bracket_w/2+4, bracket_h-4, 0]) cylinder(r=4, h=bracket_th);
                 translate([ bracket_w/2-4, bracket_h-4, 0]) cylinder(r=4, h=bracket_th);
             }
-            translate([0, bracket_h, bracket_th])
-                rotate([90, 0, 0])
-                    linear_extrude(height=bracket_h, scale=[dove_w_bot/dove_w_top, 1.0])
-                        polygon([
-                            [-dove_w_top/2, 0],
-                            [-dove_w_top/2 - dove_th*tan(dove_angle), dove_th],
-                            [ dove_w_top/2 + dove_th*tan(dove_angle), dove_th],
-                            [ dove_w_top/2, 0]
-                        ]);
+            // Dual parallel dovetail sliding rails (76mm apart, positive anti-tilt lock)
+            translate([-rail_x_offset, 0, 0]) single_dovetail_rail();
+            translate([ rail_x_offset, 0, 0]) single_dovetail_rail();
         }
         
-        for (y_screw = [7.5, 25.5]) {
-            translate([0, y_screw, -1.0]) {
-                cylinder(d=4.2, h=bracket_th + dove_th + 3.0);
-                translate([0, 0, bracket_th + dove_th - 2.0])
-                    cylinder(r1=4.2/2, r2=8.2/2, h=2.5);
+        // 4 countersunk screw holes (2 on each rail for optional heavy-duty screw mounting)
+        for (rx = [-rail_x_offset, rail_x_offset]) {
+            for (y_screw = [7.5, 25.5]) {
+                translate([rx, y_screw, -1.0]) {
+                    cylinder(d=4.2, h=bracket_th + dove_th + 3.0);
+                    translate([0, 0, bracket_th + dove_th - 2.0])
+                        cylinder(r1=4.2/2, r2=8.2/2, h=2.5);
+                }
             }
         }
+        
+        // Center alignment mark at top edge (for easy leveling)
+        translate([0, bracket_h - 1.5, bracket_th - 0.6])
+            rotate([0, 0, 180])
+                linear_extrude(height=1.0)
+                    polygon([[-2.0, 0], [2.0, 0], [0, 2.5]]);
     }
 }
 
-module female_dovetail_cavity() {
+module single_female_cavity() {
     tol = 0.35;
     h_slot = bracket_h;
     w_t = dove_w_top + tol*2;
@@ -153,6 +170,11 @@ module female_dovetail_cavity() {
                     [-w_b/2,  0.05]
                 ]);
     }
+}
+
+module female_dovetail_cavity() {
+    translate([-rail_x_offset, 0, 0]) single_female_cavity();
+    translate([ rail_x_offset, 0, 0]) single_female_cavity();
 }
 
 
