@@ -20,7 +20,7 @@ side_hook_type = "cradle_1b";    // "cradle_1b" (輕奢 45° 幾何切面一體�
 // Master Dimensions
 w_total     = 194.0; // Reduced from 204.0 to 194.0 to form a true rectangle aligned with storage pod
 d_wall      = 8.0;
-h_total     = 88.0;
+h_total     = 44.0; // 移除上方多餘背板，與收納艙齊平 (44.0mm)，壁掛滑軌完全內嵌不受影響
 
 w_pod       = 194.0;
 d_pod       = 52.0;
@@ -595,17 +595,19 @@ module fused_master_body() {
         translate([ w/2 - r_front, y_front - r_front - ch_front, h_pod]) cylinder(r=r_front - ch_front, h=0.1);
     }
     
-    // 2. Upper Architectural Backplate (Z = h_pod to h_total = 88.0)
+    // 2. Upper Architectural Backplate (Z = h_pod to h_total, conditional if h_total > h_pod)
     // Continuous monolithic extension of the rear wall (from Y = 0 to Y = d_wall = 8.0)
-    translate([0, d_wall, 0])
-        rotate([90, 0, 0])
-            linear_extrude(height = d_wall)
-                hull() {
-                    translate([-w/2 + r_back, h_pod - 1.0]) circle(r=r_back);
-                    translate([ w/2 - r_back, h_pod - 1.0]) circle(r=r_back);
-                    translate([-w/2 + r_back, h_total - r_back]) circle(r=r_back);
-                    translate([ w/2 - r_back, h_total - r_back]) circle(r=r_back);
-                }
+    if (h_total > h_pod) {
+        translate([0, d_wall, 0])
+            rotate([90, 0, 0])
+                linear_extrude(height = d_wall)
+                    hull() {
+                        translate([-w/2 + r_back, h_pod - 1.0]) circle(r=r_back);
+                        translate([ w/2 - r_back, h_pod - 1.0]) circle(r=r_back);
+                        translate([-w/2 + r_back, h_total - r_back]) circle(r=r_back);
+                        translate([ w/2 - r_back, h_total - r_back]) circle(r=r_back);
+                    }
+    }
 }
 
 // Classical Architectural Fluting & Champagne Gold Trim (Color 4)
@@ -642,8 +644,10 @@ module architectural_trim_c4() {
         flute_single(fx);
     }
     
-    // 3. Backplate Molding Frame
-    arch_backplate_frame_trim();
+    // 3. Backplate Molding Frame (Only when upper backplate exists)
+    if (h_total > h_pod) {
+        arch_backplate_frame_trim();
+    }
 }
 
 // =============================================================================
@@ -657,17 +661,13 @@ module architectural_trim_c4() {
 // 2. 頂面圓滑弧形凹槽：頂面呈連續圓滑凹槽鞍面，刀頭橫跨置放時更加貼合，手指拿取順手優雅。
 // 3. 左右雕塑雙角：苗條修長不笨重（壁厚約 4.8mm），外側經 45° 切面修飾，角尖平滑倒角微翹防滑落。
 // 全體邊緣經 R=0.65mm 空間球體柔潤微圓角處理，完全無生硬直角與割手稜角。
-module octagonal_profile_2d(w, h, ch) {
-    polygon([
-        [-w/2 + ch, -h/2],
-        [w/2 - ch, -h/2],
-        [w/2, -h/2 + ch],
-        [w/2, h/2 - ch],
-        [w/2 - ch, h/2],
-        [-w/2 + ch, h/2],
-        [-w/2, h/2 - ch],
-        [-w/2, -h/2 + ch]
-    ]);
+module rounded_rect_2d(w, h, r) {
+    hull() {
+        translate([-w/2 + r, -h/2 + r]) circle(r=r);
+        translate([ w/2 - r, -h/2 + r]) circle(r=r);
+        translate([-w/2 + r,  h/2 - r]) circle(r=r);
+        translate([ w/2 - r,  h/2 - r]) circle(r=r);
+    }
 }
 
 module monolithic_dual_utility_cradle(side=1) {
@@ -675,97 +675,99 @@ module monolithic_dual_utility_cradle(side=1) {
     y_center = d_wall + d_pod/2; // 34.0mm
     z_center = 22.0;
     
-    w_base    = 32.0;   // Base width in Y
-    h_base    = 28.0;   // Base height in Z (根部整體高度縮短，由 38mm 降至 28mm，更為精巧勻稱)
-    ch_corner = 4.0;    // Octagonal corner chamfer
-    th_bevel  = 2.8;    // Wall perimeter bevel depth in X
+    w_root    = 28.0;   // Root width at wall (Y direction)
+    h_root    = 24.0;   // Root height at wall (Z direction)
     d_proj    = 22.0;   // Forward reach in X
-    h_tip     = 8.5;    // Horn tip height in Z (前端適度抬高防滑，由 12.5mm 降至 8.5mm，不過度昂起)
+    h_tip     = 8.5;    // Horn tip height in Z
     
     // Flare specifications: 越往外越開
     gap_rear  = 11.5;   // Gap near wall (fits slim DE safety razors)
     gap_front = 18.0;   // Gap at tips (fits thick ergonomic razors)
-    prong_w   = 4.5;    // Slender horn thickness (左右兩根沒那麼粗)
-    r_fillet  = 1.1;    // 消除頂面與側面邊角，改為圓潤弧角 (R = 1.1mm 空間圓弧倒角)
+    prong_w   = 4.5;    // Slender horn thickness
+    r_fillet  = 1.1;    // 3D 空間圓弧倒角 (R = 1.1mm)
     tip_d     = 7.0;    // 防撞安全超圓潤球頂外徑 (R = 3.5mm 圓頂，避免用戶碰撞受傷)
     tip_r     = tip_d / 2;
     tip_core_d = max(tip_d - 2*r_fillet, 1.5);
+    
+    // 側壁深度熔合嵌入量 (深入 7mm 厚側壁內部 4.0mm，確保 X=0 交界處 100% 實心無縫融為一體，杜絕縫隙藏污納垢積水)
+    x_embed = 4.0;
 
     translate([x_base, y_center, z_center]) {
-        // Internal wall anchor pin (stays inside wall X <= 0)
-        translate([-side * 3.0, 0, 0]) rotate([0, 90, 0])
-            cylinder(d=6.0, h=3.0, center=false, $fn=24);
-
         scale([side, 1, 1]) {
             minkowski() {
                 difference() {
                     hull() {
-                        // 1. 貼牆八角底面 (X = 0, 內縮 r_fillet)
-                        translate([r_fillet, 0, 0]) rotate([0, 90, 0])
+                        // 1. 深入外牆內部根部切片 (X = -x_embed，深埋側壁實心層內，使外牆交界處無死角一體成型)
+                        translate([-x_embed, 0, 0]) rotate([0, 90, 0])
                             linear_extrude(height=0.1)
-                                octagonal_profile_2d(w_base - 2*r_fillet, h_base - 2*r_fillet, ch_corner);
+                                rounded_rect_2d(w_root - 2*r_fillet, h_root - 2*r_fillet, 4.0);
                                 
-                        // 2. 45° 倒角過渡階 (X = th_bevel)
-                        translate([th_bevel, 0, 0]) rotate([0, 90, 0])
+                        // 2. 側壁表面交界過渡輪廓 (X = 0，無突兀外凸八角階梯，流暢生長自外牆)
+                        translate([0, 0, 0]) rotate([0, 90, 0])
                             linear_extrude(height=0.1)
-                                octagonal_profile_2d(w_base - 2*th_bevel, h_base - 2*th_bevel, ch_corner - 0.8);
-                                
-                        // 3. 左側尖端 (向外開展至 gap_front，防撞超圓潤安全球頂，相切內槽)
+                                rounded_rect_2d(w_root - 2*r_fillet, h_root - 2*r_fillet, 4.0);
+
+                        // 3. 根部至前角中段微收束過渡 profile (順暢連接雙角與中央托槽)
+                        translate([3.5, 0, 0]) rotate([0, 90, 0])
+                            linear_extrude(height=0.1)
+                                rounded_rect_2d((w_root - 2.0) - 2*r_fillet, (h_root - 2.0) - 2*r_fillet, 3.5);
+
+                        // 4. 左側尖端 (向外開展至 gap_front，防撞超圓潤安全球頂 R=3.5mm，相切內槽)
                         translate([d_proj - r_fillet, (gap_front/2 + tip_r), h_tip])
                             rotate([0, 20, 14])
                                 sphere(d=tip_core_d, $fn=28);
 
-                        // 4. 右側尖端 (向外開展至 gap_front，防撞超圓潤安全球頂，相切內槽)
+                        // 5. 右側尖端 (向外開展至 gap_front，防撞超圓潤安全球頂 R=3.5mm，相切內槽)
                         translate([d_proj - r_fillet, -(gap_front/2 + tip_r), h_tip])
                             rotate([0, 20, -14])
                                 sphere(d=tip_core_d, $fn=28);
 
-                        // 5. 底部 45° 平滑自支撐爬升斜面 (100% 零支撐保證)
+                        // 6. 底部 45° 平滑自支撐爬升斜面 (直接順接垂直外牆，零積水自排，100% 零支撐保證)
                         ramp_end_x = d_proj - 4.5;
-                        ramp_end_z = -h_base/2 + th_bevel + (ramp_end_x - th_bevel);
+                        ramp_end_z = -h_root/2 + (ramp_end_x - 0);
                         translate([ramp_end_x, 0, ramp_end_z])
                             cube([0.5, gap_rear + 2.0, 1.0], center=true);
+                            
+                        // 7. 底部斜面延伸錨定點 (深入壁內 X = -x_embed)
+                        translate([-x_embed, 0, -h_root/2])
+                            cube([0.1, gap_rear + 2.0, 1.0], center=true);
                     }
 
                     // =============================================================
-                    // 細節 1: 兩根的根部到前端是凹型的 (Top Concave Saddle Dish)
-                    // 自根部至前端雕琢出圓滑下凹鞍面，穩固托住刮鬍刀頭，避免前後晃動滑落
+                    // 細節 A: 頂面圓滑下凹鞍面 (Top Concave Saddle Dish)
+                    // 穩固托住刮鬍刀頭，避免前後晃動滑落
                     // =============================================================
                     translate([d_proj * 0.52, 0, 20.0])
                         rotate([0, 90, 90])
-                            cylinder(r=14.0, h=w_base * 1.5, center=true, $fn=48);
+                            cylinder(r=14.0, h=w_root * 1.5, center=true, $fn=48);
 
                     // =============================================================
-                    // 細節 2: 兩根中間的部分往根部內縮 (Deep Recessed V-Trough)
-                    // 深度內縮至 X = 1.2mm，並提供手柄垂直下垂空間，確保手柄 100% 垂直直立
+                    // 細節 B: 刮鬍刀手柄深度內縮 V 型槽 (Deep Recessed V-Trough)
+                    // 深度內縮至 X = 1.2mm，確保手柄 100% 垂直直立不碰壁
                     // =============================================================
                     hull() {
-                        // 前端口 (寬度 gap_front = 18.0mm，越往外越開)
                         translate([d_proj + 3.0, 0, 12.0])
                             cube([4.0, gap_front, 10.0], center=true);
-                        // 深度內縮根部口 (往根部縮至 X = 1.2mm，寬度 gap_rear = 11.5mm)
                         translate([1.2, 0, 12.0])
                             cube([2.0, gap_rear, 10.0], center=true);
-                        // 前段圓弧槽底
                         translate([d_proj - 3.0, 0, 1.0])
                             rotate([0, 90, 0])
                                 cylinder(d=5.0, h=4.0, center=true, $fn=24);
-                        // 根部深度內縮圓弧 U 形凹口 (X = 1.2mm，半徑 5.75mm)
                         translate([1.2, 0, 0.0])
                             rotate([0, 90, 0])
                                 cylinder(d=gap_rear, h=2.0, center=true, $fn=24);
-                        // 手柄垂直垂放容置槽 (使各種粗細手柄皆可筆直垂立)
                         translate([d_proj * 0.45, 0, -9.0])
                             cube([d_proj * 0.65, gap_rear, 14.0], center=true);
                     }
 
-                    // 背板頂部柔潤凹槽修飾 (手指拿取空間)
-                    translate([th_bevel + 7.5, 0, h_base/2 + 5.0])
-                        rotate([0, 75, 0])
-                            scale([1.0, 1.45, 0.75])
-                                cylinder(r=12.0, h=w_base * 1.5, center=true, $fn=48);
+                    // =============================================================
+                    // 細節 C: 頂部防積水自排斜切面 (Anti-Stagnant Water Bevel)
+                    // 頂部與外牆交界處呈下傾斜切，洗沐水滴順流滑落，絕不在根部積水
+                    // =============================================================
+                    translate([-x_embed - 1.0, 0, h_root/2 + 2.0])
+                        rotate([0, 35, 0])
+                            cube([10.0, w_root * 1.5, 10.0], center=true);
                 }
-                // 3D 空間圓弧球體滾動倒角 (徹底消除頂面與側面交界稜線)
                 sphere(r=r_fillet, $fn=14);
             }
         }
@@ -788,7 +790,7 @@ module side_utility_hooks() {
 // Flush-Rear Storage Cavity Module
 // Rear wall is flush at Y = d_wall = 8.0mm (backplate serves directly as the rear wall!)
 // Smooth 45° mouth lead-in chamfer on front and sides for luxurious bottle guidance
-module flush_rear_cavity(w_c, y_front_c=56.0, r_c=8.0, h_c=h_total, ch_mouth=1.5) {
+module flush_rear_cavity(w_c, y_front_c=56.0, r_c=8.0, h_c=60.0, ch_mouth=1.5) {
     y_rear_c = d_wall; // 8.0mm
     
     // Main pocket
