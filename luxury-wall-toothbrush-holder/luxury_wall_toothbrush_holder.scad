@@ -783,86 +783,80 @@ module side_utility_hooks() {
 // =============================================================================
 // 5. STORAGE CAVITIES, CONICAL FUNNELS & THROUGH-DRAINS (頂層統一差集)
 // =============================================================================
-// Flush-Rear Storage Cavity Module
-// Rear wall is flush at Y = d_wall = 8.0mm (backplate serves directly as the rear wall!)
-// Smooth 45° mouth lead-in chamfer on front and sides for luxurious bottle guidance
-module flush_rear_cavity(w_c, y_front_c=56.0, r_c=8.0, h_c=60.0, ch_mouth=1.5) {
-    y_rear_c = d_wall; // 8.0mm
+// 5. UNIFIED GRAND STORAGE CAVITY & CONTINUOUS DRAINAGE SYSTEM
+// =============================================================================
+// 移除牙膏洗面乳之間的所有隔板，打造全通透開闊大收納艙 (Unified Grand Storage Basin)
+// 外牆厚度全面極小化至 2.8mm (側壁/前壁)，極大化內部可用容積：
+// - 內部開闊總寬度：擴大至 188.4mm (X = -94.2 到 +94.2)
+// - 內部進深深度：擴大至 49.2mm (Y = 8.0 到 57.2)
+// - 前壁厚度 2.8mm (金屬飾條後方保留 1.8mm 堅固壁厚，100% 水密抗衝擊)
+// - 側壁厚度 2.8mm (與兩側流線掛勾實心無縫融合)
+// - 後壁直接無縫延續 8.0mm 背板，滑軌暗槽完全隱藏保護
+module unified_grand_storage_cavity(
+    wall_side=2.8, 
+    wall_front=2.8, 
+    y_rear=8.0, 
+    r_front_c=11.2, 
+    r_back_c=5.0, 
+    h_c=50.0,
+    ch_mouth=1.5
+) {
+    x_half = w_pod/2 - wall_side; // 97.0 - 2.8 = 94.2mm
+    y_f = y_front - wall_front;   // 60.0 - 2.8 = 57.2mm
     
-    // Main pocket
+    // Main unified pocket (Single continuous expansive storage volume)
     hull() {
-        translate([-w_c/2 + r_c, y_front_c - r_c, 0]) cylinder(r=r_c, h=h_c);
-        translate([ w_c/2 - r_c, y_front_c - r_c, 0]) cylinder(r=r_c, h=h_c);
-        translate([-w_c/2 + 2.0, y_rear_c + 2.0, 0]) cylinder(r=2.0, h=h_c);
-        translate([ w_c/2 - 2.0, y_rear_c + 2.0, 0]) cylinder(r=2.0, h=h_c);
+        // Front-left & front-right rounded corners (concentric with outer R=14, giving uniform 2.8mm wall)
+        translate([-x_half + r_front_c, y_f - r_front_c, 0]) cylinder(r=r_front_c, h=h_c);
+        translate([ x_half - r_front_c, y_f - r_front_c, 0]) cylinder(r=r_front_c, h=h_c);
+        // Rear-left & rear-right rounded corners (matching backplate transition)
+        translate([-x_half + r_back_c, y_rear + r_back_c, 0]) cylinder(r=r_back_c, h=h_c);
+        translate([ x_half - r_back_c, y_rear + r_back_c, 0]) cylinder(r=r_back_c, h=h_c);
     }
     
-    // Mouth chamfer (front and sides only, rear stays vertical flush with backplate)
+    // Smooth 45° mouth lead-in chamfer on front and sides (rear remains vertical flush with backplate)
     hull() {
-        translate([-w_c/2 + r_c, y_front_c - r_c, h_pod - 9.0 - 2.0]) cylinder(r=r_c, h=0.1);
-        translate([ w_c/2 - r_c, y_front_c - r_c, h_pod - 9.0 - 2.0]) cylinder(r=r_c, h=0.1);
-        translate([-w_c/2 + 2.0, y_rear_c + 2.0, h_pod - 9.0 - 2.0]) cylinder(r=2.0, h=0.1);
-        translate([ w_c/2 - 2.0, y_rear_c + 2.0, h_pod - 9.0 - 2.0]) cylinder(r=2.0, h=0.1);
+        translate([-x_half + r_front_c, y_f - r_front_c, h_pod - 9.0 - 2.0]) cylinder(r=r_front_c, h=0.1);
+        translate([ x_half - r_front_c, y_f - r_front_c, h_pod - 9.0 - 2.0]) cylinder(r=r_front_c, h=0.1);
+        translate([-x_half + r_back_c, y_rear + r_back_c, h_pod - 9.0 - 2.0]) cylinder(r=r_back_c, h=0.1);
+        translate([ x_half - r_back_c, y_rear + r_back_c, h_pod - 9.0 - 2.0]) cylinder(r=r_back_c, h=0.1);
         
-        translate([-w_c/2 + r_c - ch_mouth, y_front_c - r_c + ch_mouth, h_pod - 9.0 + 0.5]) cylinder(r=r_c + ch_mouth, h=0.1);
-        translate([ w_c/2 - r_c + ch_mouth, y_front_c - r_c + ch_mouth, h_pod - 9.0 + 0.5]) cylinder(r=r_c + ch_mouth, h=0.1);
-        translate([-w_c/2 + 2.0 - ch_mouth, y_rear_c + 2.0, h_pod - 9.0 + 0.5]) cylinder(r=2.0, h=0.1);
-        translate([ w_c/2 - 2.0 + ch_mouth, y_rear_c + 2.0, h_pod - 9.0 + 0.5]) cylinder(r=2.0, h=0.1);
+        translate([-x_half + r_front_c, y_f - r_front_c + ch_mouth, h_pod - 9.0 + 0.5]) cylinder(r=r_front_c + ch_mouth, h=0.1);
+        translate([ x_half - r_front_c, y_f - r_front_c + ch_mouth, h_pod - 9.0 + 0.5]) cylinder(r=r_front_c + ch_mouth, h=0.1);
+        translate([-x_half + r_back_c - ch_mouth, y_rear + r_back_c, h_pod - 9.0 + 0.5]) cylinder(r=r_back_c + ch_mouth, h=0.1);
+        translate([ x_half - r_back_c + ch_mouth, y_rear + r_back_c, h_pod - 9.0 + 0.5]) cylinder(r=r_back_c + ch_mouth, h=0.1);
     }
 }
 
 module rear_storage_cavities_and_drains() {
-    z_floor = 9.0;           // Cavity floor
-    h = h_pod;               // 44.0mm
-    y_drain = 32.0;          // Center of drainage hole (halfway between Y=8 and Y=56)
+    z_floor = 9.0;           // Cavity floor height
+    y_drain = (d_wall + (y_front - 2.8)) / 2; // 32.6mm (Centered in unified cavity depth)
     
-    // 1. Cleanser Chambers (X = -67.0, +67.0) - Sized 46mm x 48mm (Expansive volume)
-    for (side = [-1, 1]) {
-        cx = side * 67.0;
-        translate([cx, 0, 0]) {
-            translate([0, 0, z_floor])
-                flush_rear_cavity(46.0, y_front_c=56.0, r_c=8.0);
-            
-            // Floor conical guidance funnel (widens to 24mm at cavity floor for rapid water intake)
-            translate([0, y_drain, z_floor - 4.0])
+    // 1. Unified grand storage cavity (all internal partitions eliminated)
+    translate([0, 0, z_floor])
+        unified_grand_storage_cavity();
+    
+    // 2. 4 Distributed High-Flow Drainage Wells across the 188.4mm expanse
+    for (dx = [-62.0, -20.5, 20.5, 62.0]) {
+        translate([dx, y_drain, 0]) {
+            // Floor conical guidance funnel (widens to Ø24mm at cavity floor for rapid water intake)
+            translate([0, 0, z_floor - 4.0])
                 cylinder(r1=18.0/2, r2=12.0, h=4.01);
             // 100% continuous straight-through drainage hole (Ø18.0mm expanded)
-            translate([0, y_drain, -5.0])
+            translate([0, 0, -5.0])
                 cylinder(d=18.0, h=z_floor + 20.0);
             // 45° bottom exit countersink chamfer (smooth to touch, anti-cut)
-            translate([0, y_drain, -0.1])
+            translate([0, 0, -0.1])
                 cylinder(r1=18.0/2 + 1.2, r2=18.0/2, h=1.3);
-            // Floor cross drainage channels
-            translate([0, y_drain, z_floor]) {
-                cube([46.0, 4.0, 2.0], center=true);
-                cube([4.0, 48.0, 2.0], center=true);
-            }
+            // Transverse drainage channels
+            translate([0, 0, z_floor])
+                cube([4.0, 44.0, 2.0], center=true);
         }
     }
     
-    // 2. Toothpaste Chambers (X = -21.5, +21.5) - Sized 38mm x 48mm (Expansive volume)
-    for (side = [-1, 1]) {
-        cx = side * 21.5;
-        translate([cx, 0, 0]) {
-            translate([0, 0, z_floor])
-                flush_rear_cavity(38.0, y_front_c=56.0, r_c=8.0);
-            
-            // Floor conical guidance funnel (widens to 24mm at cavity floor for rapid water intake)
-            translate([0, y_drain, z_floor - 4.0])
-                cylinder(r1=18.0/2, r2=12.0, h=4.01);
-            // 100% continuous straight-through drainage hole (Ø18.0mm expanded)
-            translate([0, y_drain, -5.0])
-                cylinder(d=18.0, h=z_floor + 20.0);
-            // 45° bottom exit countersink chamfer (smooth to touch, anti-cut)
-            translate([0, y_drain, -0.1])
-                cylinder(r1=18.0/2 + 1.2, r2=18.0/2, h=1.3);
-            // Floor cross drainage channels
-            translate([0, y_drain, z_floor]) {
-                cube([38.0, 4.0, 2.0], center=true);
-                cube([4.0, 48.0, 2.0], center=true);
-            }
-        }
-    }
+    // 3. Continuous longitudinal drainage gutter connecting all 4 drains (zero water pooling anywhere)
+    translate([0, y_drain, z_floor])
+        cube([170.0, 4.0, 2.0], center=true);
 }
 
 
