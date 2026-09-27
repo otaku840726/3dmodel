@@ -26,12 +26,9 @@ echo "  --> Color 4 (Champagne Gold Trim): luxury_holder_c4_gold.stl"
 openscad --csglimit=1000000 -D 'color_export=4' -o "$DIR/luxury_holder_c4_gold.stl" "$SCAD"
 
 echo "3. Packaging 4-Color 3MF Multi-Part Project File (luxury_holder_grand_fluted_4color.3mf)..."
-python3 "$DIR/build_bambu_3mf.py"
+python3 "$DIR/make_3mf.py"
 
-echo "4. Compiling Modular Hooks, Combo Plate & Standalone Models..."
-echo "  --> Modular 1B Shaver Hooks: modular_hook_1b_pair.stl"
-openscad --csglimit=1000000 -D 'mode="modular_hook_pair"' -o "$DIR/modular_hook_1b_pair.stl" "$SCAD"
-
+echo "4. Compiling Combo Plate & Standalone Models..."
 openscad --csglimit=1000000 -D 'edition="grand"' -D 'style="fluted"' -D 'mode="plate"' -o "$DIR/combo_plate_grand_fluted.stl" "$SCAD"
 cp "$DIR/combo_plate_grand_fluted.stl" "$DIR/combo_plate_fluted.stl"
 
