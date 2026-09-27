@@ -672,91 +672,87 @@ module rounded_rect_2d(w, h, r) {
 
 module monolithic_dual_utility_cradle(side=1) {
     x_base = side * (w_pod/2); // ±97.0mm
-    y_center = d_wall + d_pod/2; // 34.0mm
-    z_center = 22.0;
+    y_center = 30.0;           // Perfectly centered on flat side wall (Y=10 to Y=46)
+    z_center = 21.0;           // Mid-height of pod (H=44)
     
-    w_root    = 28.0;   // Root width at wall (Y direction)
-    h_root    = 24.0;   // Root height at wall (Z direction)
-    d_proj    = 22.0;   // Forward reach in X
-    h_tip     = 8.5;    // Horn tip height in Z
+    w_root    = 26.0;   // Prong base root width
+    w_flare   = 32.0;   // Flared base width inside wall (6mm wider for organic draft)
+    h_root    = 21.0;   // Prong base root height
+    h_flare   = 25.0;   // Flared base height inside wall (4mm taller for organic blend)
+    d_proj    = 15.0;   // Shortened projection (inward by 7mm per user request)
+    h_tip     = 6.8;    // Graceful uplifted tip height
     
     // Flare specifications: 越往外越開
-    gap_rear  = 11.5;   // Gap near wall (fits slim DE safety razors)
-    gap_front = 18.0;   // Gap at tips (fits thick ergonomic razors)
-    prong_w   = 4.5;    // Slender horn thickness
+    gap_rear  = 11.5;   // Razor slot inner gap (fits slim DE safety razors)
+    gap_front = 16.0;   // Razor slot outer tip gap (fits thick ergonomic razors)
     r_fillet  = 1.1;    // 3D 空間圓弧倒角 (R = 1.1mm)
-    tip_d     = 7.0;    // 防撞安全超圓潤球頂外徑 (R = 3.5mm 圓頂，避免用戶碰撞受傷)
+    tip_d     = 6.5;    // 防撞安全超圓潤球頂外徑 (R = 3.25mm 圓頂，避免用戶碰撞受傷)
     tip_r     = tip_d / 2;
     tip_core_d = max(tip_d - 2*r_fillet, 1.5);
     
-    // 側壁深度熔合嵌入量 (深入 7mm 厚側壁內部 4.0mm，確保 X=0 交界處 100% 實心無縫融為一體，杜絕縫隙藏污納垢積水)
-    x_embed = 4.0;
+    // 側壁深度熔合嵌入量 (深入 7mm 厚側壁內部 5.0mm，確保 X=0 交界處 100% 實心無縫融為一體，杜絕縫隙藏污納垢積水)
+    x_embed = 5.0;
 
     translate([x_base, y_center, z_center]) {
         scale([side, 1, 1]) {
             minkowski() {
                 difference() {
                     hull() {
-                        // 1. 深入外牆內部根部切片 (X = -x_embed，深埋側壁實心層內，使外牆交界處無死角一體成型)
+                        // 1. 深入外牆內部根部切片 (X = -x_embed，深埋側壁實心層內，使外牆交界處自然產生連續擴展錐形倒角過渡)
                         translate([-x_embed, 0, 0]) rotate([0, 90, 0])
                             linear_extrude(height=0.1)
-                                rounded_rect_2d(w_root - 2*r_fillet, h_root - 2*r_fillet, 4.0);
+                                rounded_rect_2d(w_flare - 2*r_fillet, h_flare - 2*r_fillet, 5.0);
                                 
-                        // 2. 側壁表面交界過渡輪廓 (X = 0，無突兀外凸八角階梯，流暢生長自外牆)
-                        translate([0, 0, 0]) rotate([0, 90, 0])
+                        // 2. 側壁外側基座輪廓 (X = 2.5，無 X=0 折線，流暢自然向外牆展開)
+                        translate([2.5, 0, 0]) rotate([0, 90, 0])
                             linear_extrude(height=0.1)
-                                rounded_rect_2d(w_root - 2*r_fillet, h_root - 2*r_fillet, 4.0);
+                                rounded_rect_2d(w_root - 2*r_fillet, h_root - 2*r_fillet, 3.5);
 
-                        // 3. 根部至前角中段微收束過渡 profile (順暢連接雙角與中央托槽)
-                        translate([3.5, 0, 0]) rotate([0, 90, 0])
-                            linear_extrude(height=0.1)
-                                rounded_rect_2d((w_root - 2.0) - 2*r_fillet, (h_root - 2.0) - 2*r_fillet, 3.5);
-
-                        // 4. 左側尖端 (向外開展至 gap_front，防撞超圓潤安全球頂 R=3.5mm，相切內槽)
+                        // 3. 左側尖端 (向外開展至 gap_front，防撞超圓潤安全球頂 R=3.25mm，相切內槽)
                         translate([d_proj - r_fillet, (gap_front/2 + tip_r), h_tip])
                             rotate([0, 20, 14])
-                                sphere(d=tip_core_d, $fn=28);
+                                sphere(d=tip_core_d, $fn=24);
 
-                        // 5. 右側尖端 (向外開展至 gap_front，防撞超圓潤安全球頂 R=3.5mm，相切內槽)
+                        // 4. 右側尖端 (向外開展至 gap_front，防撞超圓潤安全球頂 R=3.25mm，相切內槽)
                         translate([d_proj - r_fillet, -(gap_front/2 + tip_r), h_tip])
                             rotate([0, 20, -14])
-                                sphere(d=tip_core_d, $fn=28);
+                                sphere(d=tip_core_d, $fn=24);
 
-                        // 6. 底部 45° 平滑自支撐爬升斜面 (直接順接垂直外牆，零積水自排，100% 零支撐保證)
-                        ramp_end_x = d_proj - 4.5;
+                        // 5. 底部 45° 平滑自支撐爬升斜面 (直接順接垂直外牆，零積水自排，100% 零支撐保證)
+                        ramp_end_x = d_proj - 3.5;
                         ramp_end_z = -h_root/2 + (ramp_end_x - 0);
                         translate([ramp_end_x, 0, ramp_end_z])
                             cube([0.5, gap_rear + 2.0, 1.0], center=true);
                             
-                        // 7. 底部斜面延伸錨定點 (深入壁內 X = -x_embed)
-                        translate([-x_embed, 0, -h_root/2])
-                            cube([0.1, gap_rear + 2.0, 1.0], center=true);
+                        // 6. 底部斜面延伸錨定點 (深入壁內 X = -x_embed)
+                        translate([-x_embed, 0, -h_flare/2])
+                            cube([0.1, w_flare - 4.0, 1.0], center=true);
                     }
 
                     // =============================================================
                     // 細節 A: 頂面圓滑下凹鞍面 (Top Concave Saddle Dish)
                     // 穩固托住刮鬍刀頭，避免前後晃動滑落
                     // =============================================================
-                    translate([d_proj * 0.52, 0, 20.0])
+                    translate([d_proj * 0.52, 0, 17.5])
                         rotate([0, 90, 90])
-                            cylinder(r=14.0, h=w_root * 1.5, center=true, $fn=48);
+                            cylinder(r=13.0, h=w_flare * 1.5, center=true, $fn=48);
 
                     // =============================================================
                     // 細節 B: 刮鬍刀手柄深度內縮 V 型槽 (Deep Recessed V-Trough)
-                    // 深度內縮至 X = 1.2mm，確保手柄 100% 垂直直立不碰壁
+                    // 槽底貫穿深入外牆 (-x_embed - 1.0)，徹底消除雙叉根部積水平台與垂直面
                     // =============================================================
                     hull() {
-                        translate([d_proj + 3.0, 0, 12.0])
+                        translate([d_proj + 3.0, 0, 10.0])
                             cube([4.0, gap_front, 10.0], center=true);
-                        translate([1.2, 0, 12.0])
+                        translate([-x_embed - 1.0, 0, 10.0])
                             cube([2.0, gap_rear, 10.0], center=true);
-                        translate([d_proj - 3.0, 0, 1.0])
+                        translate([d_proj - 2.5, 0, 1.0])
                             rotate([0, 90, 0])
-                                cylinder(d=5.0, h=4.0, center=true, $fn=24);
-                        translate([1.2, 0, 0.0])
+                                cylinder(d=4.5, h=4.0, center=true, $fn=24);
+                        translate([-x_embed - 1.0, 0, 0.0])
                             rotate([0, 90, 0])
                                 cylinder(d=gap_rear, h=2.0, center=true, $fn=24);
-                        translate([d_proj * 0.45, 0, -9.0])
+                        translate([d_proj * 0.45, 0, -8.0])
                             cube([d_proj * 0.65, gap_rear, 14.0], center=true);
                     }
 
@@ -764,9 +760,9 @@ module monolithic_dual_utility_cradle(side=1) {
                     // 細節 C: 頂部防積水自排斜切面 (Anti-Stagnant Water Bevel)
                     // 頂部與外牆交界處呈下傾斜切，洗沐水滴順流滑落，絕不在根部積水
                     // =============================================================
-                    translate([-x_embed - 1.0, 0, h_root/2 + 2.0])
-                        rotate([0, 35, 0])
-                            cube([10.0, w_root * 1.5, 10.0], center=true);
+                    translate([-x_embed - 1.0, 0, h_flare/2 + 2.0])
+                        rotate([0, 20, 0])
+                            cube([8.0, w_flare * 1.5, 6.0], center=true);
                 }
                 sphere(r=r_fillet, $fn=14);
             }
