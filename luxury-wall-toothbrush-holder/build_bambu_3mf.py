@@ -139,7 +139,7 @@ def generate_bambu_3mf():
 
     # 6. Render and embed new thumbnails
     print("Generating thumbnails...")
-    os.system("openscad --camera=0,35,45,60,0,140,260 --imgsize=1024,768 --colorscheme=Cornfield /tmp/test_flush_back.scad -o /tmp/thumb_raw.png")
+    os.system("openscad -D 'mode=\"holder\"' --camera=0,35,45,60,0,140,260 --imgsize=1024,768 --colorscheme=Cornfield luxury_wall_toothbrush_holder.scad -o /tmp/thumb_raw.png")
     if os.path.exists("/tmp/thumb_raw.png"):
         img = Image.open("/tmp/thumb_raw.png")
         img_512 = img.resize((512, 384), Image.Resampling.LANCZOS)

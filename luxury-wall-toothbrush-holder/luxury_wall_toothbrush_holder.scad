@@ -16,6 +16,7 @@ color_export = 0;                // 0: Full Colored Object, 1: Color 1 (Body), 2
 side_hooks   = "both";           // "both" (左右兩側雙掛勾), "left" (僅左側), "right" (僅右側), "none" (不加掛勾)
 side_hook_color = "body";        // "body" (C1 暖象牙白 - 結構一體無耗材最高強度), "gold" (C4 香檳金輕奢金屬掛勾)
 side_hook_type = "cradle_1b";    // "cradle_1b" (輕奢 45° 幾何切面一體雕塑雙功能掛勾 - 兼具毛巾掛勾與刮鬍刀架)
+side_hook_mode = "modular_cradle"; // "modular_cradle" (安裝 1B 模組化卡榫刮鬍刀架), "uninstalled" (未安裝掛勾，側壁純平無孔，香檳金腰線環繞延伸), "integrated" (固定一體式)
 
 // Master Dimensions
 w_total     = 194.0; // Reduced from 204.0 to 194.0 to form a true rectangle aligned with storage pod
@@ -610,18 +611,61 @@ module fused_master_body() {
     }
 }
 
-// Classical Architectural Fluting & Champagne Gold Trim (Color 4)
-module supportfree_beltline() {
-    translate([0, y_front + 0.1, 28.0])
-        rotate([0, 90, 0])
-            linear_extrude(height=158.0, center=true)
-                polygon([
-                    [-0.8, -0.6],  // back bottom inside wall
-                    [-0.8, -0.1],  // front wall contact bottom (Z=27.2)
-                    [ 0.0,  0.5],  // front beltline midpoint (53° upward draft! Z=28.0)
-                    [ 0.4,  0.5],  // front top vertical facet (Z=28.4)
-                    [ 0.7, -0.6]   // back top inside wall
-                ]);
+// Classical Architectural Fluting & Continuous Wrap-Around Champagne Gold Trim (Color 4)
+module front_beltline_2d() {
+    polygon([
+        [-0.4, -2.5],
+        [ 0.0, -2.5],
+        [ 1.6, -0.9],
+        [ 1.6,  0.9],
+        [ 0.0,  2.5],
+        [-0.4,  2.5]
+    ]);
+}
+
+module continuous_wrap_around_gold_beltline() {
+    z_belt = 28.0;
+    r_front = 14.0;
+    cx = w_pod/2 - r_front; // 83.0mm
+    cy = y_front - r_front; // 46.0mm
+    y_rear = d_wall;        // 8.0mm
+    l_side = cy - y_rear;   // 38.0mm
+
+    // 1. Front flat section
+    translate([0, y_front, z_belt])
+        rotate([90, 0, 0])
+            rotate([0, 90, 0])
+                linear_extrude(height=2*cx, center=true)
+                    front_beltline_2d();
+
+    // 2. Right corner arc
+    translate([cx, cy, z_belt])
+        rotate_extrude(angle=90, $fn=48)
+            translate([r_front, 0, 0])
+                front_beltline_2d();
+
+    // 3. Right side rail
+    translate([w_pod/2, (cy + y_rear)/2, z_belt])
+        rotate([0, 0, 90])
+            rotate([90, 0, 0])
+                rotate([0, 90, 0])
+                    linear_extrude(height=l_side, center=true)
+                        front_beltline_2d();
+
+    // 4. Left corner arc
+    translate([-cx, cy, z_belt])
+        rotate([0, 0, 90])
+            rotate_extrude(angle=90, $fn=48)
+                translate([r_front, 0, 0])
+                    front_beltline_2d();
+
+    // 5. Left side rail
+    translate([-w_pod/2, (cy + y_rear)/2, z_belt])
+        rotate([0, 0, -90])
+            rotate([90, 0, 0])
+                rotate([0, 90, 0])
+                    linear_extrude(height=l_side, center=true)
+                        front_beltline_2d();
 }
 
 module flute_single(fx) {
@@ -636,8 +680,8 @@ module flute_single(fx) {
 }
 
 module architectural_trim_c4() {
-    // 1. Horizontal Beltline at Z=28mm (Beveled 53° self-supporting cross-section)
-    supportfree_beltline();
+    // 1. Continuous Wrap-Around Horizontal Beltline at Z=28mm with Side Dovetail Mortise Track
+    continuous_wrap_around_gold_beltline();
         
     // 2. Classical Vertical Fluting on front wall (55° self-supporting tapered base)
     for (fx = [-w_pod/2 + 22 : 6.0 : w_pod/2 - 22]) {
@@ -783,6 +827,202 @@ module side_utility_hooks() {
     }
 }
 
+// =============================================================================
+// 4c. MODULAR VERTICAL WEDGE TENON HOOK SYSTEM (參考壁掛卡榫 - 垂直梯形燕尾卡榫系統)
+// 100% 依據現有壁掛卡榫架構等比例轉化至側壁掛勾：
+// 1. 由上往下滑入：重力自鎖，向下受力越大咬合越堅固！
+// 2. 梯形錐度自緊 (16mm -> 12mm)：滑到底部兩側夾死，消除左右晃動與打印公差。
+// 3. 14° 雙向燕尾倒角：完全鎖死橫向拔脫自由度。
+// 4. 側壁實心 7mm，榫槽深 2.6mm，內部保留 4.4mm 實心防護壁（絕不穿透洗面乳艙）。
+// 5. 底部 45° 自支撐硬階梯：底部正向承重，免支撐列印。
+// 6. 100% 一體雕塑公榫：零獨立銷釘、零螺絲配件！
+// =============================================================================
+hook_dove_h     = 22.0; // 垂直滑動導向長度
+hook_dove_w_top = 16.0; // 上方導引入手寬度
+hook_dove_w_bot = 12.0; // 下方定位硬鎖定寬度 (兩側各 2mm 錐度 = 5.2° 楔形角)
+hook_dove_th    = 2.6;  // 侵入側壁深度 (留 4.4mm 實心背壁)
+hook_dove_angle = 14.0; // 燕尾倒扣角度 (防橫向拔脫)
+hook_dove_tol   = 0.25; // 3D 列印滑動公差 (雙側間隙)
+
+module dovetail_xy_polygon(w, th, ang, overcut=0) {
+    dx = th * tan(ang);
+    polygon([
+        [ 0.0 + overcut, -w/2],
+        [-th,            -w/2 - dx],
+        [-th,             w/2 + dx],
+        [ 0.0 + overcut,  w/2]
+    ]);
+}
+
+module male_wedge_dovetail() {
+    hull() {
+        // 底部窄端帶 45° 引導倒角
+        translate([0, 0, 0.4])
+            linear_extrude(height=0.1)
+                dovetail_xy_polygon(hook_dove_w_bot - 1.2, hook_dove_th - 0.5, hook_dove_angle);
+                
+        translate([0, 0, 1.4])
+            linear_extrude(height=0.1)
+                dovetail_xy_polygon(hook_dove_w_bot, hook_dove_th, hook_dove_angle);
+
+        // 頂部寬端開口
+        translate([0, 0, hook_dove_h])
+            linear_extrude(height=0.1)
+                dovetail_xy_polygon(hook_dove_w_top, hook_dove_th, hook_dove_angle);
+    }
+}
+
+module female_wedge_dovetail_cavity() {
+    w_t = hook_dove_w_top + hook_dove_tol * 2;
+    w_b = hook_dove_w_bot + hook_dove_tol * 2;
+    th  = hook_dove_th + hook_dove_tol;
+    
+    // 主體梯形燕尾導向槽
+    hull() {
+        translate([0.1, 0, 0])
+            linear_extrude(height=0.1)
+                dovetail_xy_polygon(w_b, th, hook_dove_angle, 0.5);
+                
+        translate([0.1, 0, hook_dove_h])
+            linear_extrude(height=0.1)
+                dovetail_xy_polygon(w_t, th, hook_dove_angle, 0.5);
+    }
+    
+    // 底部 45° 正向機械定位承重硬階梯 (100% 免支撐自排)
+    hull() {
+        translate([0.1, 0, 0])
+            linear_extrude(height=0.1)
+                dovetail_xy_polygon(w_b, th, hook_dove_angle, 0.5);
+        translate([0.1, 0, -th])
+            linear_extrude(height=0.1)
+                polygon([[0.6, -w_b/2], [-0.1, -w_b/2], [-0.1, w_b/2], [0.6, w_b/2]]);
+    }
+    
+    // 頂部 45° 漏斗狀滑入導引倒角 (Smooth Lead-in Funnel)
+    hull() {
+        translate([0.1, 0, hook_dove_h])
+            linear_extrude(height=0.1)
+                dovetail_xy_polygon(w_t, th, hook_dove_angle, 0.5);
+        translate([0.1, 0, hook_dove_h + 2.5])
+            linear_extrude(height=0.1)
+                dovetail_xy_polygon(w_t + 2.6, th + 0.8, hook_dove_angle, 0.5);
+    }
+}
+
+module female_side_dovetail_cavities() {
+    y_center = d_wall + d_pod/2; // 34.0mm
+    z_cavity_bot = 20.0 - hook_dove_h/2; // 9.0mm
+    
+    // 右側母卡槽 (X = +w_pod/2)
+    translate([w_pod/2, y_center, z_cavity_bot])
+        female_wedge_dovetail_cavity();
+
+    // 左側母卡槽 (X = -w_pod/2)
+    translate([-w_pod/2, y_center, z_cavity_bot])
+        scale([-1, 1, 1])
+            female_wedge_dovetail_cavity();
+}
+
+module monolithic_hook_body(side=1) {
+    w_root    = 28.0;
+    h_root    = 24.0; 
+    d_proj    = 22.0;
+    h_tip     = 8.5;
+    
+    gap_rear  = 11.5;
+    gap_front = 18.0;
+    prong_w   = 4.5;
+    r_fillet  = 1.1;
+    tip_d     = 7.0;
+    tip_r     = tip_d / 2;
+    tip_core_d = max(tip_d - 2*r_fillet, 1.5);
+
+    scale([side, 1, 1]) {
+        // 1. 一體成型垂直梯形燕尾公榫 (INTEGRATED VERTICAL WEDGE TENON)
+        translate([0, 0, -hook_dove_h/2])
+            male_wedge_dovetail();
+
+        // 2. 1B 掛勾本體 (流線型鞍座與外擴雙角)
+        minkowski() {
+            difference() {
+                hull() {
+                    translate([0, 0, 0]) rotate([0, 90, 0])
+                        linear_extrude(height=0.1)
+                            rounded_rect_2d(w_root - 2*r_fillet, h_root - 2*r_fillet, 3.5);
+
+                    translate([3.5, 0, 0]) rotate([0, 90, 0])
+                        linear_extrude(height=0.1)
+                            rounded_rect_2d((w_root - 2.0) - 2*r_fillet, (h_root - 2.0) - 2*r_fillet, 3.0);
+
+                    // 左側尖端 (防撞超圓潤安全球頂 R=3.5mm)
+                    translate([d_proj - r_fillet, (gap_front/2 + tip_r), h_tip])
+                        rotate([0, 20, 14])
+                            sphere(d=tip_core_d, $fn=16);
+
+                    // 右側尖端 (防撞超圓潤安全球頂 R=3.5mm)
+                    translate([d_proj - r_fillet, -(gap_front/2 + tip_r), h_tip])
+                        rotate([0, 20, -14])
+                            sphere(d=tip_core_d, $fn=16);
+
+                    // 底部 45° 平滑自支撐爬升斜面
+                    ramp_end_x = d_proj - 4.5;
+                    ramp_end_z = -h_root/2 + (ramp_end_x - 0);
+                    translate([ramp_end_x, 0, ramp_end_z])
+                        cube([0.5, gap_rear + 2.0, 1.0], center=true);
+                        
+                    translate([0, 0, -h_root/2])
+                        cube([0.1, gap_rear + 2.0, 1.0], center=true);
+                }
+
+                // 細節 A: 頂面圓滑下凹鞍面 (Top Concave Saddle Dish)
+                translate([d_proj * 0.52, 0, 20.0])
+                    rotate([0, 90, 90])
+                        cylinder(r=14.0, h=w_root * 1.5, center=true, $fn=24);
+
+                // 細節 B: 刮鬍刀手柄深度內縮 V 型槽 (Deep Recessed V-Trough)
+                hull() {
+                    translate([d_proj + 3.0, 0, 12.0])
+                        cube([4.0, gap_front, 10.0], center=true);
+                    translate([2.5, 0, 12.0])
+                        cube([2.0, gap_rear, 10.0], center=true);
+                    translate([d_proj - 3.0, 0, 1.0])
+                        rotate([0, 90, 0])
+                            cylinder(d=5.0, h=4.0, center=true, $fn=16);
+                    translate([2.5, 0, 0.0])
+                        rotate([0, 90, 0])
+                            cylinder(d=gap_rear, h=2.0, center=true, $fn=16);
+                    translate([d_proj * 0.45, 0, -9.0])
+                        cube([d_proj * 0.65, gap_rear, 14.0], center=true);
+                }
+            }
+            sphere(r=r_fillet, $fn=10);
+        }
+    }
+}
+
+module monolithic_hook_with_tenon(side=1, explode_d=0) {
+    x_base = side * (w_pod/2 + explode_d);
+    y_center = d_wall + d_pod/2; // 34.0mm
+    z_center = 20.0;
+    translate([x_base, y_center, z_center])
+        monolithic_hook_body(side);
+}
+
+module monolithic_hook_printable(side=1) {
+    // 獨立列印定位：平放於列印底板上 (Z=0)，無支撐自導向
+    translate([0, 0, 12.0])
+        monolithic_hook_body(side);
+}
+
+module modular_side_hooks(explode_d=0) {
+    if (side_hooks == "both" || side_hooks == "left") {
+        monolithic_hook_with_tenon(-1, explode_d);
+    }
+    if (side_hooks == "both" || side_hooks == "right") {
+        monolithic_hook_with_tenon(1, explode_d);
+    }
+}
+
 
 // =============================================================================
 // 5. STORAGE CAVITIES, CONICAL FUNNELS & THROUGH-DRAINS (頂層統一差集)
@@ -886,17 +1126,22 @@ module luxury_holder_c1() {
                 }
             }
             if (side_hook_color == "body") {
-                side_utility_hooks();
+                if (side_hook_mode == "integrated") {
+                    side_utility_hooks();
+                }
             }
         }
         
         // Subtract C4 trim grooves for seamless puzzle fit
         architectural_trim_c4();
         if (side_hook_color == "gold") {
-            side_utility_hooks();
+            if (side_hook_mode == "integrated") {
+                side_utility_hooks();
+            }
         }
         
-        female_dovetail_cavity();
+        female_dovetail_cavity();        // Rear universal wall bracket cavity
+        female_side_dovetail_cavities(); // Side hook vertical wedge dovetail cavities
         rear_storage_cavities_and_drains();
         translate([0, 0, -50.0]) cube([500.0, 500.0, 100.0], center=true);
     }
@@ -914,18 +1159,27 @@ module luxury_holder_c3() {
 
 // Solid 4: Champagne Gold Architectural Trim (Fluting inlays, Beltline, Molding frame)
 module luxury_holder_c4() {
-    architectural_trim_c4();
+    difference() {
+        architectural_trim_c4();
+        female_side_dovetail_cavities(); // Notch out side dovetail slot for seamless passage
+    }
     if (side_hook_color == "gold") {
-        side_utility_hooks();
+        if (side_hook_mode == "integrated") {
+            side_utility_hooks();
+        }
     }
 }
 
 // Complete 4-Color Assembly with Full OpenSCAD Palette Preview
-module luxury_holder_4color() {
+module luxury_holder_4color(show_modular_hooks=true) {
     color(c1_body)  luxury_holder_c1();
     color(c2_black) luxury_holder_c2();
     color(c3_warm)  luxury_holder_c3();
     color(c4_gold)  luxury_holder_c4();
+    if (show_modular_hooks && side_hook_mode == "modular_cradle") {
+        color(side_hook_color == "gold" ? c4_gold : c1_body)
+            modular_side_hooks();
+    }
 }
 
 // Complete Unified Monolithic Solid (100% Watertight Single-Material Print)
@@ -1097,16 +1351,29 @@ if (color_export == 1) {
     // Export Color 4: Champagne Gold Architectural Trim
     luxury_holder_c4();
 } else if (mode == "holder") {
-    // Default: Full 4-Color Luxury Assembly Preview
-    luxury_holder_4color();
+    // Default: Full 4-Color Luxury Assembly Preview (Includes Modular Hooks Installed)
+    luxury_holder_4color(show_modular_hooks=true);
+} else if (mode == "holder_main") {
+    // Main Holder Body Only (No Modular Hooks - Clean Roman Beltline with Dovetail Tracks)
+    luxury_holder_4color(show_modular_hooks=false);
 } else if (mode == "holder_monochrome") {
     // 100% Watertight Unified Monolithic Solid (Single Material Print)
     color(rose_gold_base) luxury_holder_monochrome();
+} else if (mode == "modular_hook_pair") {
+    // Standalone Pair of Modular Hooks (Left & Right) with Integrated Vertical Wedge Tenons
+    color(c1_body) {
+        translate([-25.0, 0, 0]) monolithic_hook_printable(1);
+        translate([ 25.0, 0, 0]) monolithic_hook_printable(-1);
+    }
+} else if (mode == "modular_hook_left") {
+    color(c1_body) monolithic_hook_printable(-1);
+} else if (mode == "modular_hook_right") {
+    color(c1_body) monolithic_hook_printable(1);
 } else if (mode == "bracket") {
     color(c4_gold) wall_bracket();
 } else if (mode == "plate") {
     // 1-Plate Combo: 4-Color Holder + Wall Bracket
-    luxury_holder_4color();
+    luxury_holder_4color(show_modular_hooks=true);
     color(c4_gold) translate([0, y_front + 24.0, 0]) wall_bracket();
 } else if (mode == "standalone_toothbrush") {
     color(c1_body) standalone_toothbrush_rack("fluted");
