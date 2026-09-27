@@ -334,30 +334,44 @@ module supportfree_muzzle(z, rx=2.2, ry=1.4, rz=1.6, relief=0.8) {
     }
 }
 
-// Pig Snout in C3 (Pink) - Conformal oval snout with self-supporting draft
-module pig_snout_c3(z=4.8, rx=2.3, rz=1.5, relief=0.85) {
+// Helper for Pig Nostril Socket Cutter (Extruded along Y to cleanly pierce outer surface)
+module pig_nostril_socket_tool(x, z=4.8, rx=0.55, rz=0.85, depth=1.5) {
+    y_front_snout = tooth_surf_y(0, z) + 0.95 + 0.55;
+    translate([x, y_front_snout + 1.0, z])
+        rotate([90, 0, 0])
+            linear_extrude(height = 1.0 + depth)
+                scale([rx, rz])
+                    circle(r=1.0, $fn=24);
+}
+
+// Pig Snout in C3 (Pink) - Conformal oval snout with clean subtracted nostril sockets
+module pig_snout_c3(z=4.8, rx=2.4, rz=1.55, relief=0.95) {
     y_s = tooth_surf_y(0, z);
-    hull() {
-        translate([0, y_s + relief, z])
-            scale([rx, 0.6, rz]) sphere(r=1.0, $fn=24);
-        translate([0, y_s - 0.8, z])
-            scale([rx*1.1, 0.8, rz*1.1]) sphere(r=1.0, $fn=24);
-        translate([0, y_s - 0.2, z - rz*1.2])
-            scale([rx*0.7, 0.4, 0.5]) sphere(r=1.0, $fn=16);
+    difference() {
+        hull() {
+            translate([0, y_s + relief, z])
+                scale([rx, 0.55, rz]) sphere(r=1.0, $fn=24);
+            translate([0, y_s - 0.8, z])
+                scale([rx*1.05, 0.8, rz*1.05]) sphere(r=1.0, $fn=24);
+            translate([0, y_s - 0.2, z - rz*1.2])
+                scale([rx*0.7, 0.4, 0.5]) sphere(r=1.0, $fn=16);
+        }
+        // 核心布林相減：貫穿豬鼻前表面的精密橢圓凹槽
+        pig_nostril_socket_tool(-1.05, z);
+        pig_nostril_socket_tool( 1.05, z);
     }
 }
 
-// Pig Nostril in C2 (Black) - Sits on front face of snout (enlarged & distinct)
-module pig_nostril_c2(x, z, rx=0.62, rz=0.92) {
-    y_s = tooth_surf_y(0, z) + 0.9;
-    hull() {
-        translate([x, y_s + 0.25, z])
-            scale([rx, 0.4, rz]) sphere(r=1.0, $fn=16);
-        translate([x, y_s - 0.6, z])
-            scale([rx, 0.6, rz]) sphere(r=1.0, $fn=16);
-        translate([x, y_s - 0.1, z - rz*0.8])
-            scale([rx*0.6, 0.3, rz*0.4]) sphere(r=1.0, $fn=16);
-    }
+// Pig Nostril in C2 (Black) - Nested perfectly at the bottom of the socket
+module pig_nostril_c2(x, z=4.8, rx=0.55, rz=0.85, depth=1.5) {
+    y_front_snout = tooth_surf_y(0, z) + 0.95 + 0.55;
+    // 保留 0.40mm 純立體物理內凹孔洞，底部黑膠塞與粉紅鼻孔槽 100% 幾何重合無縫密合
+    recess_front = 0.40;
+    translate([x, y_front_snout - recess_front, z])
+        rotate([90, 0, 0])
+            linear_extrude(height = depth - recess_front)
+                scale([rx, rz])
+                    circle(r=1.0, $fn=24);
 }
 
 // Pig Folded Triangular Ears in C3 (Pink)
@@ -430,8 +444,8 @@ module animal_features_c2(animal) {
         for (s = [-1, 1]) supportfree_eye(s * 3.4, 7.4, 0.9);
     } else if (animal == "pig") {
         for (s = [-1, 1]) supportfree_eye(s * 3.2, 7.2, 0.85);
-        pig_nostril_c2(-1.1, 4.8);
-        pig_nostril_c2( 1.1, 4.8);
+        pig_nostril_c2(-1.05, 4.8);
+        pig_nostril_c2( 1.05, 4.8);
     } else if (animal == "fox") {
         supportfree_nose(5.2, rx=0.85, ry=0.7, rz=0.7, relief=0.45);
         for (s = [-1, 1]) supportfree_eye(s * 3.5, 7.2, 0.9, tilt=s * 25, scale_xy=[1.3, 0.8]);
