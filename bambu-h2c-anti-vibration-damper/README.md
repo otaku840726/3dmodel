@@ -6,15 +6,17 @@
 
 ---
 
-## 📸 多視角檢驗全景板 (V2 Inspection Board)
+## 📸 檢驗全景板與微距螺紋檢驗 (Inspection Boards)
 
-![V2 Multi-View Inspection Board](renders/v2_inspection_board.png)
+### 1. 底座專屬 M36 內螺紋深度微距檢驗 (Base Internal Thread Audit)
+![Base Internal Thread Deep Audit](renders/base_thread_deep_audit.png)
 
+### 2. 裝配與組件多視角透視 (Assembly & Cutaway Views)
 | 剖面透視 (Cutaway Front View) | 3D 剖切透視 (Cutaway ISO) |
 | :---: | :---: |
 | <img src="renders/v2_cutaway_front.png" width="400" alt="Cutaway Front View"> | <img src="renders/v2_cutaway_iso.png" width="400" alt="Cutaway ISO View"> |
 
-| 熱床排版視圖 (Printable Plate - 0支撐) | M35 粗牙旋蓋 (Coin-Slot Screw Cap) |
+| 熱床排版視圖 (Printable Plate - 0支撐) | M36 粗牙旋蓋 (Coin-Slot Screw Cap) |
 | :---: | :---: |
 | <img src="renders/v2_printable_plate.png" width="400" alt="Printable Plate"> | <img src="renders/v2_cap_iso.png" width="400" alt="Screw Cap"> |
 
