@@ -1,3 +1,17 @@
+## 樺木板 × 角鋼架專用：V3.0 超軟純平滾珠全向減震座 (`birch-board-ultra-soft-roller-isolator`)
+
+- **專案目錄**：[`birch-board-ultra-soft-roller-isolator/`](birch-board-ultra-soft-roller-isolator/)
+- **適用場景**：置於 **$42 	imes 42 	imes 1.2	ext{ cm}$ 樺木板** 與 **角鋼架頂層平台（四邊預留 $1.5	ext{ cm}$）** 之間的四角全向浮動滾珠隔震座。
+- **核心特點**：4 顆 $arnothing 8	ext{ mm}$ 鋼珠純水平零層紋滾動承重 + 可抽換 $0.75	ext{ mm}$ 超軟 S 型回中簧片（單指可推、絕不過硬）+ $\pm 6.5	ext{ mm}$（$1.3	ext{ cm}$）安全擺幅 + 3mm ACF 底墊與邊界軟緩衝。
+- **STL 檔案**：
+  - [`board_isolator_base.stl`](birch-board-ultra-soft-roller-isolator/board_isolator_base.stl)
+  - [`board_isolator_spring.stl`](birch-board-ultra-soft-roller-isolator/board_isolator_spring.stl)
+  - [`board_isolator_top.stl`](birch-board-ultra-soft-roller-isolator/board_isolator_top.stl)
+
+![V3.0 樺木板專用超軟滾珠減震座](birch-board-ultra-soft-roller-isolator/renders/v3_board_isolator_inspection.png)
+
+---
+
 # 3D Model Repository (3D 列印模型庫)
 
 個人 3D 列印模型集合庫，包含 OpenSCAD 參數化原始碼、已編譯可直接列印的 STL 檔案、以及高解析度渲染預覽圖。
