@@ -58,7 +58,7 @@ cam_x            = 24.90;  // 三鏡頭中心 X 座標 (向右微調 0.25mm，�
 cam1_y           = 66.34;  // 超廣角鏡頭中心 Y
 cam2_y           = 49.14;  // 主廣角鏡頭中心 Y
 cam3_y           = 31.94;  // 3x 長焦鏡頭中心 Y
-cam_hole_d       = 16.54;  // 鏡頭保護開孔直徑
+cam_hole_d       = 15.60;  // 獨立三圓孔直徑 (真機鏡頭環 14.65mm + 0.95mm 裕度；兩孔中心距 17.20mm，孔間保留 1.60mm 堅固分隔橋)
 
 flash_x          = 11.15;  // 閃光燈中心 X 座標 (向右修正 0.60mm)
 flash_y          = 57.70;  // 閃光燈中心 Y 座標 (向下修正 0.46mm，徹底消除閃光燈孔偏左上)
@@ -186,25 +186,21 @@ module inner_phone_cavity() {
 }
 
 // ==============================================================================
-// 後置三鏡頭與閃光燈精準斜切保護窗 (與 V4.0 100% 相同)
+// 後置獨立三圓孔鏡頭與閃光燈精準斜切保護窗
 // ==============================================================================
 module camera_and_flash_cutouts() {
-    hull() {
-        translate([cam_x, cam1_y, -0.1])
-            cylinder(d1 = cam_hole_d + 1.8, d2 = cam_hole_d, h = 1.0);
-        translate([cam_x, cam3_y, -0.1])
-            cylinder(d1 = cam_hole_d + 1.8, d2 = cam_hole_d, h = 1.0);
-    }
-    hull() {
-        translate([cam_x, cam1_y, 0.8])
-            cylinder(d = cam_hole_d, h = back_t + 1.0);
-        translate([cam_x, cam3_y, 0.8])
-            cylinder(d = cam_hole_d, h = back_t + 1.0);
+    // 3 顆獨立圓形鏡頭孔 (中心距 17.20mm，孔徑 15.60mm，外側帶 0.45mm 微倒角，孔間保留堅固分隔橋)
+    for (cy = [cam1_y, cam2_y, cam3_y]) {
+        translate([cam_x, cy, -0.1]) {
+            cylinder(d1 = cam_hole_d + 0.80, d2 = cam_hole_d, h = 0.55);
+            translate([0, 0, 0.45])
+                cylinder(d = cam_hole_d, h = back_t + 1.0);
+        }
     }
 
     translate([flash_x, flash_y, -0.1]) {
-        cylinder(d1 = flash_hole_d + 1.6, d2 = flash_hole_d, h = 1.0);
-        translate([0, 0, 0.8])
+        cylinder(d1 = flash_hole_d + 1.4, d2 = flash_hole_d, h = 0.8);
+        translate([0, 0, 0.7])
             cylinder(d = flash_hole_d, h = back_t + 1.0);
     }
 }
