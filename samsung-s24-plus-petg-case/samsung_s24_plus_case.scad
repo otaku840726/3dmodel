@@ -37,17 +37,20 @@ phone_t          = 7.70;   // 裸機厚度 (Z軸)
 phone_corner_r   = 8.28;   // 裸機四角圓弧半徑
 phone_btn_ext    = 0.62;   // 裸機實體按鍵凸出機身邊框量 (頂面位於 X = 37.95 + 0.62 = 38.57mm)
 
-/* [V4.0/V5.0 已驗證完美之零晃動內腔與快拆前唇參數 (100% 鎖定不變)] */
+/* [V5.2 緊密壓合內腔與防脫前唇參數 (消除 Z 軸浮動間隙，讓手機背面緊貼殼底)] */
 tol_x            = 0.01;   // 單邊 X 零晃動貼合裕度 (內腔總寬 cav_w = 75.92mm, 半寬 37.96mm)
 tol_y            = 0.025;  // 單邊 Y 零晃動貼合裕度 (內腔總長 cav_l = 158.55mm, 半長 79.275mm)
-tol_z            = 0.05;   // 垂直方向貼合裕度 (內腔直壁高度 cav_t = 7.75mm)
+// S24+ 裸機厚 7.70mm，頂部鋁框邊緣具 ~0.50mm 圓弧導角 (直壁高約 7.20mm)；
+// 將內腔直壁高度設為 cav_t = 7.20mm，使頂部 45° 防脫斜坡從距內底面 7.20mm 即開始向內壓緊手機頂角，
+// 於距內底面 7.80mm 處完全鎖死手機正面邊緣，徹底消除手機在殼內的上下浮動！
+cav_t            = 7.20;   // 內腔直壁高度 (由 7.75mm 下調至 7.20mm，讓頂部擋板緊密扣住 7.70mm 手機！)
 
 back_t           = 1.80;   // 背板厚度 (齊平保護 S24+ 凸出三鏡頭)
 wall_t           = 1.75;   // 實心側壁厚度 (外壁半寬 = 39.71mm)
-front_lip_ramp_h = 0.75;   // 正面擋板 45° 內縮斜坡高度
-front_lip_rim_h  = 0.40;   // 正面擋板頂部平緣高度
-lip_undercut_side= 0.55;   // 左右長邊頂部擋板內縮量 (0.55mm 好裝好拆)
-lip_undercut_end = 0.45;   // 上下短邊與四角頂部擋板內縮量 (0.45mm)
+front_lip_ramp_h = 0.65;   // 正面擋板 45° 內縮斜坡高度 (Z_rel = 7.20 ~ 7.85mm，精準壓緊 7.70mm 螢幕邊緣)
+front_lip_rim_h  = 0.45;   // 正面擋板頂部平緣高度
+lip_undercut_side= 0.62;   // 左右長邊頂部擋板內縮量 (由 0.55mm 增至 0.62mm，加強下壓緊密度且仍好拆裝)
+lip_undercut_end = 0.48;   // 上下短邊與四角頂部擋板內縮量 (0.48mm)
 
 /* [後置三鏡頭與閃光燈精準原廠規格座標 (V5.1 修正微偏問題)] */
 // 依據 Samsung Galaxy S24+ (SM-S926) 原廠正交工程渲染圖與 1034176 實機驗證殼交叉量測：
@@ -82,7 +85,7 @@ btn_win_len_p    = 11.20;  // 電源鍵外側開窗長度
 btn_win_h        = 3.60;   // 外側開窗高度 (Z = 4.20 ~ 7.80mm，完整包絡真機按鍵 Z = 4.78 ~ 7.22mm)
 
 btn_flange_ext_y = 0.90;   // 內側階梯槽單邊縱向擴展量 (防掉出法蘭擋邊寬度)
-btn_flange_ext_z = 0.65;   // 內側階梯槽單邊垂直擴展量 (內槽高度 = 3.60 + 1.30 = 4.90mm, Z = 3.55 ~ 8.45mm)
+btn_flange_ext_z = 0.55;   // 內側階梯槽單邊垂直擴展量 (內槽高度 = 3.60 + 1.10 = 4.70mm, Z = 3.65 ~ 8.35mm，低於 Z=9.00mm 前唇起坡點)
 btn_step_x       = 39.20;  // 側壁內側階梯止擋面 X 座標 (距裸機按鍵 38.57mm 有 0.63mm 空間，外側留 0.51mm 擋牆)
 
 // 獨立按鍵蓋尺寸與公差：
@@ -93,13 +96,12 @@ btn_cap_total_t  = 1.80;   // 按鍵蓋總厚度 (當按鍵蓋靠在 X=39.20mm �
 // 推導內部腔體與外殼尺寸
 cav_l            = phone_l + 2 * tol_y;                        // 158.55 mm (半長 79.275 mm)
 cav_w            = phone_w + 2 * tol_x;                        // 75.92 mm  (半寬 37.96 mm)
-cav_t            = phone_t + tol_z;                            // 7.75 mm
 cav_r            = phone_corner_r + tol_x;                     // 8.29 mm
 
 outer_l          = cav_l + 2 * wall_t;                         // 162.05 mm (半長 81.025 mm)
 outer_w          = cav_w + 2 * wall_t;                         // 79.42 mm  (半寬 39.71 mm)
 outer_r          = cav_r + wall_t;                             // 10.04 mm
-total_h          = back_t + cav_t + front_lip_ramp_h + front_lip_rim_h; // 10.70 mm
+total_h          = back_t + cav_t + front_lip_ramp_h + front_lip_rim_h; // 10.10 mm
 
 // ==============================================================================
 // 基礎幾何輔助模組 (Core Geometric Primitives)
@@ -145,25 +147,26 @@ module rrect_smooth(w, l, h, r, r_bot=1.5, r_top=1.0) {
 }
 
 // ==============================================================================
-// 零晃動貼身內腔與「適中好拆型 0.55mm 防脫前唇」模組 (與 V4.0 100% 相同)
+// 零晃動貼身內腔與「下壓緊貼型 0.62mm 防脫前唇」模組 (V5.2 強化垂直壓合度)
 // ==============================================================================
 module inner_phone_cavity() {
-    lip_open_w = cav_w - 2 * lip_undercut_side; // 75.92 - 1.10 = 74.82 mm
-    lip_open_l = cav_l - 2 * lip_undercut_end;  // 158.55 - 0.90 = 157.65 mm
+    lip_open_w = cav_w - 2 * lip_undercut_side; // 75.92 - 1.24 = 74.68 mm
+    lip_open_l = cav_l - 2 * lip_undercut_end;  // 158.55 - 0.96 = 157.59 mm
     lip_open_r = max(2.0, cav_r - lip_undercut_end);
 
     union() {
-        // 1. 主機身零晃動貼合容納腔 (Z = back_t 到 back_t + cav_t = 1.80 ~ 9.55mm)
+        // 1. 主機身零晃動貼合容納腔 (Z = back_t 到 back_t + cav_t = 1.80 ~ 9.00mm)
+        //    底部改為極小 0.15mm 微清角，確保手機背板 100% 貼死 Z = 1.80mm 內底面！
         translate([0, 0, back_t])
             hull() {
                 linear_extrude(height = 0.01)
-                    rrect2d(cav_w - 1.1, cav_l - 1.1, cav_r - 0.55);
-                translate([0, 0, 0.55])
-                    linear_extrude(height = cav_t - 0.55)
+                    rrect2d(cav_w - 0.30, cav_l - 0.30, cav_r - 0.15);
+                translate([0, 0, 0.15])
+                    linear_extrude(height = cav_t - 0.15)
                         rrect2d(cav_w, cav_l, cav_r);
             }
 
-        // 2. 頂部 45° 自支撐適中鎖定斜坡 (Z = 9.55 ~ 10.30mm)
+        // 2. 頂部 45° 自支撐緊密壓合斜坡 (Z = 9.00 ~ 9.65mm，即距內底面 7.20 ~ 7.85mm，緊扣 7.70mm 機身頂角)
         translate([0, 0, back_t + cav_t - 0.02])
             hull() {
                 linear_extrude(height = 0.02)
@@ -173,7 +176,7 @@ module inner_phone_cavity() {
                         rrect2d(lip_open_w, lip_open_l, lip_open_r);
             }
 
-        // 3. 頂部防脫平緣與向外大導角口 (Z = 10.30 ~ 10.75mm)
+        // 3. 頂部防脫平緣與向外導角口 (Z = 9.65 ~ 10.15mm)
         translate([0, 0, back_t + cav_t + front_lip_ramp_h - 0.02])
             hull() {
                 linear_extrude(height = 0.18)
@@ -342,9 +345,17 @@ module s24_plus_petg_case_body() {
         port_cutouts();
 
         // 5. 切出右側 3 個「內寬外窄」階梯式獨立按鍵槽
-        //    音量+ 與 音量- 之間保留 1.60mm 外分隔柱與 0.60mm 內分隔肋，兩顆按鍵蓋互不干涉
+        //    [V5.2 關鍵修正]：S24+ 音量鍵為一整條長方形連體按鍵 (Y = +30.54 ~ +50.78mm, X = 38.57mm)，
+        //    因此將音量+ 與 音量- 的「內側階梯槽 (X = 37.00 ~ 39.20mm)」中間完全打通！
+        //    使兩孔中間的分隔柱 (Y = +39.60 ~ +41.70mm) 內側面退縮至 X = 39.20mm (距真機音量鍵留出 +0.63mm 淨空，絕不頂死音量鍵)！
         stepped_button_cutout(vol_up_y, btn_win_len_v, 0.50, btn_flange_ext_y);
         stepped_button_cutout(vol_dn_y, btn_win_len_v, btn_flange_ext_y, 0.50);
+        // 打通音量+ 與 音量- 之間的內側階梯槽 (X = 37.00 ~ btn_step_x = 39.20mm)，縮減中間分隔柱內側厚度 1.24mm
+        vol_cb_bot = vol_dn_y - btn_win_len_v/2 - btn_flange_ext_y; // +29.50 mm
+        vol_cb_top = vol_up_y + btn_win_len_v/2 + btn_flange_ext_y; // +51.80 mm
+        translate([37.00, (vol_cb_bot + vol_cb_top)/2, btn_z_mid])
+            horiz_pill_x(vol_cb_top - vol_cb_bot, btn_win_h + 2 * btn_flange_ext_z, btn_step_x - 37.00, 1.75, 0.35);
+
         stepped_button_cutout(pwr_center_y, btn_win_len_p, btn_flange_ext_y, btn_flange_ext_y);
     }
 }
@@ -387,7 +398,7 @@ module standalone_buttons_assembled() {
 // S24+ 精準參考裸機模型
 // ==============================================================================
 module dummy_s24_plus_phone() {
-    translate([0, 0, back_t + tol_z/2]) {
+    translate([0, 0, back_t]) {
         color("#2c3038")
             rrect_smooth(phone_w, phone_l, phone_t, phone_corner_r, 0.55, 0.55);
         color("#12161f")
