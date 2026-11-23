@@ -28,13 +28,19 @@ P = dict(
     cam_w=60.0, cam_h=60.0, cam_d=26.0, cam_r=6.0,   # cavity corner radius (<= camera corner radius)
     cam_clear=0.2,           # per side
     cradle_wall=2.0, lip=3.0, lip_t=2.0,
-    stem_slot_w=9.0,         # slot in the bottom wall for the camera's stand / cable
+    stem_slot_w=9.0,         # slot in the bottom wall for the camera's stand (stem + ball)
+    # TP-Link Tapo C100 / C110 - measured from the reference sleeve that fits this camera
+    power_x=15.1,            # DC 5.5x2.1 jack on the BOTTOM of the head, right of centre (seen from outside)
+    power_from_lip=15.6,     # jack centre measured from the rear-lip inner face
+    power_d=12.0,            # clearance for the plug overmould
+    sd_y=(-12.0, 15.5),      # microSD / reset window on the LEFT side (seen from outside)
+    sd_from_lip=(1.5, 16.5),
     # magnet system
     mag_d_max=20.0, mag_t_max=5.0,
     cap_wall=1.0, cap_roof_min=1.2, cap_ridge_h=1.5,
     floor=0.8,               # plastic between magnet and glass
     sock_clear=0.2,
-    lug_w=1.2, lug_h=1.6, lug_deg=30.0, chan_deg=36.0, twist_deg=40.0, ledge=1.4,
+    lug_w=1.2, lug_h=1.6, lug_deg=29.0, chan_deg=36.0, twist_deg=40.0, ledge=1.4,
     # plates: every magnet sits ABOVE the camera, so neither plate is ever in the field of view
     outer_base=3.5, inner_base=3.0, plate_margin=0.0,
     sockets=[(38.0, 36.0), (-38.0, 36.0), (18.0, 66.0), (-18.0, 66.0)],
@@ -94,10 +100,13 @@ def to_trimesh(m):
     return trimesh.Trimesh(vertices=np.asarray(mesh.vert_properties)[:, :3], faces=np.asarray(mesh.tri_verts), process=False)
 
 def save(m, path):
-    tm = to_trimesh(m)
+    # collapse sub-micron sliver triangles from the booleans so float32 STL rounding can't break the mesh
+    tm = to_trimesh(m.simplify(1e-3))
     assert tm.is_watertight, path
     tm.export(path)
-    return tm
+    back = trimesh.load(path)
+    assert back.is_watertight and back.is_winding_consistent, f'{path} not watertight after STL export'
+    return back
 
 # ----------------------------------------------------------------------------- printed thread
 def thread_section(D, pitch, grow=0.0, n=90):
@@ -172,14 +181,14 @@ def magnet_cap(p, d, mag_d, mag_t):
     bore = ext(CS.circle(mag_d / 2 + 0.175), -1, mag_t + 0.3)
     body -= bore
     # small 45 deg lead-in chamfer at the rim
-    ring = ext(CS.circle(d['cap_rc'] + 2), 0, 0.6) - M.extrude(CS.circle(d['cap_rc'] - 0.6), 0.6,
-                                                               scale_top=(d['cap_rc'] / (d['cap_rc'] - 0.6),) * 2)
+    rc = d['cap_rc']   # 45 deg lead-in chamfer at the rim (cone crosses the wall at z=0.6, inside the cutter)
+    ring = ext(CS.circle(rc + 2), 0, 0.7) - M.extrude(CS.circle(rc - 0.6), 0.8, scale_top=((rc + 0.2) / (rc - 0.6),) * 2)
     body -= ring
     return body
 
 # ----------------------------------------------------------------------------- plates
 def plate_outline(p, d):
-    boss_r = d['sock_r'] + 3.3
+    boss_r = d['sock_r'] + 3.9          # outline 0.6 mm outside the bosses (no coincident walls)
     shape = CS.hull(CS.batch_boolean([CS.circle(boss_r).translate(xy) for xy in p['sockets']], OpType.Add)
                     + CS.square((2 * d['ear_x1'], 1.0), True).translate((0, d['y_h'] - p['hinge_r'] + 0.5)))
     return shape
@@ -188,7 +197,7 @@ def plate(p, d, base_t):
     shape = plate_outline(p, d)
     body = ext(shape, 0, base_t)
     for (x, y) in p['sockets']:
-        body += ext(CS.circle(d['sock_r'] + 3.3).translate((x, y)), 0, d['boss_h'])
+        body += ext(CS.circle(d['sock_r'] + 3.3).translate((x, y)), base_t - 1.0, d['boss_h'])
     for (x, y) in p['sockets']:
         body -= socket_cut(p, d, d['boss_h']).translate((x, y, 0))
     return body
@@ -233,12 +242,21 @@ def cradle(p, d):
     hw = p['stem_slot_w'] / 2
     slot = CS.hull(CS.circle(hw).translate((0, zg + d['cav_d'] - hw)) + CS.square((2 * hw, 1), False).translate((-hw, zg - 1)))
     body -= prism_y(slot, -d['out_h'] / 2 - 1, -d['cav_h'] / 2 + 0.5)
-    # side windows (SD card / buttons / ventilation), pointed ends -> no bridging
+    z_lip = zg + d['cav_d']                       # inner face of the rear lip
+    # DC power jack hole in the bottom wall (teardrop: point toward the glass end = print top)
+    pw = teardrop(p['power_d'] / 2, p['power_x'], z_lip - p['power_from_lip'], up=-1)
+    body -= prism_y(pw, -d['out_h'] / 2 - 1, -d['cav_h'] / 2 + 0.5)
+    # LEFT side: microSD / reset window, 45 deg chamfered roof toward the glass end (print top)
+    y0, y1 = p['sd_y']; z0, z1 = z_lip - p['sd_from_lip'][1], z_lip - p['sd_from_lip'][0]
+    c = 5.0   # 45 deg corner chamfers; the remaining ~17 mm roof is a short, easy bridge
+    sd = poly([(y0, z1), (y1, z1), (y1, z0 + c), (y1 - c + 1e-3 if y1 - c > y0 + c else (y0 + y1) / 2 + 1e-3, z0), (y0 + c, z0), (y0, z0 + c)])
+    body -= prism_x(sd, -d['out_w'] / 2 - 1, -d['cav_w'] / 2 + 0.5)
+    # RIGHT side: ventilation window, pointed roof -> no bridging
     zc = zg + d['cav_d'] / 2
     wl, wh = min(16.0, d['cav_d'] - 9), 18.0
-    z0, z1 = zc - wl / 2, zc + wl / 2            # z0 = glass side = print TOP -> pointed 45 deg roof
+    z0, z1 = zc - wl / 2, zc + wl / 2
     win = poly([(-wh / 2, z1), (wh / 2, z1), (wh / 2, z0 + wh / 2), (0, z0), (-wh / 2, z0 + wh / 2)])
-    body -= prism_x(win, -d['out_w'] / 2 - 1, d['out_w'] / 2 + 1)
+    body -= prism_x(win, d['cav_w'] / 2 - 0.5, d['out_w'] / 2 + 1)
     # snap ridges near the glass end (hold the camera when the cradle is tilted)
     tri = poly([(d['cav_w'] / 2 + 0.01, zg + 0.6), (d['cav_w'] / 2 - 0.6, zg + 1.6), (d['cav_w'] / 2 + 0.01, zg + 2.6)])
     for s in (1, -1):
@@ -265,7 +283,7 @@ def hinge_knob(p, d):
     prof = CS.circle(R)
     for k in range(n):
         a = 2 * math.pi * k / n
-        prof -= CS.circle(1.6).translate(((R + 0.7) * math.cos(a), (R + 0.7) * math.sin(a)))
+        prof -= CS.circle(1.6).translate(((R + 0.95) * math.cos(a), (R + 0.95) * math.sin(a)))
     knob = ext(prof, 0, t)
     # top edge chamfer
     knob -= ext(CS.circle(R + 3), t - 0.8, t + 1) - M.extrude(CS.circle(R - 0.1), 0.8, scale_top=((R - 0.9) / (R - 0.1),) * 2).translate((0, 0, t - 0.8))
