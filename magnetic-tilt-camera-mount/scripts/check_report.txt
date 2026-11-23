@@ -1,0 +1,23 @@
+--- interference (mm^3) ---
+tilt   0 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
+tilt  10 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
+tilt  20 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
+tilt  30 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
+tilt  40 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
+tilt  50 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
+tilt  60 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
+tilt  70 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
+tilt  80 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
+tilt  90 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
+bolt vs plate (should be ~0): 0.0  knob vs plate: -0.0
+caps vs plate: 0.0
+min gap cradle-outer(0deg): 0.15
+min gap knob-caps: 1.247  knob-plate 0.0
+--- view obstruction by plates (HFOV 100, VFOV 60) ---
+tilt  0: lens at y=   0.0 z=  9.9 (glass gap)  blocked   0.0%
+tilt 10: lens at y=  -0.5 z= 17.4 (glass gap)  blocked   0.0%
+tilt 20: lens at y=   0.4 z= 24.9 (glass gap)  blocked   0.0%
+tilt 30: lens at y=   2.5 z= 32.1 (glass gap)  blocked   0.0%
+tilt 45: lens at y=   8.0 z= 42.0 (glass gap)  blocked   0.0%
+tilt 60: lens at y=  15.8 z= 50.1 (glass gap)  blocked   0.0%
+renders written

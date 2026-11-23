@@ -1,0 +1,63 @@
+{
+  "outer_plate": {
+    "size": [
+      105.35,
+      59.35,
+      25.8
+    ],
+    "volume_cm3": 19.76
+  },
+  "inner_plate": {
+    "size": [
+      105.35,
+      59.35,
+      7.3
+    ],
+    "volume_cm3": 15.6
+  },
+  "cradle": {
+    "size": [
+      64.4,
+      84.4,
+      31.4
+    ],
+    "volume_cm3": 22.4
+  },
+  "hinge_bolt": {
+    "size": [
+      15.01,
+      13.0,
+      45.5
+    ],
+    "volume_cm3": 2.99
+  },
+  "hinge_knob": {
+    "size": [
+      16.77,
+      17.0,
+      9.0
+    ],
+    "volume_cm3": 1.25
+  },
+  "derived": {
+    "cav_w": 60.4,
+    "cav_h": 60.4,
+    "out_w": 64.4,
+    "out_h": 64.4,
+    "ytop": 32.2,
+    "cap_rc": 11.175,
+    "cap_h": 6.5,
+    "boss_h": 7.3,
+    "sock_r": 11.375,
+    "lug_r": 12.375,
+    "groove_r": 12.675,
+    "z_glass_end": 9.6,
+    "cav_d": 26.6,
+    "z_rear": 38.2,
+    "y_h": 42.7,
+    "z_h": 16.3,
+    "ear_x0": 13.0,
+    "ear_x1": 18.5
+  },
+  "bolt_length_total": 45.5
+}
