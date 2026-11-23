@@ -123,6 +123,7 @@ if __name__ == '__main__':
     rp(outer, 'part_outer_plate'); rp(inner, 'part_inner_plate', ((35, -60), (-50, 30)))
     rp(cr.mirror((0, 0, 1)), 'part_cradle', ((25, -60), (25, 120)))
     rp(cap, 'part_cap_D12x3', ((40, -60), (-45, -60)), CAPC)
+    rp(g.magnet_cap_cluster(p, d, 5, 3), 'part_cap_D5x3_x7', ((40, -60), (-55, -60)), CAPC)
     # Tapo C100/C110: power jack hole + stem slot (bottom) and microSD window (left)
     render([to_view(tm(cr))], [WHITE], os.path.join(OUT, 'cradle_power_hole.png'), [(-60, -90), (12, 205)], size=5.5,
            titles=['bottom: DC power hole (right) + stem slot', 'left side: microSD / reset window'])

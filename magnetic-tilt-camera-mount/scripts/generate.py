@@ -178,13 +178,24 @@ def magnet_cap(p, d, mag_d, mag_t):
     # grip ridge (also shows lock state: ridge points at the lug / entry channel)
     ridge = ext(rrect(3.2, 2 * d['cap_rc'] - 3.0, 1.6), hc, hc + p['cap_ridge_h'])
     body += ridge
-    bore = ext(CS.circle(mag_d / 2 + 0.175), -1, mag_t + 0.3)
-    body -= bore
+    if mag_t > 0:
+        body -= ext(CS.circle(mag_d / 2 + 0.175), -1, mag_t + 0.3)
     # small 45 deg lead-in chamfer at the rim
     rc = d['cap_rc']   # 45 deg lead-in chamfer at the rim (cone crosses the wall at z=0.6, inside the cutter)
     ring = ext(CS.circle(rc + 2), 0, 0.7) - M.extrude(CS.circle(rc - 0.6), 0.8, scale_top=((rc + 0.2) / (rc - 0.6),) * 2)
     body -= ring
     return body
+
+def magnet_cap_cluster(p, d, mag_d, mag_t, pitch=None, fit=0.1):
+    """Cap holding 7 small magnets (centre + hex ring) in separate snug pockets, for tiny magnets such as 5x3.
+    Same outside as magnet_cap, so it fits the same universal socket. All 7 magnets must face the same way."""
+    base = magnet_cap(p, d, 0.0, 0.0)              # solid cap body, no single bore
+    pitch = pitch or (mag_d + 2 * fit + 0.85)       # 0.85 mm walls between pockets
+    centres = [(0.0, 0.0)] + [(pitch * math.cos(math.radians(30 + 60 * k)), pitch * math.sin(math.radians(30 + 60 * k))) for k in range(6)]
+    assert pitch + mag_d / 2 + fit + 1.0 < d['cap_rc'], 'cluster does not fit in the cap'
+    for c in centres:
+        base -= ext(CS.circle(mag_d / 2 + fit, 48).translate(c), -1, mag_t + 0.3)
+    return base
 
 # ----------------------------------------------------------------------------- plates
 def plate_outline(p, d):
@@ -348,14 +359,24 @@ def main():
         info[k] = dict(size=[round(v, 2) for v in tm.extents], volume_cm3=round(tm.volume / 1000, 2))
 
     caps = {}
-    sizes_d = [6, 8, 10, 12, 15, 18, 20]
+    sizes_d = [5, 6, 8, 10, 12, 15, 18, 20]
     sizes_t = [2, 3, 4, 5]
     for md in sizes_d:
         for mt in sizes_t:
             c = magnet_cap(p, d, md, mt)
             save(c, os.path.join(out, 'caps', f'cap_D{md}x{mt}.stl'))
             caps[(md, mt)] = c
-    # a full set for the user's 12x3 magnets: 8 caps on one plate
+    # 7-magnet cluster caps for tiny magnets (5x3: a single one is far too weak through the glass)
+    step = 2 * d['lug_r'] + 3
+    for (md, mt) in ((5, 2), (5, 3), (6, 3)):
+        c = magnet_cap_cluster(p, d, md, mt)
+        save(c, os.path.join(out, 'caps', f'cap_D{md}x{mt}_x7.stl'))
+        if (md, mt) == (5, 3):
+            grid = M()
+            for i in range(8):
+                grid += c.translate(((i % 4) * step, (i // 4) * step, 0))
+            save(grid, os.path.join(out, 'caps', 'cap_D5x3_x7_set_of_8.stl'))
+    # a full set for 12x3 magnets: 8 caps on one plate
     grid = M()
     step = 2 * d['lug_r'] + 3
     for i in range(8):
