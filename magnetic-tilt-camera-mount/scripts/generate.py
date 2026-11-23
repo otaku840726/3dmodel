@@ -49,6 +49,8 @@ P = dict(
     hinge_z=16.3,            # axis distance from the glass
     hinge_r=9.5, ear_t=5.5, ear_gap=0.15, knuckle_hw=12.85,
     bolt_d=10.0, bolt_p=1.5, bore_r=5.3,
+    bolt_flat=3.6,           # D-flats at +-3.6 mm (0.72 r): bolt prints lying down, overhang <= ~46 deg
+    bolt_grow=-0.15,         # radial offset of the bolt thread (horizontal prints are slightly oval -> a bit looser)
     head_flats=13.0, head_t=3.0, knob_r=8.5, knob_t=9.0,
     glass_t=4.0,             # only used for the assembly render
 )
@@ -277,16 +279,29 @@ def cradle(p, d):
 
 # ----------------------------------------------------------------------------- hinge hardware
 def hinge_bolt(p, d):
-    """Printed head-down. Head hex (flats=head_flats) then threaded shank."""
+    """Bolt along +z (head at z=0) with two D-flats at y = +-bolt_flat so it can be printed LYING on the bed.
+
+    Lying flat the layers run along the bolt (much stronger in bending/tension than standing up), and the
+    thread flanks are fine (their normals are <= 30 deg from horizontal). The only bad overhang of a horizontal
+    cylinder is near its bottom; the flat removes everything steeper than ~45 deg. The head is a hex with a
+    vertex on +-x, so the flats cut off two hex faces and the remaining four still key into the hex pocket.
+    """
     length = 2 * d['ear_x1'] + p['knob_t'] - 0.5 - p['head_t']   # head flush in the -x ear, tip 0.5 inside the knob
     rh = p['head_flats'] / math.sqrt(3)
-    head = ext(CS.circle(rh, 6), 0, p['head_t'])  # vertex on +x -> lies along z after placement
-    head -= M.extrude(CS.circle(rh + 2), 0.5).translate((0, 0, 0)) - M.extrude(CS.circle(rh - 0.5), 0.5, scale_top=((rh) / (rh - 0.5),) * 2)
-    rod = threaded_rod(p['bolt_d'], p['bolt_p'], length, grow=-0.1).translate((0, 0, p['head_t']))
+    head = ext(CS.circle(rh, 6), 0, p['head_t'])  # vertex on +x
+    head -= M.extrude(CS.circle(rh + 2), 0.5) - M.extrude(CS.circle(rh - 0.5), 0.5, scale_top=((rh) / (rh - 0.5),) * 2)
+    rod = threaded_rod(p['bolt_d'], p['bolt_p'], length, grow=p['bolt_grow']).translate((0, 0, p['head_t']))
     # 45 deg tip chamfer
     tip = M.cylinder(1.2, p['bolt_d'] / 2 + 1, p['bolt_d'] / 2 + 1).translate((0, 0, p['head_t'] + length - 1.2)) - \
           M.cylinder(1.2, p['bolt_d'] / 2, p['bolt_d'] / 2 - 1.2).translate((0, 0, p['head_t'] + length - 1.2))
-    return head + rod - tip, length + p['head_t']
+    bolt = head + rod - tip
+    hf = p['bolt_flat']
+    slab = M.cube((40, 2 * hf, length + p['head_t'] + 2), True).translate((0, 0, (length + p['head_t']) / 2))
+    return bolt ^ slab, length + p['head_t']
+
+def bolt_print_pose(bolt, p):
+    """Lay the bolt on its -y flat: axis along x, flat face on z=0."""
+    return bolt.rotate((-90, 0, 0)).translate((0, 0, p['bolt_flat'])).rotate((0, 0, 0))
 
 def hinge_knob(p, d):
     t, R = p['knob_t'], p['knob_r']
@@ -350,7 +365,7 @@ def main():
         'outer_plate': parts['outer_plate'],                                   # glass face down
         'inner_plate': parts['inner_plate'],                                   # glass face down
         'cradle': parts['cradle'].mirror((0, 0, 1)).translate((0, 0, d['z_rear'])),  # rear lip down
-        'hinge_bolt': parts['hinge_bolt'],                                     # head down
+        'hinge_bolt': bolt_print_pose(parts['hinge_bolt'], p),              # lying on a flat
         'hinge_knob': parts['hinge_knob'],
     }
     info = {}

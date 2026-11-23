@@ -26,10 +26,10 @@
   "hinge_bolt": {
     "size": [
       15.01,
-      13.0,
-      45.5
+      45.5,
+      7.2
     ],
-    "volume_cm3": 2.99
+    "volume_cm3": 2.56
   },
   "hinge_knob": {
     "size": [
