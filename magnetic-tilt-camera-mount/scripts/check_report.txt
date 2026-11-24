@@ -11,13 +11,42 @@ tilt  80 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
 tilt  90 deg : cradle vs plate/caps/knob =    0.000   cradle vs bolt =   0.000
 bolt vs plate (should be ~0): 0.0  knob vs plate: -0.0
 caps vs plate: 0.0
-min gap cradle-outer(0deg): 0.15
-min gap knob-caps: 1.247  knob-plate 0.0
+min gap cradle-outer(0deg): 0.25
+min gap knob-caps: 1.535  knob-plate 0.0
+--- FDM fits (TOL) ---
+tolerances: {'cam': 0.25, 'cap_slide': 0.25, 'lug_radial': 0.3, 'lug_axial': 0.25, 'mag': 0.2, 'mag_cluster': 0.15, 'hinge_gap': 0.25, 'bore': 0.5, 'thread_bolt': -0.15, 'thread_nut': 0.2, 'head': 0.25, 'efoot': 0.4}
+cap turning 0 -> -40 deg (clockwise from the opening), interference: -0.0 (must be 0)
+cap turned the wrong way (+15 deg), interference: 13.63 (>0 = blocked)
+cap locked (-40) and pulled out 1.0 mm, interference: 8.16 (>0 = retained)
+cap unlocked (0) and pulled straight out 3 mm: 0.0 (must be 0 = removable)
+cradle knuckle to ears gap: 0.25 mm (TOL hinge_gap 0.25 )
+thread: min interference over one pitch = 0.0 (0 = screws together)
+bolt head in pocket interference: 0.0  head turned 5 deg: 6.15 (>0 = keyed, bolt cannot spin)
 --- view obstruction by plates (HFOV 100, VFOV 60) ---
-tilt  0: lens at y=   0.0 z=  9.9 (glass gap)  blocked   0.0%
-tilt 10: lens at y=  -0.5 z= 17.4 (glass gap)  blocked   0.0%
-tilt 20: lens at y=   0.4 z= 24.9 (glass gap)  blocked   0.0%
-tilt 30: lens at y=   2.5 z= 32.1 (glass gap)  blocked   0.0%
-tilt 45: lens at y=   8.0 z= 42.0 (glass gap)  blocked   0.0%
-tilt 60: lens at y=  15.8 z= 50.1 (glass gap)  blocked   0.0%
+tilt  0: lens at y=   0.0 z=  9.5 (glass gap)  blocked   0.0%
+tilt 10: lens at y=  -0.8 z= 17.1 (glass gap)  blocked   0.0%
+tilt 20: lens at y=  -0.3 z= 24.6 (glass gap)  blocked   0.0%
+tilt 30: lens at y=   1.5 z= 32.0 (glass gap)  blocked   0.0%
+tilt 45: lens at y=   6.6 z= 42.2 (glass gap)  blocked   0.0%
+tilt 60: lens at y=  14.1 z= 50.7 (glass gap)  blocked   0.0%
+--- Tapo C100/C110 openings, checked on the exported cradle.stl ---
+OK   DC hole bottom-RIGHT (x=+15.1)
+OK   bottom-LEFT mirror position (x=-15.1) is wall
+OK   top at x=+15.1 is wall
+OK   SD window on the LEFT (x<0)
+OK   RIGHT wall closed at the SD window
+OK   stem slot bottom centre
+--- print-orientation audit of the exported STLs (area in mm^2, bed faces excluded) ---
+file                                 >46deg   >55deg   bridge  bed contact
+cradle.stl                              0.0      0.0      0.0      1116
+hinge_bolt.stl                          9.7      4.2      0.0       270
+hinge_knob.stl                          0.0      0.0      0.0       110
+inner_plate.stl                         0.0      0.0      0.0      5134
+outer_plate.stl                         0.0      0.0      0.0      5134
+test_fit_coupon.stl                     0.0      0.0      0.0      1025
+caps/cap_D12x3.stl                      0.0      0.0      0.0       323
+caps/cap_D20x5.stl                      0.0      0.0      0.0       323
+caps/cap_D5x3_x7.stl                    0.0      0.0      0.0       323
+caps/cap_D6x2.stl                       0.0      0.0      0.0       323
+(42 files; worst >55deg area = 4.2 mm^2)
 renders written

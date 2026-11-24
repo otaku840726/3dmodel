@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Interference checks over the tilt range + preview renders (matplotlib)."""
-import os, sys, math
+"""Checks (interference over the tilt range, view obstruction, FDM fits, print-orientation audit of every
+exported STL, power-hole side verified on the exported cradle.stl) + preview renders (matplotlib)."""
+import os, sys, math, glob
 import numpy as np, trimesh, matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -11,10 +12,10 @@ from manifold3d import Manifold as M, CrossSection as CS
 
 OUT = os.path.join(os.path.dirname(__file__), '..', 'renders')
 os.makedirs(OUT, exist_ok=True)
-p = dict(g.P); d = g.derived(p)
-
-outer = g.outer_plate(p, d); inner = g.inner_plate(p, d); cr = g.cradle(p, d)
-bolt, _ = g.hinge_bolt(p, d); knob = g.hinge_knob(p, d)
+ROOT = os.path.join(os.path.dirname(__file__), '..')
+p, d, _parts = g.build()
+outer, inner, cr = _parts['outer_plate'], _parts['inner_plate'], _parts['cradle']
+bolt, knob = _parts['hinge_bolt'], _parts['hinge_knob']
 bolt_a = g.place_bolt(bolt, d, p); knob_a = g.place_knob(knob, d)
 cap = g.magnet_cap(p, d, 12, 3)
 caps_o = M(); caps_i = M()
@@ -42,6 +43,67 @@ def report():
     # clearance of the cradle above caps at 0 deg
     print('min gap cradle-outer(0deg):', round(cr.min_gap(outer + caps_o, 5), 3))
     print('min gap knob-caps:', round(knob_a.min_gap(caps_o, 5), 3), ' knob-plate', round(knob_a.min_gap(outer, 5), 3))
+
+def fits():
+    print('--- FDM fits (TOL) ---')
+    print('tolerances:', g.TOL)
+    sx, sy = p['sockets'][0]
+    def cap_at(tw, dz=0.0):
+        return cap.rotate((0, 0, tw)).translate((sx, sy, p['floor'] + dz))
+    free = [round((cap_at(t) ^ outer).volume(), 3) for t in range(0, -41, -5)]
+    print('cap turning 0 -> -40 deg (clockwise from the opening), interference:', max(free), '(must be 0)')
+    print('cap turned the wrong way (+15 deg), interference:', round((cap_at(15) ^ outer).volume(), 2), '(>0 = blocked)')
+    print('cap locked (-40) and pulled out 1.0 mm, interference:', round((cap_at(-40, 1.0) ^ outer).volume(), 2), '(>0 = retained)')
+    print('cap unlocked (0) and pulled straight out 3 mm:', round((cap_at(0, 3.0) ^ outer).volume(), 3), '(must be 0 = removable)')
+    print('cradle knuckle to ears gap:', round(cr.min_gap(outer, 2), 3), 'mm (TOL hinge_gap', g.TOL['hinge_gap'], ')')
+    vs = [round((bolt ^ knob.translate((0, 0, 20 + t))).volume(), 3) for t in np.arange(0, p['bolt_p'], 0.05)]
+    print('thread: min interference over one pitch =', min(vs), '(0 = screws together)')
+    print('bolt head in pocket interference:', round((bolt_a ^ outer).volume(), 3), ' head turned 5 deg:',
+          round((g.place_bolt(bolt.rotate((0, 0, 5)), d, p) ^ outer).volume(), 2), '(>0 = keyed, bolt cannot spin)')
+
+def power_hole_on_exported_stl():
+    """Load the STL that will actually be printed, put it back in the installed pose with the inverse of the
+    (rigid) print pose, and check the DC hole is BOTTOM-RIGHT and the SD window LEFT, seen from outside."""
+    print('--- Tapo C100/C110 openings, checked on the exported cradle.stl ---')
+    m = trimesh.load(os.path.join(ROOT, 'cradle.stl'))
+    T = np.eye(4); T[2, 3] = -d['z_rear']
+    R = trimesh.transformations.rotation_matrix(math.pi, [1, 0, 0])
+    m.apply_transform(R @ T)                                   # inverse of rotate(180 about x) + translate
+    z_lip = d['z_glass_end'] + d['cav_d']
+    zc = z_lip - p['power_from_lip']
+    def open_(o, v): return not m.ray.intersects_any([o], [v])[0]
+    res = {
+        'DC hole bottom-RIGHT (x=+%.1f)' % p['power_x']: open_([p['power_x'], -d['cav_h'] / 2 + 2, zc], [0, -1, 0]),
+        'bottom-LEFT mirror position (x=-%.1f) is wall' % p['power_x']: not open_([-p['power_x'], -d['cav_h'] / 2 + 2, zc], [0, -1, 0]),
+        'top at x=+%.1f is wall' % p['power_x']: not open_([p['power_x'], d['cav_h'] / 2 - 2, zc], [0, 1, 0]),
+        'SD window on the LEFT (x<0)': open_([-d['cav_w'] / 2 + 2, 0, z_lip - 3], [-1, 0, 0]),
+        'RIGHT wall closed at the SD window': not open_([d['cav_w'] / 2 - 2, 0, z_lip - 3], [1, 0, 0]),
+        'stem slot bottom centre': open_([0, -d['cav_h'] / 2 + 2, z_lip - 8], [0, -1, 0]),
+    }
+    for k, v in res.items():
+        print(('OK   ' if v else 'FAIL ') + k)
+    assert all(res.values())
+
+def print_audit():
+    """Every exported STL, in the orientation it is saved (= print orientation): overhang area steeper than
+    45 deg from vertical and flat downward faces (bridges), ignoring faces on the bed."""
+    print('--- print-orientation audit of the exported STLs (area in mm^2, bed faces excluded) ---')
+    print(f"{'file':34s} {'>46deg':>8s} {'>55deg':>8s} {'bridge':>8s}  bed contact")
+    files = sorted(glob.glob(os.path.join(ROOT, '*.stl'))) + sorted(glob.glob(os.path.join(ROOT, 'caps', '*.stl')))
+    worst = 0
+    for f in files:
+        m = trimesh.load(f); n = m.face_normals; zc = m.triangles_center[:, 2] - m.bounds[0, 2]; a = m.area_faces
+        up = zc > 0.05
+        # overhang angle from vertical = 90 - (angle between normal and straight down)
+        o46 = a[(n[:, 2] < -math.cos(math.radians(90 - 46))) & up].sum()
+        o55 = a[(n[:, 2] < -math.cos(math.radians(90 - 55))) & up].sum()
+        br = a[(n[:, 2] < -0.995) & up].sum()
+        bed = a[(n[:, 2] < -0.995) & ~up].sum()
+        worst = max(worst, o55)
+        name = os.path.relpath(f, ROOT)
+        if not name.startswith('caps/cap_D') or name in ('caps/cap_D12x3.stl', 'caps/cap_D20x5.stl', 'caps/cap_D5x3_x7.stl', 'caps/cap_D6x2.stl') or o46 > 1:
+            print(f'{name:34s} {o46:8.1f} {o55:8.1f} {br:8.1f}  {bed:8.0f}')
+    print(f'({len(files)} files; worst >55deg area = {worst:.1f} mm^2)')
 
 def tm(m):
     return g.to_trimesh(m)
@@ -97,7 +159,10 @@ def to_view(m):
 
 if __name__ == '__main__':
     report()
+    fits()
     view_obstruction()
+    power_hole_on_exported_stl()
+    print_audit()
     if '--no-render' in sys.argv: sys.exit()
     WHITE, GREY, GLASS, CAPC, CAMC = '#e9e4d8', '#9aa3ad', '#9fd3e6', '#d9534f', '#3a3f45'
     glass = g.ext(g.rrect(150, 150, 2), -p['glass_t'], 0).translate((0, 0, 0))
@@ -115,20 +180,28 @@ if __name__ == '__main__':
     # exploded
     ex = [to_view(tm(outer)), to_view(tm(caps_o.translate((0, 0, 14)))), to_view(tm(cr.translate((0, 0, 40)))),
           to_view(tm(bolt_a.translate((-30, 0, 40)))), to_view(tm(knob_a.translate((30, 0, 40)))),
-          to_view(tm(g.place_inner(inner, p).translate((0, 0, -25)))), to_view(tm(caps_i.mirror((0, 0, 1)).translate((0, 0, -p['glass_t'] - 40))))]
+          to_view(tm(g.place_inner(inner, p).translate((0, 0, -25)))), to_view(tm(g.place_inner(caps_i, p).translate((0, 0, -40))))]
     render(ex, [WHITE, CAPC, WHITE, GREY, GREY, WHITE, CAPC], os.path.join(OUT, 'exploded.png'), [(15, -60)], size=8, titles=['exploded'])
     # single parts (print orientation)
     def rp(m, name, views=((30, -60), (60, 30)), col=WHITE):
         render([tm(m)], [col], os.path.join(OUT, name + '.png'), views, size=4.5)
     rp(outer, 'part_outer_plate'); rp(inner, 'part_inner_plate', ((35, -60), (-50, 30)))
-    rp(cr.mirror((0, 0, 1)), 'part_cradle', ((25, -60), (25, 120)))
+    rp(g.cradle_print_pose(cr, d), 'part_cradle', ((25, -60), (25, 120)))
     rp(g.bolt_print_pose(bolt, p), 'part_bolt_print_flat', ((25, -60), (0, -90)), GREY)
-    rp(cap, 'part_cap_D12x3', ((40, -60), (-45, -60)), CAPC)
-    rp(g.magnet_cap_cluster(p, d, 5, 3), 'part_cap_D5x3_x7', ((40, -60), (-55, -60)), CAPC)
+    rp(g.cap_print_pose(cap, d), 'part_cap_D12x3', ((-45, -60), (40, -60)), CAPC)
+    rp(g.cap_print_pose(g.magnet_cap_cluster(p, d, 5, 3), d), 'part_cap_D5x3_x7', ((-45, -60), (40, -60)), CAPC)
+    rp(g.fit_coupon(p, d), 'test_fit_coupon', ((40, -60), (70, 20)), WHITE)
     # Tapo C100/C110: power jack hole + stem slot (bottom) and microSD window (left)
     render([to_view(tm(cr))], [WHITE], os.path.join(OUT, 'cradle_power_hole.png'), [(-60, -90), (12, 205)], size=5.5,
            titles=['bottom: DC power hole (right) + stem slot', 'left side: microSD / reset window'])
     # socket close-up
     sock = (outer ^ g.ext(CS.circle(17).translate(p['sockets'][0]), -1, 20))
     rp(sock, 'socket_closeup', ((50, -70), (70, 20)))
+    # every exported STL in its print orientation, side by side on the bed
+    lay, x = [], 0
+    for f, col in (('outer_plate.stl', WHITE), ('cradle.stl', WHITE), ('hinge_bolt.stl', GREY), ('hinge_knob.stl', GREY), ('caps/cap_D12x3.stl', CAPC)):
+        m = trimesh.load(os.path.join(ROOT, f)); m.apply_translation([-m.bounds[0][0] + x, -m.bounds[0][1], -m.bounds[0][2]])
+        x = m.bounds[1][0] + 8; lay.append((m, col))
+    render([m for m, _ in lay], [c for _, c in lay], os.path.join(OUT, 'print_layout.png'), [(28, -70)], size=9,
+           titles=['print orientation: every part flat on the bed, no supports'])
     print('renders written')
